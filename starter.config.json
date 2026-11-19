@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "name": "StarterPack",
+  "slug": "starter-pack",
+  "displayName": "Starter Pack",
+  "androidId": "com.starterpack",
+  "iosId": "com.starterpack",
+  "scheme": "starterpack",
+  "modules": [
+    "core"
+  ],
+  "state": "redux",
+  "flavorServices": {
+    "dev": {},
+    "qa": {}
+  },
+  "services": {
+    "apiBaseUrl": "https://example.invalid",
+    "firebase": false,
+    "sentryDsn": "",
+    "googleWebClientId": "",
+    "googleIosClientId": "",
+    "mapsAndroidKey": "",
+    "mapsIosKey": ""
+  }
+}

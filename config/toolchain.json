@@ -1,0 +1,10 @@
+{
+  "node": "24.22.1",
+  "pnpm": "12.15.0",
+  "maestro": "2.12.1",
+  "java": "17",
+  "androidBuildTools": "37.0.0",
+  "androidPlatform": "37.0",
+  "ndk": "27.1.12297006",
+  "rubyRecommended": "3.3"
+}

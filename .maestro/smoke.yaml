@@ -1,0 +1,18 @@
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: 'home-title'
+    timeout: 60000
+- tapOn: 'Contoh formulir'
+- tapOn:
+    id: 'email'
+- inputText: 'tester@example.com'
+- tapOn:
+    id: 'password'
+- inputText: 'ExamplePassword123'
+- tapOn:
+    id: 'submit'
+- assertVisible: 'Validation passed'

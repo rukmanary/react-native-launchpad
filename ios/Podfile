@@ -1,0 +1,34 @@
+require 'json'
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve("react-native/scripts/react_native_pods.rb", {paths: [process.argv[1]]})', __dir__]).strip
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve("react-native-permissions/scripts/setup.rb", {paths: [process.argv[1]]})', __dir__]).strip
+starter = JSON.parse(File.read(File.join(__dir__, '../starter.config.json')))
+modules = starter['modules']
+platform :ios, min_ios_version_supported
+prepare_react_native_project!
+permissions = []
+permissions += ['Camera', 'Microphone'] if modules.include?('camera')
+permissions += ['PhotoLibrary', 'PhotoLibraryAddOnly', 'Camera'] if modules.include?('media')
+permissions += ['LocationWhenInUse'] if modules.include?('location')
+permissions += ['FaceID'] if modules.include?('biometrics')
+permissions += ['Notifications'] if modules.include?('notifications') || modules.include?('firebase')
+setup_permissions(permissions.uniq)
+project 'StarterPack.xcodeproj', {
+  'Debug' => :debug, 'Release' => :release,
+  'DebugDev' => :debug, 'ReleaseDev' => :release,
+  'DebugQA' => :debug, 'ReleaseQA' => :release,
+}
+if modules.include?('firebase')
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
+end
+target 'StarterPack' do
+  pod 'react-native-maps/Google', :path => '../node_modules/react-native-maps' if modules.include?('location')
+  config = use_native_modules!
+  use_react_native!(:path => config[:reactNativePath], :app_path => "#{Pod::Config.instance.installation_root}/..")
+  post_install do |installer|
+    react_native_post_install(installer, config[:reactNativePath], :mac_catalyst_enabled => false)
+  end
+end
+

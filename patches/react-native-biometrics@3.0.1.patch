@@ -1,0 +1,11 @@
+diff --git a/android/build.gradle b/android/build.gradle
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -25,6 +25,7 @@
+ }
+ 
+ android {
++    namespace "com.rnbiometrics"
+     compileSdkVersion safeExtGet('compileSdkVersion', 29)
+ 
+     defaultConfig {

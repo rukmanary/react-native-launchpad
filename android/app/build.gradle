@@ -1,0 +1,75 @@
+import groovy.json.JsonSlurper
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+def starter = new JsonSlurper().parse(file("../../starter.config.json"))
+def flavors = new JsonSlurper().parse(file("../../config/flavors.json"))
+def enabled = starter.modules
+if (enabled.contains("firebase")) {
+    apply plugin: "com.google.gms.google-services"
+    apply plugin: "com.google.firebase.crashlytics"
+    apply plugin: "com.google.firebase.firebase-perf"
+}
+if (enabled.contains("sentry") && project.hasProperty("uploadSentry")) apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
+react {
+    debuggableVariants = flavors.keySet().collect { "${it}Debug".toString() }
+    autolinkLibrariesWithApp()
+}
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
+    namespace "com.starterpack"
+    defaultConfig {
+        applicationId "com.starterpack"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "0.1.0"
+        manifestPlaceholders = [usesCleartextTraffic: "false"]
+    }
+    flavorDimensions "deployment"
+    productFlavors {
+        flavors.each { name, flavor ->
+            create(name) {
+                dimension "deployment"
+                if (flavor.suffix) applicationIdSuffix flavor.suffix
+                def services = name == "production" ? starter.services : (starter.flavorServices?.get(name) ?: [:])
+                resValue "string", "app_name", starter.displayName + flavor.label
+                manifestPlaceholders = [
+                    starterScheme: starter.scheme + flavor.suffix,
+                    mapsApiKey: services.mapsAndroidKey ?: ""
+                ]
+            }
+        }
+    }
+    sourceSets {
+        main {
+            if(enabled.contains("graphics")) java.srcDirs += ["src/graphics/java"]
+        }
+    }
+    buildTypes {
+        debug { manifestPlaceholders.usesCleartextTraffic = "true" }
+        release {
+            if (project.hasProperty('testSigning')) signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            // Unsigned by default. Configure production signing outside version control.
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+    splits {
+        abi {
+            enable project.hasProperty("splitApk")
+            reset()
+            include "arm64-v8a", "x86_64"
+            universalApk false
+        }
+    }
+}
+dependencies {
+    implementation("com.facebook.react:react-android")
+    implementation("com.facebook.react:hermes-android")
+    if(enabled.contains("graphics")) implementation("com.github.Dimezis:BlurView:version-4.0.0")
+}
+

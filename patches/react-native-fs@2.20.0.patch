@@ -1,0 +1,11 @@
+diff --git a/android/build.gradle b/android/build.gradle
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -15,6 +15,7 @@
+ apply plugin: 'com.android.library'
+ 
+ android {
++    namespace "com.rnfs"
+     compileSdkVersion safeExtGet('compileSdkVersion', 26)
+     buildToolsVersion safeExtGet('buildToolsVersion', '26.0.3')
+ 

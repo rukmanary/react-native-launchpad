@@ -1,0 +1,11 @@
+diff --git a/android/build.gradle b/android/build.gradle
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -20,6 +20,7 @@
+ apply plugin: 'com.android.library'
+ 
+ android {
++    namespace "com.BV.LinearGradient"
+     compileSdkVersion safeExtGet('compileSdkVersion', 31).toInteger()
+     defaultConfig {
+         minSdkVersion safeExtGet('minSdkVersion', 21)

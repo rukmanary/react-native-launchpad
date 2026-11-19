@@ -1,0 +1,25 @@
+require 'json'
+def starter_flavor(options)
+  name = (options[:flavor] || 'production').to_s
+  flavors = JSON.parse(File.read(File.expand_path('../config/flavors.json', __dir__)))
+  UI.user_error!("Choose a flavor: #{flavors.keys.join(', ')}") unless flavors.key?(name)
+  [name, flavors.fetch(name)]
+end
+
+default_platform(:android)
+platform :android do
+  desc 'Build an unsigned, optimized Android App Bundle'
+  lane :build do |options|
+    name, = starter_flavor(options)
+    gradle(task: "bundle#{name.capitalize}Release", project_dir: 'android')
+  end
+end
+platform :ios do
+  desc 'Build an iOS archive using project-specific signing configured in Xcode/CI'
+  lane :build do |options|
+    _, flavor = starter_flavor(options)
+    starter = JSON.parse(File.read(File.expand_path('../starter.config.json', __dir__)))
+    build_app(workspace: "ios/#{starter['name']}.xcworkspace", scheme: starter['name'] + flavor.fetch('iosSuffix'))
+  end
+end
+

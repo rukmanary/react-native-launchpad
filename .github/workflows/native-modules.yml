@@ -1,0 +1,27 @@
+name: Optional native modules
+on: [workflow_dispatch]
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager "platforms;android-37.0" "build-tools;37.0.0" "ndk;27.1.12297006"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm create-app --name NativeCheck --android-id com.example.nativecheck --target ../native-check --modules core,graphics,offline,biometrics,camera,media,location,notifications,content,ui,chat,google,sentry
+      - run: pnpm --dir ../native-check typecheck
+      - run: cd ../native-check/android && ./gradlew assembleDevDebug assembleProductionRelease -PreactNativeArchitectures=arm64-v8a
+      - run: pnpm native:alignment ../native-check/android/app/build/outputs/apk/production/release/app-production-release-unsigned.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: optional-native-apks
+          path: ../native-check/android/app/build/outputs/apk

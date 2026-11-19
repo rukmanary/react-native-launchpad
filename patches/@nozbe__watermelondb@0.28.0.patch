@@ -1,0 +1,11 @@
+diff --git a/native/android/build.gradle b/native/android/build.gradle
+--- a/native/android/build.gradle
++++ b/native/android/build.gradle
+@@ -21,6 +21,7 @@
+ apply plugin: 'kotlin-android'
+ 
+ android {
++    buildFeatures { buildConfig true }
+     compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
+     buildToolsVersion getExtOrDefault('buildToolsVersion')
+ 

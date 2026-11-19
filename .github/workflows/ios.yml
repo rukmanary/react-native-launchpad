@@ -1,0 +1,25 @@
+name: iOS smoke
+on: [workflow_dispatch]
+jobs:
+  ios:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        variant:
+          - { suffix: '', configuration: Debug }
+          - { suffix: Dev, configuration: DebugDev }
+          - { suffix: QA, configuration: ReleaseQA }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: pnpm install --frozen-lockfile
+      - run: cd ios && bundle exec pod install
+      - run: xcodebuild -workspace ios/StarterPack.xcworkspace -scheme StarterPack${{ matrix.variant.suffix }} -sdk iphonesimulator -configuration ${{ matrix.variant.configuration }} CODE_SIGNING_ALLOWED=NO build

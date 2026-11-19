@@ -1,0 +1,63 @@
+diff --git a/lib/android/app/build.gradle b/lib/android/app/build.gradle
+--- a/lib/android/app/build.gradle
++++ b/lib/android/app/build.gradle
+@@ -55,6 +55,7 @@
+ }
+ 
+ android {
++    buildFeatures { buildConfig true }
+     if (supportsNamespace()) {
+         namespace "com.wix.reactnativenotifications"
+ 
+@@ -86,7 +87,7 @@
+     buildTypes {
+         release {
+             minifyEnabled false
+-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
++            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+         }
+         debug {
+             debuggable true
+diff --git a/lib/android/app/src/main/java/com/wix/reactnativenotifications/fcm/FcmToken.java b/lib/android/app/src/main/java/com/wix/reactnativenotifications/fcm/FcmToken.java
+--- a/lib/android/app/src/main/java/com/wix/reactnativenotifications/fcm/FcmToken.java
++++ b/lib/android/app/src/main/java/com/wix/reactnativenotifications/fcm/FcmToken.java
+@@ -5,9 +5,10 @@
+ import android.util.Log;
+ 
+ import com.facebook.react.ReactApplication;
+-import com.facebook.react.ReactInstanceManager;
++import com.facebook.react.ReactHost;
+ import com.facebook.react.bridge.ReactContext;
+ import com.google.firebase.messaging.FirebaseMessaging;
++import com.google.firebase.FirebaseApp;
+ import com.wix.reactnativenotifications.BuildConfig;
+ import com.wix.reactnativenotifications.core.JsIOHelper;
+ 
+@@ -72,6 +73,8 @@
+     }
+ 
+     protected void refreshToken() {
++        // Local notifications can be used before Firebase is configured.
++        if (FirebaseApp.getApps(mAppContext).isEmpty()) return;
+         FirebaseMessaging.getInstance().getToken()
+             .addOnCompleteListener(task -> {
+                 if (!task.isSuccessful()) {
+@@ -88,13 +91,11 @@
+     }
+ 
+     protected void sendTokenToJS() {
+-        final ReactInstanceManager instanceManager = ((ReactApplication) mAppContext).getReactNativeHost().getReactInstanceManager();
+-        ReactContext reactContext = instanceManager.getCurrentReactContext();
+-
+-        if (reactContext == null) {
+-            // If the react context is not available, try to get the current context from the react host (RN0.76).
+-            reactContext = ((ReactApplication) mAppContext).getReactHost().getCurrentReactContext();
+-        }
++        final ReactApplication application = (ReactApplication) mAppContext;
++        final ReactHost host = application.getReactHost();
++        ReactContext reactContext = host != null
++            ? host.getCurrentReactContext()
++            : application.getReactNativeHost().getReactInstanceManager().getCurrentReactContext();
+         // Note: Cannot assume react-context exists cause this is an async dispatched service.
+         if (reactContext != null && reactContext.hasActiveReactInstance()) {
+             Bundle tokenMap = new Bundle();

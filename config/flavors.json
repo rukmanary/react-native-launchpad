@@ -1,0 +1,5 @@
+{
+  "production": { "suffix": "", "label": "", "iosSuffix": "" },
+  "dev": { "suffix": ".dev", "label": " Dev", "iosSuffix": "Dev" },
+  "qa": { "suffix": ".qa", "label": " QA", "iosSuffix": "QA" }
+}

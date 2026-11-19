@@ -1,0 +1,11 @@
+diff --git a/android/build.gradle b/android/build.gradle
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -38,6 +38,7 @@
+ }
+ 
+ android {
++    namespace "com.mrousavy.blurhash"
+     compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
+     defaultConfig {
+         minSdkVersion getExtOrIntegerDefault('minSdkVersion')
