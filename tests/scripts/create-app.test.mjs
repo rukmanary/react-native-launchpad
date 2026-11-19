@@ -17,28 +17,34 @@ test('invalid IDs fail before any mutation', () => {
   assert.throws(() => validateIdentity({ ...identity, name: '../Bad' }));
   assert.throws(() => validateIdentity({ ...identity, iosId: 'com.example.invalid_id' }));
 });
-test('all includes every capability and preserves the selected state preset', () => {
+test('all includes every capability and keeps state presets separate', () => {
   const catalog = { groups: { core: [], ui: [], media: [], zustand: [] } };
-  assert.deepEqual(selectModules(catalog, 'all', 'redux'), ['core', 'ui', 'media']);
-  assert.deepEqual(selectModules(catalog, 'all', 'zustand'), ['core', 'ui', 'media', 'zustand']);
-  assert.deepEqual(selectModules(catalog, 'ui, media, ui', 'redux'), ['core', 'ui', 'media']);
-  assert.throws(() => selectModules(catalog, 'all,ui', 'redux'), /Unknown module/);
-  assert.throws(() => selectModules(catalog, 'zustand', 'redux'), /--state zustand/);
+  assert.deepEqual(selectModules(catalog, 'all'), ['core', 'ui', 'media']);
+  assert.deepEqual(selectModules(catalog, 'ui, media, ui'), ['core', 'ui', 'media']);
+  assert.throws(() => selectModules(catalog, 'all,ui'), /Unknown module/);
+  assert.throws(() => selectModules(catalog, 'zustand'), /--state zustand/);
 });
 test('generation isolates source, resets IDs, omits history and handles dry-run', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'rn-template-test-'));
   const source = path.join(root, 'source');
-  const target = path.join(root, 'StarterPack-output');
+  // Keep fixture identities independent of the template that copies these tests.
+  const fixtureName = ['Fixture', 'Template'].join('');
+  const fixtureLabel = ['Fixture', 'Template'].join(' ');
+  const fixtureSlug = ['fixture', 'template'].join('-');
+  const androidParts = ['com', 'fixture', 'template'];
+  const fixtureAndroidId = androidParts.join('.');
+  const fixtureIosId = [...androidParts, 'ios'].join('.');
+  const target = path.join(root, fixtureName + '-output');
   try {
     const fixture = {
       'starter.config.json': JSON.stringify({
         ...identity,
-        name: 'StarterPack',
-        displayName: 'Starter Pack',
-        slug: 'starter-pack',
-        androidId: 'com.starterpack',
-        iosId: 'com.starterpack.ios',
-        scheme: 'starterpack',
+        name: fixtureName,
+        displayName: fixtureLabel,
+        slug: fixtureSlug,
+        androidId: fixtureAndroidId,
+        iosId: fixtureIosId,
+        scheme: fixtureSlug,
         modules: ['core'],
         services: {},
       }),
@@ -50,15 +56,16 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
         artifacts: { 'app-release.apk': 123 },
       }),
       'package.json': JSON.stringify({
-        name: 'starter-pack',
+        name: fixtureSlug,
         dependencies: { react: '1.0.0', 'fake-media': '1.0.0' },
       }),
       'android/app/src/main/AndroidManifest.xml':
         '<manifest><application><activity></activity></application></manifest>',
-      'android/app/src/main/java/com/starterpack/Main.kt': 'package com.starterpack',
-      'ios/StarterPack/Info.plist': '<plist><dict></dict></plist>',
-      'ios/StarterPack.xcodeproj/project.pbxproj':
-        'PRODUCT_BUNDLE_IDENTIFIER = com.starterpack.ios;',
+      ['android/app/src/main/java/' + androidParts.join('/') + '/Main.kt']:
+        'package ' + fixtureAndroidId,
+      ['ios/' + fixtureName + '/Info.plist']: '<plist><dict></dict></plist>',
+      ['ios/' + fixtureName + '.xcodeproj/project.pbxproj']:
+        'PRODUCT_BUNDLE_IDENTIFIER = ' + fixtureIosId + ';',
       '.git/HEAD': 'private history',
       '.bundle/config': 'local Bundler settings',
       'vendor/bundle/cache.txt': 'installed Ruby dependency',
@@ -66,7 +73,8 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       'app-release.apk': 'local build artifact',
       'AuthKey_TEST.p8': 'placeholder signing key',
       'src/modules/media/index.ts': 'export {}',
-      '.maestro/smoke.yaml': 'appId: com.starterpack\n---\n- assertVisible: "Starter Pack"',
+      '.maestro/smoke.yaml':
+        'appId: ' + fixtureAndroidId + '\n---\n- assertVisible: "' + fixtureLabel + '"',
     };
     for (const [name, content] of Object.entries(fixture)) {
       await mkdir(path.dirname(path.join(source, name)), { recursive: true });
@@ -125,7 +133,7 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
     );
     assert.equal(
       JSON.parse(await readFile(path.join(source, 'starter.config.json'), 'utf8')).name,
-      'StarterPack',
+      fixtureName,
     );
     await assert.rejects(createApp(args), /already exists/);
   } finally {

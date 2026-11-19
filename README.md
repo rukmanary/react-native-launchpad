@@ -16,6 +16,8 @@ A bare React Native template with pnpm, TypeScript, feature-based architecture, 
 | Configure native builds, Firebase, Google Sign-In, and releases | [Native setup](docs/native-setup.md)                                        |
 | Review version choices and test results                         | [Compatibility](docs/compatibility.md) and [Validation](docs/validation.md) |
 
+See the [UI starter kit](docs/ui-kit.md), [state and API presets](docs/state-and-api.md), and [HTTP client walkthrough](docs/http-client.md).
+
 ## Template and generated app
 
 The template repository keeps the full dependency and adapter catalog. Only `core` is active by default for native autolinking. The generator creates a separate app folder with the source and dependencies for your selected modules. Use that folder for product development and keep the template for future apps.
@@ -28,6 +30,7 @@ List the available commands and choices from the template root, where `package.j
 pnpm create-app --help
 pnpm list:modules
 pnpm list:states
+pnpm list:apis
 ```
 
 `--modules core,ui` includes the foundation and optional UI components. Choose capabilities from `pnpm list:modules` or use `--modules all` for the full catalog. `--state` chooses Redux Toolkit or Zustand. `--git` initializes a Git repository in the new folder.
@@ -45,7 +48,7 @@ pnpm create-app --name AcmeApp --slug acme-app \
 cd ../acme-app
 ```
 
-This creates Acme App in a new folder, installs dependencies, sets the native identity, and initializes Git with an empty history. Choose a target path that does not exist. Add `--dry-run` to preview the plan or `--skip-install` to defer dependency installation. Redux Toolkit is the default state manager.
+This creates Acme App in a new folder, installs dependencies, sets the native identity, and initializes Git with an empty history. Choose a target path that does not exist. Add `--dry-run` to preview the plan or `--skip-install` to defer dependency installation. Redux Toolkit and REST are the defaults. Use `--state mobx --api graphql` to choose MobX and Apollo.
 
 ## Run Android
 
@@ -95,7 +98,7 @@ Use `pnpm run doctor` to run the starter's checks. `pnpm doctor` invokes pnpm's 
 
 ## Connect product features
 
-Public settings live in `starter.config.json`. The sample API starts at `https://example.invalid`. Connect your backend to use the API example. The demo form validates input locally. Set up Firebase, Google Sign-In, maps, push notifications, and telemetry with the app's own service settings.
+Public settings live in `starter.config.json`. Set `apiBaseUrl` for REST or `graphqlUrl` for GraphQL. Both start with an `example.invalid` placeholder. Connect your backend to use the API example. The demo form validates input locally. Set up Firebase, Google Sign-In, maps, push notifications, and telemetry with the app's own service settings.
 
 The root provides safe area, gesture, and keyboard providers. Choose a layout component based on the screen's header, tabs, modal, or bottom sheet. [Development workflow](docs/workflow.md).
 

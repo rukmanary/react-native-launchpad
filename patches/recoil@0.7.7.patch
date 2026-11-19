@@ -1,0 +1,45 @@
+diff --git a/cjs/index.js b/cjs/index.js
+--- a/cjs/index.js
++++ b/cjs/index.js
+@@ -504,6 +504,11 @@
+ // change we can't simply check if `React.useSyncExternalStore()` is defined.
+ 
+ function currentRendererSupportsUseSyncExternalStore() {
++  // React 19 removed the legacy dispatcher object. Use the public hook on this renderer.
++  if (!react.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED) {
++    return typeof useSyncExternalStore === 'function';
++  }
++
+   var _ReactCurrentDispatch;
+ 
+   // $FlowFixMe[incompatible-use]
+diff --git a/es/index.js b/es/index.js
+--- a/es/index.js
++++ b/es/index.js
+@@ -498,6 +498,11 @@
+ // change we can't simply check if `React.useSyncExternalStore()` is defined.
+ 
+ function currentRendererSupportsUseSyncExternalStore() {
++  // React 19 removed the legacy dispatcher object. Use the public hook on this renderer.
++  if (!react.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED) {
++    return typeof useSyncExternalStore === 'function';
++  }
++
+   var _ReactCurrentDispatch;
+ 
+   // $FlowFixMe[incompatible-use]
+diff --git a/native/index.js b/native/index.js
+--- a/native/index.js
++++ b/native/index.js
+@@ -498,6 +498,11 @@
+ // change we can't simply check if `React.useSyncExternalStore()` is defined.
+ 
+ function currentRendererSupportsUseSyncExternalStore() {
++  // React 19 removed the legacy dispatcher object. Use the public hook on this renderer.
++  if (!react.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED) {
++    return typeof useSyncExternalStore === 'function';
++  }
++
+   var _ReactCurrentDispatch;
+ 
+   // $FlowFixMe[incompatible-use]

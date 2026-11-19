@@ -1,24 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
 import { FlashList } from '@shopify/flash-list';
 import { Text, View } from 'react-native';
 import { Screen } from '../../../shared/ui/Screen';
 import { AsyncState } from '../../../shared/ui/AsyncState';
-import { productsQuery } from '../api/products';
+import { useProducts } from '../api/products';
 export function ProductListScreen() {
-  const query = useQuery(productsQuery());
+  const { products, loading, error, retry } = useProducts();
   return (
     <Screen>
-      {query.isPending || query.isError ? (
-        <AsyncState
-          loading={query.isPending}
-          error={query.error}
-          onRetry={() => {
-            void query.refetch();
-          }}
-        />
+      {loading || error ? (
+        <AsyncState loading={loading} error={error} onRetry={retry} />
       ) : (
         <FlashList
-          data={query.data}
+          data={products}
           keyExtractor={(item) => item.id}
           ListEmptyComponent={<AsyncState empty />}
           renderItem={({ item }) => (

@@ -6,16 +6,16 @@
   "androidId": "com.starterpack",
   "iosId": "com.starterpack",
   "scheme": "starterpack",
-  "modules": [
-    "core"
-  ],
+  "modules": ["core"],
   "state": "redux",
+  "api": "rest",
   "flavorServices": {
     "dev": {},
     "qa": {}
   },
   "services": {
     "apiBaseUrl": "https://example.invalid",
+    "graphqlUrl": "https://example.invalid/graphql",
     "firebase": false,
     "sentryDsn": "",
     "googleWebClientId": "",

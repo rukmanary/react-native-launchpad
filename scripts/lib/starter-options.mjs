@@ -1,6 +1,13 @@
 export const states = {
   redux: 'Redux Toolkit + React Redux (default)',
   zustand: 'Zustand',
+  mobx: 'MobX',
+  recoil: 'Recoil (archived upstream; patched for React 19)',
+};
+
+export const apis = {
+  rest: 'REST via fetch and TanStack Query (default)',
+  graphql: 'GraphQL via Apollo Client',
 };
 
 const descriptions = {
@@ -32,8 +39,7 @@ export function describeModules(catalog, dependencies) {
     .join('\n');
 }
 
-export function selectModules(catalog, selection, state) {
-  if (!Object.hasOwn(states, state)) throw new Error('Choose --state redux or --state zustand.');
+export function selectModules(catalog, selection) {
   const names = selection.split(',').map((name) => name.trim());
   if (names.length === 1 && names[0] === 'all') {
     names.splice(0, 1, ...Object.keys(catalog.groups).filter((name) => name !== 'zustand'));
@@ -43,5 +49,5 @@ export function selectModules(catalog, selection, state) {
     if (!Object.hasOwn(catalog.groups, name))
       throw new Error(`Unknown module "${name}". Run pnpm list:modules to see available modules.`);
   }
-  return [...new Set(['core', ...names, ...(state === 'zustand' ? ['zustand'] : [])])];
+  return [...new Set(['core', ...names])];
 }

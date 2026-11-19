@@ -30,3 +30,5 @@ Enable BuildConfig per library using [Android BuildFeatures](https://developer.a
 Notifications overrides autolinking in `react-native.config.js` because `PackageList(Application)` does not expose the legacy `reactNativeHost`. The token callback tries `ReactHost` first and waits for Firebase setup before requesting an FCM token. The Android remote registration adapter also checks that Firebase is enabled. Local notifications remain available.
 
 A transitive `@expo/require-utils` peer warning requests TypeScript 5 while the source checks use TypeScript 6.0.3. This is a bare React Native app. Check any Expo tooling separately and review deprecated packages when upgrading.
+
+Recoil 0.7.7 is archived upstream. The selected React 19 renderer workaround lives in `patches/recoil@0.7.7.patch` for the native, CJS, and ESM entry points. The test suite exercises atom updates under React 19. See [state and API presets](state-and-api.md).

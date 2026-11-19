@@ -13,7 +13,7 @@ Run the commands below from the application root containing `package.json` unles
 
 ### State and layout ownership
 
-Use TanStack Query for server cache, React Hook Form for forms, Redux or Zustand for shared client state, and component state for temporary UI. Store credentials through Keychain and non-secret preferences through MMKV. An offline database is the local source only for features explicitly designed as offline-first. Avoid duplicating the same data across stores.
+Use the selected API cache for server data, React Hook Form for forms, the selected state manager for shared client state, and component state for temporary UI. Store credentials through Keychain and non-secret preferences through MMKV. An offline database is the local source only for features explicitly designed as offline-first. Avoid duplicating the same data across stores.
 
 The root supplies gesture, safe area, and keyboard providers. Use `Screen` or `FormScreen` as appropriate and apply insets only to the area owned by the screen: navigator headers and bottom tabs already manage their own insets. `FormScreen` handles input scrolling, `AppModal` supplies a native surface context, and `Sheet` uses Bottom Sheet keyboard handling. Avoid stacking `KeyboardAvoidingView` without testing its behavior. Test headers, tabs, modals, sheets, orientations, and devices with cutouts. See [architecture](architecture.md) for boundaries.
 
@@ -37,7 +37,7 @@ See [native setup](native-setup.md) for service registration, permissions, and s
 
 ## Selecting and adding modules
 
-When creating an app, select capabilities with `--modules core,ui,media` and state with `--state redux` or `--state zustand`. Core is always included. The template contains the full catalog, but the generator prunes source and dependencies for unselected modules.
+When creating an app, select capabilities with `--modules core,ui,media` and choose state and API separately with `--state` and `--api`. [State and API presets](state-and-api.md). Core is always included. The template contains the full catalog, but the generator prunes source and dependencies for unselected modules.
 
 In an existing project, `pnpm modules` **replaces the entire selection**. For example, to retain UI and enable media:
 
@@ -45,7 +45,7 @@ In an existing project, `pnpm modules` **replaces the entire selection**. For ex
 pnpm modules core,ui,media
 ```
 
-For a Zustand preset app, include `zustand` in the list to keep it active. `pnpm modules zustand` does not convert a Redux implementation to Zustand. Running without arguments returns to core. The command checks manifest dependencies and writes configuration and generated native files, but does not install dependencies or restore pruned source.
+Running without arguments returns to core. State and API presets remain selected through their generated providers. The command checks manifest dependencies and writes configuration and generated native files, but does not install dependencies or restore pruned source.
 
 To add a module that was not included in a generated app:
 

@@ -87,6 +87,7 @@ pnpm applies patches through `patchedDependencies` in `pnpm-workspace.yaml`. Nor
 | `react-native-geolocation-service@5.3.1` | Add Android namespace                                                                                                              |
 | `react-native-date-picker@5.0.13`        | Replace obsolete ProGuard configuration with available optimize configuration                                                      |
 | `react-native-notifications@5.2.2`       | Fix ProGuard, enable BuildConfig, use modern ReactHost for token callbacks, and defer token retrieval until Firebase is registered |
+| `recoil@0.7.7`                           | Use the public external-store hook when the React 19 renderer lacks the legacy dispatcher object.                                  |
 
 A namespace identifies Android library code/resources. BuildConfig is a generated configuration class. ProGuard/R8 concern release optimization. These patches fix library build/runtime requirements, not application business APIs.
 

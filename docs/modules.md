@@ -22,6 +22,8 @@ Select the full active module list with `pnpm modules core,<name>,...`, rebuild 
 | chat          | Chat                                                                                                                                                                             | Controlled UI. The product owns transport, pagination, and delivery status                                       |
 | zustand       | usePreferences                                                                                                                                                                   | Alternative to Redux. Choose one owner for preferences                                                           |
 
+The [UI starter kit](ui-kit.md) covers shared primitives. State and API providers are selected separately. [State and API presets](state-and-api.md).
+
 ## Form example
 
 ```tsx

@@ -6,6 +6,7 @@ import flavors from '../../../config/flavors.json';
 
 const services = z.object({
   apiBaseUrl: z.url().default('https://example.invalid'),
+  graphqlUrl: z.url().default('https://example.invalid/graphql'),
   firebase: z.boolean().default(false),
   sentryDsn: z.string().default(''),
   googleWebClientId: z.string().default(''),
@@ -21,7 +22,8 @@ const schema = z.object({
   iosId: z.string().min(1),
   scheme: z.string().min(1),
   modules: z.array(z.string()),
-  state: z.enum(['redux', 'zustand']),
+  state: z.enum(['redux', 'zustand', 'mobx', 'recoil']),
+  api: z.enum(['rest', 'graphql']).default('rest'),
   services,
   flavorServices: z.object({ dev: services, qa: services }),
 });

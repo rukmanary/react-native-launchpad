@@ -841,6 +841,47 @@
         "react-native-performance": "*"
       },
       "engines": {}
+    },
+    "mobx": {
+      "version": "7.1.7",
+      "peerDependencies": {},
+      "engines": {},
+      "checkedAt": "2026-11-19"
+    },
+    "recoil": {
+      "version": "0.7.7",
+      "peerDependencies": {
+        "react": ">=16.13.1"
+      },
+      "engines": {},
+      "checkedAt": "2026-11-19"
+    },
+    "@apollo/client": {
+      "version": "4.3.8",
+      "peerDependencies": {
+        "graphql": "^16.0.0 || ^17.0.0",
+        "graphql-ws": "^5.5.5 || ^6.0.3",
+        "react": "^17.0.0 || ^18.0.0 || >=19.0.0-rc",
+        "react-dom": "^17.0.0 || ^18.0.0 || >=19.0.0-rc",
+        "rxjs": "^7.3.0",
+        "subscriptions-transport-ws": "^0.9.0 || ^0.11.0"
+      },
+      "engines": {},
+      "checkedAt": "2026-11-19"
+    },
+    "graphql": {
+      "version": "17.1.0",
+      "peerDependencies": {},
+      "engines": {
+        "node": "^22.0.0 || ^24.0.0 || >=26.0.0"
+      },
+      "checkedAt": "2026-11-19"
+    },
+    "rxjs": {
+      "version": "7.8.2",
+      "peerDependencies": {},
+      "engines": {},
+      "checkedAt": "2026-11-19"
     }
   }
 }

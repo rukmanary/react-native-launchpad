@@ -4,7 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { copyTree } from './lib/files.mjs';
-import { describeModules, selectModules, states } from './lib/starter-options.mjs';
+import { applyPresets } from './lib/apply-presets.mjs';
+import { apis, describeModules, selectModules, states } from './lib/starter-options.mjs';
 import flavors from '../config/flavors.json' with { type: 'json' };
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -17,12 +18,14 @@ const options = {
   target: { type: 'string' },
   modules: { type: 'string' },
   state: { type: 'string' },
+  api: { type: 'string' },
   'dry-run': { type: 'boolean' },
   'skip-install': { type: 'boolean' },
   git: { type: 'boolean' },
   help: { type: 'boolean', short: 'h' },
   'list-modules': { type: 'boolean' },
   'list-states': { type: 'boolean' },
+  'list-apis': { type: 'boolean' },
 };
 const help = `Create a React Native app with production, dev, and QA flavors.
 
@@ -39,16 +42,18 @@ Options:
   --display-name <text>    Launcher name. Defaults to --name
   --ios-id <id>            Production bundle ID. Defaults to --android-id
   --modules <a,b|all>      Select modules. Core is always included and is the default
-  --state <redux|zustand>  Select a state manager. Defaults to redux
+  --state <name>          Select redux, zustand, mobx, or recoil. Defaults to redux
+  --api <rest|graphql>    Select the API technology. Defaults to rest
   --git                   Initialize a Git repository in the new app
   --dry-run               Show the plan without writing files
   --skip-install          Skip dependency installation in the new app
   --list-modules          List available modules
   --list-states           List state manager options
+  --list-apis             List API options
   -h, --help              Show this help
 
 Dev and QA add .dev and .qa to the production IDs.
-See also: pnpm list:modules, pnpm list:states.`;
+See also: pnpm list:modules, pnpm list:states, pnpm list:apis.`;
 export function validateIdentity(input) {
   if (!/^[A-Z][A-Za-z0-9]*$/.test(input.name))
     throw new Error('name must start uppercase and contain only letters/numbers');
@@ -82,13 +87,17 @@ export async function createApp(input) {
   const original = JSON.parse(await readFile(path.join(source, 'starter.config.json'), 'utf8'));
   const catalog = JSON.parse(await readFile(path.join(source, 'config/dependencies.json'), 'utf8'));
   const state = input.state ?? 'redux';
-  const modules = selectModules(catalog, input.modules ?? 'core', state);
+  const api = input.api ?? 'rest';
+  if (!Object.hasOwn(states, state)) throw new Error('Unknown state preset. Run pnpm list:states.');
+  if (!Object.hasOwn(apis, api)) throw new Error('Unknown API preset. Run pnpm list:apis.');
+  const modules = selectModules(catalog, input.modules ?? 'core');
   const plan = {
     ...input,
     source,
     target,
     modules,
     state,
+    api,
     variants: Object.fromEntries(
       Object.entries(flavors).map(([name, flavor]) => [
         name,
@@ -158,10 +167,12 @@ export async function createApp(input) {
       scheme: input.slug,
       modules,
       state,
+      api,
       flavorServices: { dev: {}, qa: {} },
       services: {
         ...original.services,
         apiBaseUrl: 'https://example.invalid',
+        graphqlUrl: 'https://example.invalid/graphql',
         firebase: false,
         sentryDsn: '',
         googleWebClientId: '',
@@ -192,23 +203,26 @@ export async function createApp(input) {
     pkg.name = input.slug;
     pkg.version = '0.1.0';
     delete pkg.repository;
-    const chosen = new Set(modules.flatMap((name) => catalog.groups[name]));
-    for (const dependency of Object.values(catalog.groups).flat())
+    const statePackages = catalog.states ?? {};
+    const apiPackages = catalog.apis ?? {};
+    const chosen = new Set([
+      ...modules.flatMap((name) => catalog.groups[name]),
+      ...(statePackages[state] ?? []),
+      ...(apiPackages[api] ?? []),
+    ]);
+    for (const dependency of [
+      ...Object.values(catalog.groups).flat(),
+      ...Object.values(statePackages).flat(),
+      ...Object.values(apiPackages).flat(),
+    ])
       if (!chosen.has(dependency)) delete pkg.dependencies[dependency];
+    if (state !== 'redux') delete pkg.devDependencies?.['@rozenite/redux-devtools-plugin'];
+    if (api !== 'rest') delete pkg.devDependencies?.['@rozenite/tanstack-query-plugin'];
     await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
     for (const name of Object.keys(catalog.groups))
       if (name !== 'core' && !modules.includes(name))
         await rm(path.join(staging, 'src/modules', name), { recursive: true, force: true });
-    if (input.state === 'zustand') {
-      delete pkg.dependencies['@reduxjs/toolkit'];
-      delete pkg.dependencies['react-redux'];
-      await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
-      await rm(path.join(staging, 'src/app/store/store.ts'), { force: true });
-      await writeFile(
-        path.join(staging, 'src/app/store/StateProvider.tsx'),
-        await readFile(path.join(staging, 'config/presets/zustand-StateProvider.tsx'), 'utf8'),
-      );
-    }
+    await applyPresets(staging, state, api, catalog);
     await configureModules(staging, modules, { writeConfig: false });
     await rename(staging, target);
   } catch (error) {
@@ -243,8 +257,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       const { dependencies } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
       console.log(describeModules(catalog, dependencies));
       console.log('\nUse --modules core,ui,media or --modules all.');
-    } else if (values['list-states']) {
-      for (const [name, description] of Object.entries(states))
+    } else if (values['list-states'] || values['list-apis']) {
+      for (const [name, description] of Object.entries(values['list-states'] ? states : apis))
         console.log(`${name}: ${description}`);
     } else {
       if (!values.name || !values.target || !values['android-id'])
@@ -259,6 +273,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         target: values.target,
         modules: values.modules,
         state: values.state,
+        api: values.api,
         dryRun: values['dry-run'],
         skipInstall: values['skip-install'],
         git: values.git,

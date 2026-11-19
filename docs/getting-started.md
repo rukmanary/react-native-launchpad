@@ -57,7 +57,7 @@ Doctor reports `PASS`, `FAIL`, and `SETUP` notes. It checks some tools and confi
 
 ## 4. Create an application
 
-See generator options with `pnpm create-app --help`, the catalog with `pnpm list:modules`, and state managers with `pnpm list:states`. Select `--modules all` for every capability. This example creates Acme App in `acme-app` with Zustand, core, and UI:
+See generator options with `pnpm create-app --help`, the catalog with `pnpm list:modules`, state managers with `pnpm list:states`, and API options with `pnpm list:apis`. Select `--modules all` for every capability. This example creates Acme App in `acme-app` with Zustand, core, and UI:
 
 ```sh
 pnpm create-app --name AcmeApp --slug acme-app \

@@ -1,9 +1,9 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { preferences } from '../../core/storage/preferences';
+import { readLanguage } from '../../core/storage/language';
 import { config } from '../../core/config/config';
 void i18n.use(initReactI18next).init({
-  lng: preferences.getString('language') ?? 'id',
+  lng: readLanguage(),
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
   resources: {

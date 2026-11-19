@@ -49,7 +49,7 @@ In `starter.config.json`, production reads `services`, dev reads `flavorServices
 }
 ```
 
-The runtime selects settings from the installed native app ID. Unconfigured dev and QA builds use `https://example.invalid`, leave Firebase disabled, and use empty DSN, Google, and Maps values. The generator resets service settings for all three flavors when creating a project.
+The runtime selects settings from the installed native app ID. Unconfigured dev and QA builds use `https://example.invalid`, leave Firebase disabled, and use empty DSN, Google, and Maps values. The generator resets service settings for all three flavors when creating a project. GraphQL apps set `graphqlUrl` at the same scope. [State and API presets](state-and-api.md).
 
 After editing iOS settings such as the Google client ID or Maps key, run `pnpm modules` again with the same active module list. It regenerates `ios/Config/*.xcconfig` and the relevant plist and manifest blocks. Rebuild to pick up the new native metadata.
 

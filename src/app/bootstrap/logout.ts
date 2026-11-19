@@ -1,8 +1,5 @@
 import { session } from '../../core/session/session';
-import { queryClient } from '../providers/query';
+import { clearApiCache } from '../providers/ApiProvider';
 export async function logout() {
-  const clearing = session.clear();
-  await queryClient.cancelQueries();
-  queryClient.clear();
-  await clearing;
+  await Promise.all([session.clear(), clearApiCache()]);
 }

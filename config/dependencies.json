@@ -4,9 +4,6 @@
       "@react-navigation/native",
       "@react-navigation/native-stack",
       "@react-navigation/bottom-tabs",
-      "@tanstack/react-query",
-      "@reduxjs/toolkit",
-      "react-redux",
       "react-native-mmkv",
       "react-native-device-info",
       "react-native-nitro-modules",
@@ -30,7 +27,6 @@
       "date-fns",
       "react-native-bootsplash"
     ],
-    "zustand": ["zustand"],
     "graphics": [
       "react-native-skia",
       "victory-native",
@@ -77,6 +73,16 @@
     "chat": ["react-native-gifted-chat"],
     "google": ["@react-native-google-signin/google-signin"],
     "sentry": ["@sentry/react-native"]
+  },
+  "states": {
+    "redux": ["@reduxjs/toolkit", "react-redux"],
+    "zustand": ["zustand"],
+    "mobx": ["mobx"],
+    "recoil": ["recoil"]
+  },
+  "apis": {
+    "rest": ["@tanstack/react-query"],
+    "graphql": ["@apollo/client", "graphql", "rxjs"]
   },
   "dev": [
     "@testing-library/react-native",

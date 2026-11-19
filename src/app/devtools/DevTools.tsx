@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNetworkActivityDevTools } from '@rozenite/network-activity-plugin';
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
-import { useTanStackQueryDevTools } from '@rozenite/tanstack-query-plugin';
 import { useRozeniteStoragePlugin, createMMKVStorageAdapter } from '@rozenite/storage-plugin';
 import { usePerformanceMonitorDevTools } from '@rozenite/performance-monitor-plugin';
 import { useRozeniteControlsPlugin } from '@rozenite/controls-plugin';
-import { queryClient } from '../providers/query';
+import { clearApiCache } from '../providers/ApiProvider';
+import { useApiDevTools } from './useApiDevTools';
 import { navigationRef } from '../navigation/ref';
 import { preferences } from '../../core/storage/preferences';
 const storages = [
@@ -20,7 +20,7 @@ export function DevTools() {
     inspectors: { http: recordNetwork, websocket: recordNetwork, sse: recordNetwork },
   });
   useReactNavigationDevTools({ ref: navigationRef });
-  useTanStackQueryDevTools(queryClient);
+  useApiDevTools();
   useRozeniteStoragePlugin({ storages });
   usePerformanceMonitorDevTools();
   useRozeniteControlsPlugin({
@@ -40,8 +40,10 @@ export function DevTools() {
           {
             id: 'cache',
             type: 'button',
-            title: 'Clear query cache',
-            onPress: () => queryClient.clear(),
+            title: 'Clear API cache',
+            onPress: () => {
+              void clearApiCache();
+            },
           },
         ],
       },

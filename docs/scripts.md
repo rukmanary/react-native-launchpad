@@ -17,15 +17,15 @@ Keep Metro running while using a development build that fetches JavaScript from 
 
 ## Code checks and formatting
 
-| Command             | Action and side effects                                                                               |
-| ------------------- | ----------------------------------------------------------------------------------------------------- |
-| `pnpm typecheck`    | TypeScript check without JavaScript output (`tsc --noEmit`); does not change source.                  |
-| `pnpm lint`         | ESLint on `src`, `scripts`, and `tests`, including architecture boundaries; does not auto-fix.        |
-| `pnpm format`       | Writes Prettier formatting to source, scripts, tests, config, specified root files, README, and docs. |
-| `pnpm format:check` | Checks Prettier formatting in `src`, `scripts`, `tests`, and `config`; does not write files.          |
-| `pnpm test`         | Runs Jest/RNTL TypeScript tests in `tests`; tooling may create cache.                                 |
-| `pnpm test:scripts` | Runs Node generator tests in `tests/scripts/*.test.mjs`, creating and cleaning temporary fixtures.    |
-| `pnpm verify`       | Runs typecheck → lint → test → test:scripts, stopping at the first failure.                           |
+| Command             | Action and side effects                                                                                    |
+| ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `pnpm typecheck`    | TypeScript check without JavaScript output (`tsc --noEmit`); does not change source.                       |
+| `pnpm lint`         | ESLint on `src`, `scripts`, and `tests`, including architecture boundaries; does not auto-fix.             |
+| `pnpm format`       | Writes Prettier formatting to source, scripts, tests, config, docs, CI, Maestro, and root project configs. |
+| `pnpm format:check` | Checks formatting over the same files covered by `pnpm format`.                                            |
+| `pnpm test`         | Runs Jest/RNTL TypeScript tests in `tests`; tooling may create cache.                                      |
+| `pnpm test:scripts` | Runs Node generator tests in `tests/scripts/*.test.mjs`, creating and cleaning temporary fixtures.         |
+| `pnpm verify`       | Runs typecheck → lint → test → test:scripts, stopping at the first failure.                                |
 
 Before committing, run `pnpm verify` and `pnpm format:check`. Verify excludes formatting, native builds, Maestro, APK size, and device tests. Check docs separately with `pnpm exec prettier --check README.md docs`.
 
@@ -33,7 +33,7 @@ Before committing, run `pnpm verify` and `pnpm format:check`. Verify excludes fo
 
 ### pnpm create-app
 
-Use `pnpm create-app --help` or `pnpm create-app -h` for arguments. `pnpm list:modules` lists capabilities (alias `pnpm create-app --list-modules`); `pnpm list:states` lists Redux and Zustand (alias `pnpm create-app --list-states`). `--modules ui,media` adds UI and media to core; `--modules all` selects the catalog. Select state separately. `--dry-run` also reports flavor IDs and schemes.
+Use `pnpm create-app --help` or `pnpm create-app -h` for arguments. `pnpm list:modules` lists capabilities, `pnpm list:states` lists state managers, and `pnpm list:apis` lists API technologies. The matching generator flags are `--list-modules`, `--list-states`, and `--list-apis`. `--modules all` selects the full capability catalog. `--dry-run` reports the selected presets plus flavor IDs and schemes.
 
 Run [create-app.mjs](../scripts/create-app.mjs) from the template to create a new folder, not to change an existing app in place:
 
@@ -42,19 +42,20 @@ pnpm create-app --name ShopApp --android-id com.example.shop \
   --target ../shop-app --modules core,ui,media --git --dry-run
 ```
 
-| Argument                             | Meaning and constraints                                                                                              |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| `--name ShopApp`                     | Required internal/native name; starts with an uppercase letter and contains only letters/numbers.                    |
-| `--target ../shop-app`               | Required new target outside the template; parent must exist.                                                         |
-| `--android-id com.example.shop`      | Required Android application ID, at least three lowercase segments as validated by the script.                       |
-| `--ios-id com.example.shop`          | iOS bundle ID; defaults to Android ID; underscores rejected.                                                         |
-| `--slug shop-app`                    | npm package name and URL scheme; defaults from name, lowercase with hyphens.                                         |
-| `--display-name "Shop App"`          | User-visible name; defaults to `--name`; certain XML characters are rejected.                                        |
-| `--modules core,ui,media`            | Included capabilities; defaults to core; `all` selects groups other than the Zustand preset.                         |
-| `--state redux` or `--state zustand` | Global client-state implementation; defaults to Redux. Zustand prunes Redux dependencies and replaces StateProvider. |
-| `--dry-run`                          | Prints the plan without creating a folder, installing, or initializing Git.                                          |
-| `--skip-install`                     | Defers installation; run `pnpm install --no-frozen-lockfile` in the target afterward.                                |
-| `--git`                              | Initializes empty local Git; does not create a commit, remote, or push.                                              |
+| Argument                                  | Meaning and constraints                                                                           |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `--name ShopApp`                          | Required internal/native name; starts with an uppercase letter and contains only letters/numbers. |
+| `--target ../shop-app`                    | Required new target outside the template; parent must exist.                                      |
+| `--android-id com.example.shop`           | Required Android application ID, at least three lowercase segments as validated by the script.    |
+| `--ios-id com.example.shop`               | iOS bundle ID; defaults to Android ID; underscores rejected.                                      |
+| `--slug shop-app`                         | npm package name and URL scheme; defaults from name, lowercase with hyphens.                      |
+| `--display-name "Shop App"`               | User-visible name; defaults to `--name`; certain XML characters are rejected.                     |
+| `--modules core,ui,media`                 | Included capabilities. Defaults to core. Use `all` for the full catalog.                          |
+| `--state redux, zustand, mobx, or recoil` | Selects the shared state provider. Defaults to Redux Toolkit.                                     |
+| `--api rest or graphql`                   | Selects the API provider and catalog integration. Defaults to REST.                               |
+| `--dry-run`                               | Prints the plan without creating a folder, installing, or initializing Git.                       |
+| `--skip-install`                          | Defers installation; run `pnpm install --no-frozen-lockfile` in the target afterward.             |
+| `--git`                                   | Initializes empty local Git; does not create a commit, remote, or push.                           |
 
 `--target` sets the folder and `--slug` the package name; they may differ. The generator changes identity, prunes modules, resets services and size baseline, and excludes recognized Git history, caches, and credentials. It installs by default. If install fails after folder creation, repair it there. See [getting started](getting-started.md).
 
@@ -68,9 +69,9 @@ All three flavors are available. Android and iOS IDs define production IDs; dev 
 pnpm modules core,ui,media
 ```
 
-List every module to retain. No arguments returns to core; preserve `zustand` in the list for a Zustand preset. The command updates the modules section in `starter.config.json`, `src/generated/bootstrap.ts`, `src/generated/modules.ts`, generated AndroidManifest/Info.plist permission, URL-scheme and service metadata blocks, and `OptionalPackages.kt`. It checks manifest packages but **does not install dependencies, restore pruned source, run Pods, or rebuild**. See [adding modules](workflow.md#selecting-and-adding-modules).
+List every capability to retain. Running without arguments returns to core. The command updates the modules section in `starter.config.json`, `src/generated/bootstrap.ts`, `src/generated/modules.ts`, generated AndroidManifest/Info.plist permission, URL-scheme and service metadata blocks, and `OptionalPackages.kt`. It checks manifest packages but **does not install dependencies, restore pruned source, run Pods, or rebuild**. See [adding modules](workflow.md#selecting-and-adding-modules).
 
-`pnpm modules all` prepares the full catalog in the complete template; Firebase and other services still need configuration. `pnpm modules zustand` does not convert Redux to Zustand; select state in the generator or refactor the application.
+`pnpm modules all` prepares the full catalog in the complete template; Firebase and other services still need configuration. Select state and API presets with the generator. [State and API presets](state-and-api.md).
 
 ## iOS and Ruby tools
 

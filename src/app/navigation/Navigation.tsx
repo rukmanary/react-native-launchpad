@@ -14,7 +14,8 @@ import { FormExampleScreen } from '../../features/authentication';
 import { ProductListScreen } from '../../features/catalog';
 import { config } from '../../core/config/config';
 import { colors } from '../../shared/theme/theme';
-type Routes = { Home: undefined; Form: undefined; Products: undefined };
+import { StarterKitScreen } from './StarterKitScreen';
+type Routes = { Home: undefined; Form: undefined; Products: undefined; StarterKit: undefined };
 const Stack = createNativeStackNavigator<Routes>();
 function Home({ navigation }: NativeStackScreenProps<Routes, 'Home'>) {
   const { t } = useTranslation();
@@ -27,6 +28,11 @@ function Home({ navigation }: NativeStackScreenProps<Routes, 'Home'>) {
         <Text style={styles.description}>{t('description')}</Text>
         <Button label={t('form')} onPress={() => navigation.navigate('Form')} />
         <Button label={t('catalog')} onPress={() => navigation.navigate('Products')} />
+        <Button
+          label="UI starter kit"
+          variant="secondary"
+          onPress={() => navigation.navigate('StarterKit')}
+        />
         <Text>Active modules: {config.modules.join(', ')}</Text>
         <Text>
           Configure the API URL before opening the API example. Native modules are selected with
@@ -62,6 +68,11 @@ export function Navigation() {
           options={{ title: 'Form example' }}
         />
         <Stack.Screen name="Products" component={ProductListScreen} />
+        <Stack.Screen
+          name="StarterKit"
+          component={StarterKitScreen}
+          options={{ title: 'UI starter kit' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -6,7 +6,7 @@ Dependencies flow from `app` to `features` to `core` and `shared`. The app wires
 
 Import a feature through its `index.ts`. The template keeps core tests under `tests` so they still run after the generator prunes optional modules. To colocate product tests with implementation, update `testMatch`.
 
-TanStack Query owns server data and caching. React Hook Form owns form values. Redux or Zustand owns shared client state, and component state owns temporary UI. Keychain holds credentials, while MMKV stores non-sensitive preferences. An offline database becomes the local source of truth for datasets explicitly designed to work offline. Keep each kind of data with its owner.
+TanStack Query or Apollo Client owns server data and caching, depending on the selected API preset. React Hook Form owns form values. The selected state manager owns shared client state, and component state owns temporary UI. Keychain holds credentials, while MMKV stores non-sensitive preferences. An offline database becomes the local source of truth for datasets explicitly designed to work offline. Keep each kind of data with its owner.
 
 The HTTP client limits request origins, forwards timeouts and cancellation, and validates payloads with Zod. Concurrent refreshes share one request, and a session change invalidates stale results. Adapt the example `{accessToken, refreshToken}` contract, paths, and schemas to your backend. Queries may retry transient errors. Mutations skip automatic retries, and token refresh follows its own rules.
 

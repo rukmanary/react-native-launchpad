@@ -3,24 +3,20 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { format, resolveConfig } from 'prettier';
 import flavors from '../config/flavors.json' with { type: 'json' };
+import { selectModules } from './lib/starter-options.mjs';
 export async function configureModules(root, selected, { writeConfig = true } = {}) {
   const configPath = path.join(root, 'starter.config.json');
   const config = JSON.parse(await readFile(configPath, 'utf8'));
   const catalog = JSON.parse(await readFile(path.join(root, 'config/dependencies.json'), 'utf8'));
-  const modules = selected.includes('all')
-    ? Object.keys(catalog.groups).filter((name) => name !== 'zustand')
-    : [...new Set(['core', ...selected])];
-  for (const name of modules) if (!catalog.groups[name]) throw new Error('Unknown module: ' + name);
+  // Older Zustand projects included the preset in the capability list.
+  const requested = selected.filter((name) => name !== 'zustand' || config.state !== 'zustand');
+  const modules = selectModules(catalog, requested.join(',') || 'core');
   const installed = JSON.parse(
     await readFile(path.join(root, 'package.json'), 'utf8'),
   ).dependencies;
   const missing = modules
     .flatMap((name) => catalog.groups[name])
-    .filter(
-      (name) =>
-        !installed[name] &&
-        !(config.state === 'zustand' && ['@reduxjs/toolkit', 'react-redux'].includes(name)),
-    );
+    .filter((name) => !installed[name]);
   if (missing.length) throw new Error('Install selected dependencies first: ' + missing.join(', '));
   if (writeConfig) {
     config.modules = modules;

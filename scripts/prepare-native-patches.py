@@ -74,6 +74,11 @@ for name, gradle_file in packages.items():
     destination.write_text("".join(chunks))
     entries.append("  '" + name + "@" + version + "': " + relative)
 workspace = root / "pnpm-workspace.yaml"
-header = workspace.read_text().split("# starter native compatibility")[0].rstrip()
+original_workspace = workspace.read_text()
+header = original_workspace.split("# starter native compatibility")[0].rstrip()
+for line in original_workspace.splitlines():
+    match = re.fullmatch(r"  '(.+)@[^']+': patches/.+\.patch", line)
+    if match and match.group(1) not in packages:
+        entries.append(line)
 workspace.write_text(header + "\n# starter native compatibility\nallowUnusedPatches: true\npatchedDependencies:\n" + "\n".join(entries) + "\n")
 print("Prepared " + str(len(entries)) + " native patches")

@@ -43,7 +43,7 @@ Use the owning files for version information. The recorded configuration uses Re
 - `src/generated` is written by the module configurator. Change its inputs for durable edits.
 - `tests` holds unit, component, and generator tests. Update `jest.config.js` to discover colocated tests.
 
-TanStack Query owns server cache, React Hook Form owns form state, Redux or Zustand owns shared client state, and component state owns temporary UI. Keychain stores credentials and MMKV stores non-sensitive preferences. Use WatermelonDB for datasets intentionally designed for offline use. Keep server data with one owner.
+TanStack Query or Apollo Client owns server cache, React Hook Form owns form state, and the selected state manager owns shared client state, and component state owns temporary UI. Keychain stores credentials and MMKV stores non-sensitive preferences. Use WatermelonDB for datasets intentionally designed for offline use. Keep server data with one owner.
 
 Use the fetch wrapper in core. Preserve abort and timeout handling, single-flight refresh, schema validation, session generations, and serialized Keychain operations. General mutation retries can duplicate server operations.
 
@@ -76,7 +76,7 @@ Release builds are unsigned by default. `-PtestSigning` uses the debug key for A
 ## Generator and script behavior
 
 - Production uses the base native IDs. Dev and QA append suffixes and have separate service settings. See `docs/flavors.md` for schemes, service registrations, and build commands.
-- `pnpm create-app --help`, `pnpm list:modules`, and `pnpm list:states` show available choices. `--modules all` includes every capability. `--state` still selects the state manager.
+- `pnpm create-app --help`, `pnpm list:modules`, and `pnpm list:states` show capability and state choices. `pnpm list:apis` shows API technologies. `--modules all` includes every capability. `--state` and `--api` select the corresponding providers.
 - `pnpm create-app` creates a new folder outside the template and preserves the source repository. `--git` initializes an empty local repository in the target.
 - After `--skip-install`, run `pnpm install --no-frozen-lockfile` once in the target to reconcile the pruned dependencies. Use frozen installs afterward.
 - `pnpm modules` **replaces the active list**. Include every module that should stay active. Install dependencies and restore any previously pruned source before configuring the list, then run Pods or rebuild as needed.
@@ -87,7 +87,7 @@ Release builds are unsigned by default. `-PtestSigning` uses the debug key for A
 
 ## Patches and native compatibility
 
-Eight version-specific patches fix legacy namespaces, BuildConfig, ProGuard, and Notifications. pnpm applies them through `patchedDependencies` in `pnpm-workspace.yaml`. `allowUnusedPatches` supports generated projects that omit optional libraries.
+Version-specific patches fix legacy namespaces, BuildConfig, ProGuard, Notifications, and Recoil on React 19. pnpm applies them through `patchedDependencies` in `pnpm-workspace.yaml`. `allowUnusedPatches` supports generated projects that omit optional libraries.
 
 `scripts/prepare-native-patches.py` reads installed packages, reconstructs patch inputs in a temporary directory, and writes patches and metadata. Store durable fixes in patches and review patch definitions and lockfile together when upgrading.
 
@@ -108,7 +108,7 @@ Local logs and build artifacts may be available under `artifacts/` and build out
 - `README.md` links to the setup and workflow guides.
 - `docs/getting-started.md` covers tools, generation, installation, and running the app.
 - `docs/scripts.md` covers package scripts, helpers, maintainer tools, inputs, outputs, side effects, and CI.
-- `docs/dependencies-and-patches.md` explains package managers, lockfiles, and the eight patches.
+- `docs/dependencies-and-patches.md` explains package managers, lockfiles, and the dependency patches.
 - `docs/workflow.md` covers everyday development, state and layout ownership, public settings, restoring pruned modules, and troubleshooting.
 - `docs/flavors.md` describes IDs, Xcode schemes, platform commands, and service registrations.
 

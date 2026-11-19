@@ -2,6 +2,13 @@
 
 The results below cover the starter configurations tested on November 19, 2026. Retest your app when changing modules, signing, backends, or build tools.
 
+## State, API, and UI kit checks
+
+- TypeScript, ESLint, Prettier, 20 Jest tests, 3 script tests, and frozen lockfile installation passed in the template.
+- Generated Recoil + GraphQL, MobX + REST, and Zustand + REST projects passed offline installation and verification. These checks confirmed pruning of unused state and API dependencies. The Recoil + GraphQL Android release JavaScript bundle also passed Metro bundling.
+- The Android dev emulator loaded the generated Recoil + GraphQL JavaScript through Metro using the previously built core dev APK. Maestro opened the UI starter kit, changed the Recoil language preference, and displayed a product from a local GraphQL fixture server.
+- Apollo tests verified authorization headers, cache reuse, rejection of an overridden cross-origin endpoint, and rejection of stale-session responses before caching. The REST regression suite covered the existing timeout, cancellation, and refresh behavior after the client refactor.
+
 ## Flavor and generator checks
 
 - TypeScript, ESLint, Prettier, 16 Jest tests, and 3 script tests passed. The new tests covered module selection and service isolation based on the native app ID.

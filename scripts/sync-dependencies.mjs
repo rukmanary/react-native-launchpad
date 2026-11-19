@@ -2,7 +2,10 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 const catalog = JSON.parse(await readFile(new URL('../config/dependencies.json', import.meta.url)));
 const pkgUrl = new URL('../package.json', import.meta.url);
 const pkg = JSON.parse(await readFile(pkgUrl));
-const names = [...new Set(['react', ...Object.values(catalog.groups).flat(), ...catalog.dev])];
+const runtime = [catalog.groups, catalog.states, catalog.apis].flatMap((group) =>
+  Object.values(group ?? {}).flat(),
+);
+const names = [...new Set(['react', ...runtime, ...catalog.dev])];
 const records = {};
 let cursor = 0;
 await Promise.all(
@@ -28,8 +31,7 @@ pkg.name = 'starter-pack';
 pkg.packageManager = 'pnpm@12.15.0';
 pkg.engines = { node: '>=24.3.0', pnpm: '>=12' };
 delete pkg.dependencies['@react-native/new-app-screen'];
-for (const name of Object.values(catalog.groups).flat())
-  pkg.dependencies[name] = records[name].version;
+for (const name of runtime) pkg.dependencies[name] = records[name].version;
 pkg.dependencies.react = records.react.version;
 for (const name of catalog.dev) pkg.devDependencies[name] = records[name].version;
 delete pkg.devDependencies['@react-native/eslint-config'];
