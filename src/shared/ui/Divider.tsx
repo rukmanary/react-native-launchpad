@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../theme/theme';
+import { colors } from '@/shared/theme/theme';
 
 export function Divider() {
   return <View accessible={false} style={styles.line} />;

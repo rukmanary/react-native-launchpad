@@ -3,12 +3,12 @@ import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { StateProvider } from './store/StateProvider';
+import { StateProvider } from '@/app/store/StateProvider';
 import { I18nextProvider } from 'react-i18next';
 
-import { ApiProvider } from './providers/ApiProvider';
-import { i18n } from './providers/i18n';
-import { Navigation } from './navigation/Navigation';
+import { ApiProvider } from '@/app/providers/ApiProvider';
+import { i18n } from '@/app/providers/i18n';
+import { Navigation } from '@/app/navigation/Navigation';
 
 class ErrorBoundary extends Component<PropsWithChildren, { failed: boolean }> {
   state = { failed: false };
@@ -28,7 +28,7 @@ class ErrorBoundary extends Component<PropsWithChildren, { failed: boolean }> {
   }
 }
 
-const DevTools = __DEV__ ? require('./devtools/DevTools').DevTools : () => null;
+const DevTools = __DEV__ ? require('@/app/devtools/DevTools').DevTools : () => null;
 
 export function App() {
   return (

@@ -1,13 +1,9 @@
-import { architecture } from './scripts/lib/eslint-architecture.mjs';
+import { architecture } from '#project/scripts/lib/eslint-architecture.mjs';
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
 import hooks from 'eslint-plugin-react-hooks';
 export default ts.config(
   { ignores: ['node_modules/**', 'android/**', 'ios/**', 'coverage/**', 'modules/**'] },
-  {
-    files: ['src/app/App.tsx', 'src/app/store/store.ts', 'src/generated/bootstrap.ts'],
-    rules: { '@typescript-eslint/no-require-imports': 'off' },
-  },
   js.configs.recommended,
   ...ts.configs.recommended,
   {
@@ -31,19 +27,21 @@ export default ts.config(
     },
   },
   {
-    files: ['src/**/*.{ts,tsx}'],
-    plugins: { 'react-hooks': hooks, architecture },
+    files: [
+      'App.tsx',
+      'index.js',
+      'src/**/*.{ts,tsx}',
+      'scripts/**/*.mjs',
+      'tests/**/*.{mjs,ts,tsx}',
+    ],
     rules: {
-      ...hooks.configs.recommended.rules,
-      'architecture/boundaries': 'error',
-      '@typescript-eslint/no-explicit-any': 'error',
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              group: ['**/features/*/screens/*', '**/features/*/api/*', '**/features/*/model/*'],
-              message: 'Use the feature public API.',
+              regex: '^\\.{1,2}/',
+              message: 'Use @/ for app imports or #project/ in Node tooling.',
             },
           ],
         },
@@ -51,12 +49,13 @@ export default ts.config(
     },
   },
   {
-    files: ['src/{core,shared}/**/*.{ts,tsx}'],
-    rules: { 'no-restricted-imports': ['error', { patterns: ['**/features/**', '**/app/**'] }] },
-  },
-  {
-    files: ['src/features/**/*.{ts,tsx}'],
-    rules: { 'no-restricted-imports': ['error', { patterns: ['**/app/**'] }] },
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { 'react-hooks': hooks, architecture },
+    rules: {
+      ...hooks.configs.recommended.rules,
+      'architecture/boundaries': 'error',
+      '@typescript-eslint/no-explicit-any': 'error',
+    },
   },
   {
     files: ['tests/**/*.{ts,tsx}'],

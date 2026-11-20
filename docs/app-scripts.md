@@ -2,6 +2,8 @@
 
 Run these commands from the app root, where `package.json` lives. Use `pnpm run` to list the scripts available in this checkout.
 
+Local app and Jest imports use `@/`, for example `@/shared/ui`. TypeScript, Metro, and Jest read the aliases defined in [tsconfig.json](../tsconfig.json). Node scripts use `#project/` through the import map in [package.json](../package.json).
+
 ## Install and run
 
 If you generated the app with `--skip-install`, run `pnpm install --no-frozen-lockfile` to install dependencies and create `pnpm-lock.yaml`. On a checkout with a lockfile, run `pnpm install --frozen-lockfile`. pnpm applies any patches registered in `pnpm-workspace.yaml` during installation.
@@ -19,14 +21,14 @@ If you generated the app with `--skip-install`, run `pnpm install --no-frozen-lo
 
 ## Check and format code
 
-| Command             | What it does                                                                     |
-| ------------------- | -------------------------------------------------------------------------------- |
-| `pnpm typecheck`    | Runs TypeScript diagnostics without emitting JavaScript.                         |
-| `pnpm lint`         | Runs ESLint, including import-boundary checks, on `src`, `scripts`, and `tests`. |
-| `pnpm test`         | Runs Jest and React Native Testing Library tests.                                |
-| `pnpm verify`       | Runs typecheck, lint, and tests in order. Stops on the first failure.            |
-| `pnpm format:check` | Checks Prettier formatting, including this guide.                                |
-| `pnpm format`       | Rewrites files in the Prettier scope to match project formatting.                |
+| Command             | What it does                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `pnpm typecheck`    | Runs TypeScript diagnostics without emitting JavaScript.                                         |
+| `pnpm lint`         | Runs ESLint on app entry files, `src`, `scripts`, and `tests`, including import-boundary checks. |
+| `pnpm test`         | Runs Jest and React Native Testing Library tests.                                                |
+| `pnpm verify`       | Runs typecheck, lint, and tests in order. Stops on the first failure.                            |
+| `pnpm format:check` | Checks Prettier formatting, including this guide.                                                |
+| `pnpm format`       | Rewrites files in the Prettier scope to match project formatting.                                |
 
 ## Update native metadata
 

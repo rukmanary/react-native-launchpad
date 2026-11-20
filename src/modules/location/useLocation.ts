@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import type { GeoPosition } from 'react-native-geolocation-service';
-import { useAppActive } from '../../shared/hooks/useAppActive';
-import { watchLocation } from './location';
+import { useAppActive } from '@/shared/hooks/useAppActive';
+import { watchLocation } from '@/modules/location/location';
 
 export function useLocation(enabled: boolean) {
   const active = useAppActive();

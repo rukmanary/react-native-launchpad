@@ -2,8 +2,8 @@ import { readFile, writeFile, mkdir, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { format, resolveConfig } from 'prettier';
-import flavors from '../config/flavors.json' with { type: 'json' };
-import { selectModules } from './lib/module-selection.mjs';
+import flavors from '#project/config/flavors.json' with { type: 'json' };
+import { selectModules } from '#project/scripts/lib/module-selection.mjs';
 
 export async function configureModules(root, selected, { writeConfig = true } = {}) {
   const configPath = path.join(root, 'starter.config.json');
@@ -108,11 +108,11 @@ export async function configureModules(root, selected, { writeConfig = true } = 
   const init = [];
   if (has('firebase'))
     init.push(
-      "if (config.services.firebase) { require('../modules/firebase/background').registerBackgroundMessaging(); }",
+      "if (config.services.firebase) { require('@/modules/firebase/background').registerBackgroundMessaging(); }",
     );
   if (has('sentry'))
     init.push(
-      "if (config.services.sentryDsn) { require('../modules/sentry/telemetry').initializeTelemetry(); }",
+      "if (config.services.sentryDsn) { require('@/modules/sentry/telemetry').initializeTelemetry(); }",
     );
   await mkdir(path.join(root, 'src/generated'), { recursive: true });
 
@@ -123,7 +123,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
   await writeFile(
     path.join(root, 'src/generated/bootstrap.ts'),
     await format(
-      (init.length ? "import {config} from '../core/config/config';\n" : '') +
+      (init.length ? "import {config} from '@/core/config/config';\n" : '') +
         'export function initializeModules(){\n' +
         init.join('\n') +
         '\n}\n',
@@ -133,7 +133,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
 
   const exports = modules
     .filter((name) => name !== 'core' && name !== 'zustand')
-    .map((name) => 'export * as ' + name + " from '../modules/" + name + "';");
+    .map((name) => `export * as ${name} from '@/modules/${name}';`);
   await writeFile(
     path.join(root, 'src/generated/modules.ts'),
     await format(exports.join('\n') + '\n', formatting),

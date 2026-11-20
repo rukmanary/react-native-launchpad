@@ -1,1 +1,1 @@
-export { ApiProvider, clearApiCache } from './presets/rest';
+export { ApiProvider, clearApiCache } from '@/app/providers/presets/rest';

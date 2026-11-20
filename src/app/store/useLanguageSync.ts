@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { preferences } from '../../core/storage/preferences';
-import type { Language } from '../../core/storage/language';
-import { i18n } from '../providers/i18n';
+import { preferences } from '@/core/storage/preferences';
+import type { Language } from '@/core/storage/language';
+import { i18n } from '@/app/providers/i18n';
 
 export function useLanguageSync(language: Language) {
   useEffect(() => {

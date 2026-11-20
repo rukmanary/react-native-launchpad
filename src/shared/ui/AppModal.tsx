@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import { Modal, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { Screen } from './Screen';
+import { Screen } from '@/shared/ui/Screen';
 
 export function AppModal({
   open,

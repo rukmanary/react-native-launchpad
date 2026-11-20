@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../../../core/http/api';
-import { productsSchema, type ProductsState } from './schema';
+import { api } from '@/core/http/api';
+import { productsSchema, type ProductsState } from '@/features/catalog/api/schema';
 
 export function useProducts(): ProductsState {
   const query = useQuery({

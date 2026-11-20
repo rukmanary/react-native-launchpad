@@ -4,7 +4,7 @@ import {
   isErrorWithCode,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { config } from '../../core/config/config';
+import { config } from '@/core/config/config';
 
 export function configureGoogleSignIn() {
   if (!config.services.googleWebClientId) throw new Error('Configure Google web client ID');

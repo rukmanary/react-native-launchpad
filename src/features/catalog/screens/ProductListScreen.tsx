@@ -1,10 +1,10 @@
 import { FlashList } from '@shopify/flash-list';
 import { Text, View } from 'react-native';
-import { Screen } from '../../../shared/ui/Screen';
-import { AsyncState } from '../../../shared/ui/AsyncState';
-import { useProducts } from '../api/products';
+import { Screen } from '@/shared/ui/Screen';
+import { AsyncState } from '@/shared/ui/AsyncState';
+import { useProducts } from '@/features/catalog/api/products';
 
-export function ProductListScreen() {
+export const ProductListScreen = () => {
   const { products, loading, error, retry } = useProducts();
 
   return (
@@ -26,4 +26,4 @@ export function ProductListScreen() {
       )}
     </Screen>
   );
-}
+};

@@ -35,6 +35,10 @@ Use the owning files for version information. The recorded configuration uses Re
 
 ## Code layout and state ownership
 
+Use arrow functions for screen declarations, callbacks, event handlers, local functions inside React components, and functions on objects that do not depend on a receiver. Use a regular method when its `this` must be the receiving object. Declare class constructors with `constructor()`. Use a blank line to separate logical steps inside functions and follow Prettier for indentation.
+
+Use `@/` for local imports in app code and Jest tests, including imports within the same directory. `tsconfig.json` defines the alias mappings shared by Metro and Jest. Use `#project/` in tooling that runs directly in Node.
+
 - `src/app` wires providers, navigation, stores, lifecycle, and app workflows.
 - `src/features` owns product screens, API calls, queries, schemas, and domain components. Export each feature's public API through `index.ts`.
 - `src/core` holds HTTP, session and Keychain, MMKV preferences, permissions, and configuration.

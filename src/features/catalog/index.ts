@@ -1,1 +1,1 @@
-export { ProductListScreen } from './screens/ProductListScreen';
+export { ProductListScreen } from '@/features/catalog/screens/ProductListScreen';

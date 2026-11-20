@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react-native';
-import { config } from '../../core/config/config';
+import { config } from '@/core/config/config';
 
 const secret = /authorization|cookie|password|token|secret|email|phone/i;
 

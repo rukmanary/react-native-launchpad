@@ -9,12 +9,12 @@ import {
   Divider,
   FormScreen,
   TextField,
-} from '../../shared/ui';
-import { spacing } from '../../shared/theme/theme';
-import { config } from '../../core/config/config';
-import { useAppLanguage } from '../store/StateProvider';
+} from '@/shared/ui';
+import { spacing } from '@/shared/theme/theme';
+import { config } from '@/core/config/config';
+import { useAppLanguage } from '@/app/store/StateProvider';
 
-export function StarterKitScreen() {
+export const StarterKitScreen = () => {
   const { language, setLanguage } = useAppLanguage();
   const [name, setName] = useState('');
   const [showPreview, setShowPreview] = useState(false);
@@ -55,7 +55,7 @@ export function StarterKitScreen() {
       </AppModal>
     </FormScreen>
   );
-}
+};
 
 const styles = StyleSheet.create({
   badges: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },

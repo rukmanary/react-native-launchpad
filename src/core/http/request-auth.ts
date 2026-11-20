@@ -1,5 +1,5 @@
-import { ApiError } from './errors';
-import type { RequestScope } from './request-scope';
+import { ApiError } from '@/core/http/errors';
+import type { RequestScope } from '@/core/http/request-scope';
 
 type AuthDependencies = {
   token?: () => Promise<string | null>;
@@ -14,20 +14,20 @@ export function createRequestAuth(deps: AuthDependencies) {
   return function forRequest(scope: RequestScope, requiresAuth: boolean) {
     const version = deps.sessionVersion?.();
 
-    function ensureCurrentSession() {
+    const ensureCurrentSession = () => {
       if (version !== deps.sessionVersion?.()) throw new ApiError('aborted', 'Session changed');
-    }
+    };
 
-    async function token() {
+    const token = async () => {
       if (!requiresAuth) return null;
 
       const value = await scope.wait(() => deps.token?.() ?? null);
 
       ensureCurrentSession();
       return value;
-    }
+    };
 
-    async function refreshAfterUnauthorized(previousToken: string | null) {
+    const refreshAfterUnauthorized = async (previousToken: string | null) => {
       const refresh = deps.refresh;
       if (!requiresAuth || !refresh) return false;
 
@@ -54,7 +54,7 @@ export function createRequestAuth(deps: AuthDependencies) {
       await scope.wait(() => pending);
       ensureCurrentSession();
       return true;
-    }
+    };
 
     return { token, ensureCurrentSession, refreshAfterUnauthorized };
   };

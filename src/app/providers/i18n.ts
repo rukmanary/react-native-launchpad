@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { readLanguage } from '../../core/storage/language';
-import { config } from '../../core/config/config';
+import { readLanguage } from '@/core/storage/language';
+import { config } from '@/core/config/config';
 
 void i18n.use(initReactI18next).init({
   lng: readLanguage(),

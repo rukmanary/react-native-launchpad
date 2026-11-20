@@ -1,4 +1,4 @@
-import { ApiError } from './errors';
+import { ApiError } from '@/core/http/errors';
 
 export function createRequestScope(timeoutMs: number, parentSignal?: AbortSignal) {
   const controller = new AbortController();
@@ -16,12 +16,12 @@ export function createRequestScope(timeoutMs: number, parentSignal?: AbortSignal
 
   const cancellation = () => new ApiError(timedOut ? 'timeout' : 'aborted', 'Request cancelled');
 
-  function throwIfCancelled() {
+  const throwIfCancelled = () => {
     if (signal.aborted) throw cancellation();
-  }
+  };
 
   // Race each asynchronous stage against both the caller's signal and the request deadline.
-  function wait<T>(work: () => T | Promise<T>): Promise<T> {
+  const wait = <T>(work: () => T | Promise<T>): Promise<T> => {
     throwIfCancelled();
     return new Promise((resolve, reject) => {
       const onAbort = () => reject(cancellation());
@@ -34,12 +34,12 @@ export function createRequestScope(timeoutMs: number, parentSignal?: AbortSignal
         .then(resolve, reject)
         .finally(() => signal.removeEventListener('abort', onAbort));
     });
-  }
+  };
 
-  function dispose() {
+  const dispose = () => {
     clearTimeout(timer);
     parentSignal?.removeEventListener('abort', abort);
-  }
+  };
 
   return { signal, wait, throwIfCancelled, dispose };
 }

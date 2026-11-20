@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
-import { productsSchema, type ProductsState } from './schema';
+import { productsSchema, type ProductsState } from '@/features/catalog/api/schema';
 
 const productsQuery = gql`
   query StarterProducts {

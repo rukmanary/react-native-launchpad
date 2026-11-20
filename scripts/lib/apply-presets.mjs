@@ -8,7 +8,7 @@ export async function applyPresets(root, state, api, catalog) {
   if (catalog.states) {
     await write(
       'src/app/store/StateProvider.tsx',
-      `export { StateProvider, useAppLanguage } from './presets/${state}';\n`,
+      `export { StateProvider, useAppLanguage } from '@/app/store/presets/${state}';\n`,
     );
     for (const name of Object.keys(catalog.states)) {
       if (name !== state) await remove(`src/app/store/presets/${name}.tsx`);
@@ -20,11 +20,11 @@ export async function applyPresets(root, state, api, catalog) {
   if (catalog.apis) {
     await write(
       'src/app/providers/ApiProvider.tsx',
-      `export { ApiProvider, clearApiCache } from './presets/${api}';\n`,
+      `export { ApiProvider, clearApiCache } from '@/app/providers/presets/${api}';\n`,
     );
     await write(
       'src/features/catalog/api/products.ts',
-      `export { useProducts } from './${api}';\n`,
+      `export { useProducts } from '@/features/catalog/api/${api}';\n`,
     );
     for (const name of Object.keys(catalog.apis)) {
       if (name === api) continue;

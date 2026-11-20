@@ -1,1 +1,1 @@
-export { Chat } from './Chat';
+export { Chat } from '@/modules/chat/Chat';

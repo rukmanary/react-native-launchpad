@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { Platform } from 'react-native';
 import { getBundleId } from 'react-native-device-info';
-import raw from '../../../starter.config.json';
-import flavors from '../../../config/flavors.json';
+import raw from '@/starter.config.json';
+import flavors from '@/config/flavors.json';
 
 const services = z.object({
   apiBaseUrl: z.url().default('https://example.invalid'),

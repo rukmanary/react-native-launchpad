@@ -1,5 +1,5 @@
-import { ApiError } from './errors';
-import type { RequestScope } from './request-scope';
+import { ApiError } from '@/core/http/errors';
+import type { RequestScope } from '@/core/http/request-scope';
 
 export async function readResponse(response: Response, scope: RequestScope): Promise<unknown> {
   if (!response.ok) throw new ApiError('http', 'Server rejected the request', response.status);

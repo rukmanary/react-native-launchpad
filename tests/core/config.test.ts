@@ -1,5 +1,5 @@
-import raw from '../../starter.config.json';
-import { resolveAppConfig } from '../../src/core/config/config';
+import raw from '@/starter.config.json';
+import { resolveAppConfig } from '@/core/config/config';
 
 const settings = {
   ...raw,

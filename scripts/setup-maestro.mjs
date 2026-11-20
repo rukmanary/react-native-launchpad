@@ -2,7 +2,7 @@ import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import toolchain from '../config/toolchain.json' with { type: 'json' };
+import toolchain from '#project/config/toolchain.json' with { type: 'json' };
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const directory = path.join(root, '.tools');

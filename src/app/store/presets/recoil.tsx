@@ -1,7 +1,7 @@
 import { type PropsWithChildren } from 'react';
 import { atom, RecoilRoot, useRecoilState, useRecoilValue } from 'recoil';
-import { readLanguage, type Language } from '../../../core/storage/language';
-import { useLanguageSync } from '../useLanguageSync';
+import { readLanguage, type Language } from '@/core/storage/language';
+import { useLanguageSync } from '@/app/store/useLanguageSync';
 
 export const languageAtom = atom<Language>({
   key: 'starter/preferences/language',

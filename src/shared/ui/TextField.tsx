@@ -1,7 +1,7 @@
 import { useId, type ComponentProps } from 'react';
 import { TextInput, Text, View, StyleSheet, type TextInputProps } from 'react-native';
 import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
-import { colors } from '../theme/theme';
+import { colors } from '@/shared/theme/theme';
 
 export function TextField({
   label,

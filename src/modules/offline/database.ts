@@ -3,7 +3,7 @@ import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
 import { field } from '@nozbe/watermelondb/decorators';
 import { schemaMigrations } from '@nozbe/watermelondb/Schema/migrations';
 import { synchronize } from '@nozbe/watermelondb/sync';
-import { config } from '../../core/config/config';
+import { config } from '@/core/config/config';
 
 export class Note extends Model {
   static table = 'notes';

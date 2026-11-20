@@ -1,6 +1,6 @@
 import * as Keychain from 'react-native-keychain';
 import { z } from 'zod';
-import { config } from '../config/config';
+import { config } from '@/core/config/config';
 
 const tokensSchema = z.object({ accessToken: z.string().min(1), refreshToken: z.string().min(1) });
 
@@ -17,7 +17,7 @@ const serial = <T>(action: () => Promise<T>): Promise<T> => {
 
 export const session = {
   version: () => generation,
-  async read(): Promise<Tokens | null> {
+  read: async (): Promise<Tokens | null> => {
     return serial(async () => {
       const credentials = await Keychain.getGenericPassword({ service });
       if (!credentials) return null;
@@ -29,7 +29,7 @@ export const session = {
       }
     });
   },
-  async start(tokens: Tokens) {
+  start: async (tokens: Tokens) => {
     const valid = tokensSchema.parse(tokens);
     generation++;
     await serial(() =>
@@ -39,7 +39,7 @@ export const session = {
       }),
     );
   },
-  async replace(tokens: Tokens, expected: number) {
+  replace: async (tokens: Tokens, expected: number) => {
     const valid = tokensSchema.parse(tokens);
     await serial(async () => {
       if (expected !== generation) return;
@@ -49,7 +49,7 @@ export const session = {
       });
     });
   },
-  async clear() {
+  clear: async () => {
     generation++;
     await serial(() => Keychain.resetGenericPassword({ service }));
   },

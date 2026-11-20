@@ -1,5 +1,5 @@
-import { ApiError } from './errors';
-import type { RequestScope } from './request-scope';
+import { ApiError } from '@/core/http/errors';
+import type { RequestScope } from '@/core/http/request-scope';
 
 export function resolveTrustedUrl(base: URL, path: string): string {
   const url = new URL(path, base);

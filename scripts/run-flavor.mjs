@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import config from '../starter.config.json' with { type: 'json' };
-import flavors from '../config/flavors.json' with { type: 'json' };
+import config from '#project/starter.config.json' with { type: 'json' };
+import flavors from '#project/config/flavors.json' with { type: 'json' };
 
 const [platform, action, ...args] = process.argv.slice(2);
 const isRun = action === 'run';

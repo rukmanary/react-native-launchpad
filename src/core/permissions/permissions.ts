@@ -29,6 +29,7 @@ export async function ensurePermission(capability: keyof typeof permissions) {
   let status = await check(permission);
 
   if (status === RESULTS.DENIED) status = await request(permission);
+
   return {
     status,
     granted: status === RESULTS.GRANTED || status === RESULTS.LIMITED,

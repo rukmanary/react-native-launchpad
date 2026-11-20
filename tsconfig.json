@@ -4,11 +4,18 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
+    "paths": {
+      "@/App": ["./App.tsx"],
+      "@/app.json": ["./app.json"],
+      "@/starter.config.json": ["./starter.config.json"],
+      "@/config/*": ["./config/*"],
+      "@/*": ["./src/*"]
+    },
     "types": ["jest"],
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "useDefineForClassFields": false
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"],
+  "include": ["App.tsx", "src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"],
   "exclude": ["node_modules", "ios/Pods", "modules"]
 }

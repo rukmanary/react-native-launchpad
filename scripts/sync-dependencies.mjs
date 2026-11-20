@@ -57,7 +57,7 @@ pkg.scripts = {
   android: 'react-native run-android',
   ios: 'react-native run-ios',
   typecheck: 'tsc --noEmit',
-  lint: 'eslint src scripts tests',
+  lint: 'eslint App.tsx index.js src scripts tests',
   format: 'prettier --write src scripts tests config *.json *.js *.mjs *.yaml README.md docs',
   'format:check': 'prettier --check src scripts tests config',
   test: 'jest --runInBand',

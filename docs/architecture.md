@@ -4,7 +4,9 @@
 
 Dependencies flow from `app` to `features` to `core` and `shared`. The app wires providers, navigation, lifecycle, and workflows. Features own screens, domain components, API calls, queries, schemas, business rules, and tests. Core houses technical adapters, while shared code is independent of the product domain. Optional capabilities live in `src/modules` and stay independent of app and feature code. Module configuration scripts write `src/generated`.
 
-Import a feature through its `index.ts`. The template keeps core tests under `tests` so they still run after the generator prunes optional modules. To colocate product tests with implementation, update `testMatch`.
+Use `@/` for local app and Jest imports. `@/shared/ui` resolves to `src/shared/ui`, and `@/config/flavors.json` resolves to `config/flavors.json`. TypeScript, Metro, and Jest use the mappings from `tsconfig.json`. Node tooling uses `#project/` through the package import map.
+
+Import a feature through its `index.ts`, for example `@/features/catalog`. Inside a feature, use its own aliased paths for implementation files. The template keeps core tests under `tests` so they still run after the generator prunes optional modules. To colocate product tests with implementation, update `testMatch`.
 
 TanStack Query or Apollo Client owns server data and caching, depending on the selected API preset. React Hook Form owns form values. The selected state manager owns shared client state, and component state owns temporary UI. Keychain holds credentials, while MMKV stores non-sensitive preferences. An offline database becomes the local source of truth for datasets explicitly designed to work offline. Keep each kind of data with its owner.
 

@@ -1,2 +1,2 @@
-export * from './services';
-export * from './messaging';
+export * from '@/modules/firebase/services';
+export * from '@/modules/firebase/messaging';

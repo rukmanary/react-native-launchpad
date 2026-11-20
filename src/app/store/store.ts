@@ -1,6 +1,6 @@
 import { configureStore, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import { readLanguage, type Language } from '../../core/storage/language';
+import { readLanguage, type Language } from '@/core/storage/language';
 
 const preferencesSlice = createSlice({
   name: 'preferences',
@@ -8,7 +8,7 @@ const preferencesSlice = createSlice({
     language: readLanguage(),
   },
   reducers: {
-    setLanguage(state, action: PayloadAction<Language>) {
+    setLanguage: (state, action: PayloadAction<Language>) => {
       state.language = action.payload;
     },
   },

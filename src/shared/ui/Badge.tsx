@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
-import { colors, radii, spacing } from '../theme/theme';
-import { AppText } from './AppText';
+import { colors, radii, spacing } from '@/shared/theme/theme';
+import { AppText } from '@/shared/ui/AppText';
 
 export function Badge({ label }: { label: string }) {
   return (

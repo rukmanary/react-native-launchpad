@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import config from '../starter.config.json' with { type: 'json' };
-import flavors from '../config/flavors.json' with { type: 'json' };
+import config from '#project/starter.config.json' with { type: 'json' };
+import flavors from '#project/config/flavors.json' with { type: 'json' };
 
 const args = process.argv.slice(2);
 const flavor = args[0] && !args[0].startsWith('-') ? args.shift() : 'dev';

@@ -1,5 +1,5 @@
 import { render, screen, userEvent } from '@testing-library/react-native';
-import { Button } from '../../src/shared/ui/Button';
+import { Button } from '@/shared/ui/Button';
 
 test('button exposes its label and calls its action', async () => {
   const onPress = jest.fn();

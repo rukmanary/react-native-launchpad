@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createHttpClient } from '../../src/core/http/client';
+import { createHttpClient } from '@/core/http/client';
 
 const response = (status: number, value: unknown) =>
   ({
@@ -137,7 +137,7 @@ test('timeout also cancels waiting for a shared refresh', async () => {
     baseUrl: 'https://api.example.com',
     timeoutMs: 50,
     fetcher: jest.fn().mockResolvedValue(response(401, {})),
-    refresh: () => new Promise(() => { }),
+    refresh: () => new Promise(() => {}),
   });
   const pending = client.request({ path: '/data', schema });
   const rejected = expect(pending).rejects.toMatchObject({ kind: 'timeout' });
@@ -149,10 +149,11 @@ test('timeout also cancels waiting for a shared refresh', async () => {
 
 test('timeout includes reading a response body that never completes', async () => {
   jest.useFakeTimers();
+
   try {
     const slowResponse = response(200, {});
 
-    slowResponse.json = () => new Promise(() => { });
+    slowResponse.json = () => new Promise(() => {});
 
     const client = createHttpClient({
       baseUrl: 'https://api.example.com',

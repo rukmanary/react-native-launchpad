@@ -1,5 +1,5 @@
 import { createMMKV } from 'react-native-mmkv';
-import { config } from '../config/config';
+import { config } from '@/core/config/config';
 
 export const preferences = createMMKV({ id: config.slug + '.preferences.v1' });
 

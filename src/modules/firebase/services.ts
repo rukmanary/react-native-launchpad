@@ -20,7 +20,7 @@ import { getRemoteConfig, fetchAndActivate, getValue } from '@react-native-fireb
 import { getPerformance, trace } from '@react-native-firebase/perf';
 import { getDatabase, ref, onValue, set } from '@react-native-firebase/database';
 import type { ZodType } from 'zod';
-import { config } from '../../core/config/config';
+import { config } from '@/core/config/config';
 
 function app() {
   if (!config.services.firebase)

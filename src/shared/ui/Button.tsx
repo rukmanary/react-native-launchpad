@@ -1,5 +1,5 @@
 import { Pressable, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { colors, radii } from '../theme/theme';
+import { colors, radii } from '@/shared/theme/theme';
 
 export function Button({
   label,

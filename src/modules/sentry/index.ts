@@ -1,1 +1,1 @@
-export * from './telemetry';
+export * from '@/modules/sentry/telemetry';

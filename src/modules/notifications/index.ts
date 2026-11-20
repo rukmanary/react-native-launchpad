@@ -1,7 +1,7 @@
 import notifyKit, { AndroidImportance, type Notification } from 'react-native-notify-kit';
 import { Notifications } from 'react-native-notifications';
 import { Platform } from 'react-native';
-import { config } from '../../core/config/config';
+import { config } from '@/core/config/config';
 
 export async function showNotification(notification: Notification) {
   await notifyKit.requestPermission();

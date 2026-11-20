@@ -3,11 +3,11 @@ import { readFile, writeFile, mkdir, stat, rm, rename } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { copyTree } from './lib/files.mjs';
-import { applyPresets } from './lib/apply-presets.mjs';
-import { selectModules } from './lib/module-selection.mjs';
-import { apis, describeModules, states } from './lib/starter-options.mjs';
-import flavors from '../config/flavors.json' with { type: 'json' };
+import { copyTree } from '#project/scripts/lib/files.mjs';
+import { applyPresets } from '#project/scripts/lib/apply-presets.mjs';
+import { selectModules } from '#project/scripts/lib/module-selection.mjs';
+import { apis, describeModules, states } from '#project/scripts/lib/starter-options.mjs';
+import flavors from '#project/config/flavors.json' with { type: 'json' };
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const options = {
@@ -133,9 +133,9 @@ export async function createApp(input) {
       writeProjectWorkspace,
     },
   ] = await Promise.all([
-    import('./configure-modules.mjs'),
-    import('./lib/prune-native-modules.mjs'),
-    import('./lib/project-files.mjs'),
+    import('#project/scripts/configure-modules.mjs'),
+    import('#project/scripts/lib/prune-native-modules.mjs'),
+    import('#project/scripts/lib/project-files.mjs'),
   ]);
 
   const staging = target + '.creating-' + process.pid;

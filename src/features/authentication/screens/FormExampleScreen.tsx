@@ -3,15 +3,15 @@ import { Text } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FormScreen } from '../../../shared/ui/Screen';
-import { FormField } from '../../../shared/ui/TextField';
-import { Button } from '../../../shared/ui/Button';
+import { FormScreen } from '@/shared/ui/Screen';
+import { FormField } from '@/shared/ui/TextField';
+import { Button } from '@/shared/ui/Button';
 
 const schema = z.object({ email: z.email(), password: z.string().min(8) });
 
 type Form = z.infer<typeof schema>;
 
-export function FormExampleScreen() {
+export const FormExampleScreen = () => {
   const [submitted, setSubmitted] = useState(false);
   const {
     control,
@@ -50,4 +50,4 @@ export function FormExampleScreen() {
       {submitted ? <Text accessibilityLiveRegion="polite">Validation passed</Text> : null}
     </FormScreen>
   );
-}
+};

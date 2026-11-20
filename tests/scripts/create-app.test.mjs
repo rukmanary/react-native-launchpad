@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, readFile, access, rm, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { createApp, validateIdentity } from '../../scripts/create-app.mjs';
-import { selectModules } from '../../scripts/lib/module-selection.mjs';
+import { createApp, validateIdentity } from '#project/scripts/create-app.mjs';
+import { selectModules } from '#project/scripts/lib/module-selection.mjs';
 
 const identity = {
   name: 'ExampleApp',
@@ -215,6 +215,14 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       'app-firebase.md',
       'app-scripts.md',
     ]);
+    assert.match(
+      await readFile(path.join(customTarget, 'src/generated/bootstrap.ts'), 'utf8'),
+      /require\(['"]@\/modules\/firebase\/background['"]\)/,
+    );
+    assert.match(
+      await readFile(path.join(customTarget, 'src/generated/modules.ts'), 'utf8'),
+      /from ['"]@\/modules\/media['"]/,
+    );
     assert.equal(
       await readFile(path.join(customTarget, 'patches/fake-media.patch'), 'utf8'),
       'example patch',

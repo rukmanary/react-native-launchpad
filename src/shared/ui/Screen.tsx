@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import { View, StyleSheet, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
-import { colors } from '../theme/theme';
+import { colors } from '@/shared/theme/theme';
 
 type Props = PropsWithChildren<{ topInset?: boolean; bottomInset?: boolean; style?: ViewStyle }>;
 

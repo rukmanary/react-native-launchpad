@@ -1,5 +1,5 @@
 import Geolocation, { type GeoPosition, type GeoError } from 'react-native-geolocation-service';
-import { ensurePermission } from '../../core/permissions/permissions';
+import { ensurePermission } from '@/core/permissions/permissions';
 
 export async function currentLocation() {
   if (!(await ensurePermission('location')).granted) throw new Error('Location permission denied');

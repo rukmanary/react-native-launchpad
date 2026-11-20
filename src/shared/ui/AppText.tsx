@@ -1,5 +1,5 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
-import { colors } from '../theme/theme';
+import { colors } from '@/shared/theme/theme';
 
 const typography = StyleSheet.create({
   title: { fontSize: 28, lineHeight: 34, fontWeight: '700' },

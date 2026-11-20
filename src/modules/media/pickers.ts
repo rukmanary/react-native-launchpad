@@ -11,7 +11,7 @@ import {
   keepLocalCopy,
 } from '@react-native-documents/picker';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import { ensurePermission } from '../../core/permissions/permissions';
+import { ensurePermission } from '@/core/permissions/permissions';
 
 function result(response: ImagePickerResponse) {
   if (response.didCancel) return null;

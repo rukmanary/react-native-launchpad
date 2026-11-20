@@ -1,5 +1,5 @@
-import { AppTabs } from './Tabs';
-import { navigationRef } from './ref';
+import { AppTabs } from '@/app/navigation/Tabs';
+import { navigationRef } from '@/app/navigation/ref';
 import { NavigationContainer } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
@@ -8,19 +8,19 @@ import {
 import { ScrollView, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import BootSplash from 'react-native-bootsplash';
-import { Screen } from '../../shared/ui/Screen';
-import { Button } from '../../shared/ui/Button';
-import { FormExampleScreen } from '../../features/authentication';
-import { ProductListScreen } from '../../features/catalog';
-import { config } from '../../core/config/config';
-import { colors } from '../../shared/theme/theme';
-import { StarterKitScreen } from './StarterKitScreen';
+import { Screen } from '@/shared/ui/Screen';
+import { Button } from '@/shared/ui/Button';
+import { FormExampleScreen } from '@/features/authentication';
+import { ProductListScreen } from '@/features/catalog';
+import { config } from '@/core/config/config';
+import { colors } from '@/shared/theme/theme';
+import { StarterKitScreen } from '@/app/navigation/StarterKitScreen';
 
 type Routes = { Home: undefined; Form: undefined; Products: undefined; StarterKit: undefined };
 
 const Stack = createNativeStackNavigator<Routes>();
 
-function Home({ navigation }: NativeStackScreenProps<Routes, 'Home'>) {
+const Home = ({ navigation }: NativeStackScreenProps<Routes, 'Home'>) => {
   const { t } = useTranslation();
 
   return (
@@ -45,7 +45,7 @@ function Home({ navigation }: NativeStackScreenProps<Routes, 'Home'>) {
       </ScrollView>
     </Screen>
   );
-}
+};
 
 export function Navigation() {
   return (

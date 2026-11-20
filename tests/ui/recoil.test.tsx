@@ -1,13 +1,13 @@
 import { render, screen, userEvent } from '@testing-library/react-native';
 import { Text } from 'react-native';
-import { Button } from '../../src/shared/ui/Button';
-import { StateProvider, useAppLanguage } from '../../src/app/store/presets/recoil';
+import { Button } from '@/shared/ui/Button';
+import { StateProvider, useAppLanguage } from '@/app/store/presets/recoil';
 
-jest.mock('../../src/core/storage/preferences', () => ({
+jest.mock('@/core/storage/preferences', () => ({
   preferences: { getString: jest.fn(), set: jest.fn() },
 }));
 
-jest.mock('../../src/app/providers/i18n', () => ({
+jest.mock('@/app/providers/i18n', () => ({
   i18n: { language: 'id', changeLanguage: jest.fn() },
 }));
 

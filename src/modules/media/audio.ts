@@ -12,16 +12,17 @@ export function createAudioPlayer(file: string, basePath = Sound.MAIN_BUNDLE) {
   });
 
   void ready.catch(() => undefined);
+
   return {
     ready,
-    async play() {
+    play: async () => {
       await ready;
       if (disposed) throw new Error('Audio player disposed');
       return new Promise<boolean>((resolve) => sound.play(resolve));
     },
     pause: () => sound?.pause(),
     stop: () => sound?.stop(),
-    dispose() {
+    dispose: () => {
       disposed = true;
       sound?.release();
     },

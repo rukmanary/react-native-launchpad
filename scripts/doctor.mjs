@@ -1,7 +1,7 @@
 import { readFile, access } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 // starter:module firebase
-import flavors from '../config/flavors.json' with { type: 'json' };
+import flavors from '#project/config/flavors.json' with { type: 'json' };
 
 // starter:end-module
 const config = JSON.parse(await readFile(new URL('../starter.config.json', import.meta.url)));

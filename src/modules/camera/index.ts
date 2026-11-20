@@ -1,1 +1,1 @@
-export { CameraView } from './CameraView';
+export { CameraView } from '@/modules/camera/CameraView';

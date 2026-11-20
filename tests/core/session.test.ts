@@ -5,7 +5,7 @@ jest.mock('react-native-keychain', () => ({
   resetGenericPassword: jest.fn().mockResolvedValue(true),
 }));
 import * as Keychain from 'react-native-keychain';
-import { session } from '../../src/core/session/session';
+import { session } from '@/core/session/session';
 
 beforeEach(() => jest.clearAllMocks());
 

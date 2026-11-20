@@ -2,12 +2,15 @@
   "name": "starter-pack",
   "version": "0.0.1",
   "private": true,
+  "imports": {
+    "#project/*": "./*"
+  },
   "scripts": {
     "start": "react-native start",
     "android": "node scripts/run-flavor.mjs android run",
     "ios": "node scripts/run-flavor.mjs ios run",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src scripts tests",
+    "lint": "eslint App.tsx index.js src scripts tests",
     "format": "prettier --write src scripts tests config docs README.md AGENTS.md .github .maestro .prettierrc.json '*.{json,js,mjs,tsx,yaml}'",
     "format:check": "prettier --check src scripts tests config docs README.md AGENTS.md .github .maestro .prettierrc.json '*.{json,js,mjs,tsx,yaml}'",
     "test": "jest --runInBand",

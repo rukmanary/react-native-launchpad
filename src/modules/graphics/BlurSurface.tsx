@@ -1,1 +1,1 @@
-export { BlurSurface, BlurTarget } from './BlurSurface.ios';
+export { BlurSurface, BlurTarget } from '@/modules/graphics/BlurSurface.ios';

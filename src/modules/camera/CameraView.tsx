@@ -9,8 +9,8 @@ import {
   type CameraPhotoOutput,
 } from 'react-native-vision-camera';
 import { useIsFocused } from '@react-navigation/native';
-import { useAppActive } from '../../shared/hooks/useAppActive';
-import { Button } from '../../shared/ui/Button';
+import { useAppActive } from '@/shared/hooks/useAppActive';
+import { Button } from '@/shared/ui/Button';
 
 export function CameraView({
   onCapture,

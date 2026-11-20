@@ -4,7 +4,7 @@ import { useIsFocused } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import { Blurhash } from 'react-native-blurhash';
 import Video from 'react-native-video';
-import { useAppActive } from '../../shared/hooks/useAppActive';
+import { useAppActive } from '@/shared/hooks/useAppActive';
 
 function ImageContent({
   blurhash,

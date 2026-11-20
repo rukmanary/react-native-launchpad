@@ -1,2 +1,2 @@
-export * from './Graphics';
-export * from './BlurSurface';
+export * from '@/modules/graphics/Graphics';
+export * from '@/modules/graphics/BlurSurface';

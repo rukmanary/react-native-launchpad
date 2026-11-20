@@ -1,1 +1,1 @@
-export { useProducts } from './rest';
+export { useProducts } from '@/features/catalog/api/rest';

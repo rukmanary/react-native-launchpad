@@ -1,5 +1,5 @@
 import { ActivityIndicator, Text, View } from 'react-native';
-import { Button } from './Button';
+import { Button } from '@/shared/ui/Button';
 
 export function AsyncState({
   loading,

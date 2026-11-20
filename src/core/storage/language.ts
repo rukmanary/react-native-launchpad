@@ -1,4 +1,4 @@
-import { preferences } from './preferences';
+import { preferences } from '@/core/storage/preferences';
 
 export type Language = 'en' | 'id';
 

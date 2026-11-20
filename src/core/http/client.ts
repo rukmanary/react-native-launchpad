@@ -1,9 +1,9 @@
-import { createRequestAuth } from './request-auth';
-import { createRequestScope } from './request-scope';
-import { parseResponse, readResponse } from './response';
-import { prepareHeaders, resolveTrustedUrl, sendRequest } from './transport';
+import { createRequestAuth } from '@/core/http/request-auth';
+import { createRequestScope } from '@/core/http/request-scope';
+import { parseResponse, readResponse } from '@/core/http/response';
+import { prepareHeaders, resolveTrustedUrl, sendRequest } from '@/core/http/transport';
 
-export { ApiError } from './errors';
+export { ApiError } from '@/core/http/errors';
 
 export type RequestOptions<T> = {
   path: string;
@@ -27,7 +27,7 @@ export function createHttpClient(deps: HttpDependencies) {
   const base = new URL(deps.baseUrl);
   const authorize = createRequestAuth(deps);
 
-  async function request<T>(options: RequestOptions<T>): Promise<T> {
+  const request = async <T>(options: RequestOptions<T>): Promise<T> => {
     const url = resolveTrustedUrl(base, options.path);
     const scope = createRequestScope(deps.timeoutMs ?? 15_000, options.signal);
     const auth = authorize(scope, options.auth !== false);
@@ -78,7 +78,7 @@ export function createHttpClient(deps: HttpDependencies) {
     } finally {
       scope.dispose();
     }
-  }
+  };
 
   return { request };
 }

@@ -22,7 +22,7 @@ Keep Metro running while using a development build that fetches JavaScript from 
 | Command             | Action and side effects                                                                                    |
 | ------------------- | ---------------------------------------------------------------------------------------------------------- |
 | `pnpm typecheck`    | TypeScript check without JavaScript output (`tsc --noEmit`); does not change source.                       |
-| `pnpm lint`         | ESLint on `src`, `scripts`, and `tests`, including architecture boundaries; does not auto-fix.             |
+| `pnpm lint`         | Checks app entry files, `src`, `scripts`, and `tests` with ESLint, including architecture boundaries.      |
 | `pnpm format`       | Writes Prettier formatting to source, scripts, tests, config, docs, CI, Maestro, and root project configs. |
 | `pnpm format:check` | Checks formatting over the same files covered by `pnpm format`.                                            |
 | `pnpm test`         | Runs Jest/RNTL TypeScript tests in `tests`; tooling may create cache.                                      |

@@ -1,1 +1,1 @@
-export { FormExampleScreen } from './screens/FormExampleScreen';
+export { FormExampleScreen } from '@/features/authentication/screens/FormExampleScreen';

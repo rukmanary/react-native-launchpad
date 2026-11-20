@@ -1,1 +1,1 @@
-export { StateProvider, useAppLanguage } from './presets/redux';
+export { StateProvider, useAppLanguage } from '@/app/store/presets/redux';

@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { Text } from 'react-native';
 import { CopilotProvider, CopilotStep, useCopilot, walkthroughable } from 'react-native-copilot';
-import { Button } from '../../shared/ui/Button';
+import { Button } from '@/shared/ui/Button';
 
 const TourText = walkthroughable(Text);
 

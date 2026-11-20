@@ -4,10 +4,10 @@ import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 import { useRozeniteStoragePlugin, createMMKVStorageAdapter } from '@rozenite/storage-plugin';
 import { usePerformanceMonitorDevTools } from '@rozenite/performance-monitor-plugin';
 import { useRozeniteControlsPlugin } from '@rozenite/controls-plugin';
-import { clearApiCache } from '../providers/ApiProvider';
-import { useApiDevTools } from './useApiDevTools';
-import { navigationRef } from '../navigation/ref';
-import { preferences } from '../../core/storage/preferences';
+import { clearApiCache } from '@/app/providers/ApiProvider';
+import { useApiDevTools } from '@/app/devtools/useApiDevTools';
+import { navigationRef } from '@/app/navigation/ref';
+import { preferences } from '@/core/storage/preferences';
 
 const storages = [
   createMMKVStorageAdapter({

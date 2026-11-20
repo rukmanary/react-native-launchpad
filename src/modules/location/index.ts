@@ -1,4 +1,4 @@
-export * from './location';
-export * from './AppMap';
+export * from '@/modules/location/location';
+export * from '@/modules/location/AppMap';
 
-export * from './useLocation';
+export * from '@/modules/location/useLocation';

@@ -1,7 +1,7 @@
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client';
 import { defer, map, mergeMap, timeout } from 'rxjs';
-import { ApiError } from '../http/errors';
-import { resolveTrustedUrl } from '../http/transport';
+import { ApiError } from '@/core/http/errors';
+import { resolveTrustedUrl } from '@/core/http/transport';
 
 type GraphQLSession = {
   version: () => number;

@@ -1,1 +1,1 @@
-export * from './database';
+export * from '@/modules/offline/database';

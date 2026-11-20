@@ -1,6 +1,6 @@
 import { type PropsWithChildren } from 'react';
-import { usePreferences } from '../../../modules/zustand';
-import { useLanguageSync } from '../useLanguageSync';
+import { usePreferences } from '@/modules/zustand';
+import { useLanguageSync } from '@/app/store/useLanguageSync';
 
 export function useAppLanguage() {
   const language = usePreferences((state) => state.language);

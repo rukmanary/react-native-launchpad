@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { createHttpClient } from './client';
-import { session } from '../session/session';
+import { createHttpClient } from '@/core/http/client';
+import { session } from '@/core/session/session';
 
 const tokens = z.object({ accessToken: z.string().min(1), refreshToken: z.string().min(1) });
 
@@ -34,7 +34,7 @@ export function createAuthenticatedApi(
 
   return {
     ...client,
-    async login(credentials: { email: string; password: string }) {
+    login: async (credentials: { email: string; password: string }) => {
       const next = await publicClient.request({
         path: paths.login,
         method: 'POST',

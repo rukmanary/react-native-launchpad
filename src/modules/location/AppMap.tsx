@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native';
 import MapView, { Marker, type MapViewProps } from 'react-native-maps';
-import { useAppActive } from '../../shared/hooks/useAppActive';
+import { useAppActive } from '@/shared/hooks/useAppActive';
 
 export function AppMap({
   markers = [],

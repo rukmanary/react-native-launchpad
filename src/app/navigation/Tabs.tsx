@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
 import { Text, ScrollView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Screen } from '../../shared/ui/Screen';
-import { Icon } from '../../shared/ui/Icon';
-import { config } from '../../core/config/config';
+import { Screen } from '@/shared/ui/Screen';
+import { Icon } from '@/shared/ui/Icon';
+import { config } from '@/core/config/config';
 
 const Tab = createBottomTabNavigator<{ Dashboard: undefined; Modules: undefined }>();
 
-function Modules() {
+const Modules = () => {
   return (
     <Screen bottomInset={false}>
       <ScrollView contentContainerStyle={{ padding: 24, gap: 16 }}>
@@ -22,7 +22,7 @@ function Modules() {
       </ScrollView>
     </Screen>
   );
-}
+};
 
 export function AppTabs({ children }: { children: ReactNode }) {
   return (

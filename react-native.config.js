@@ -1,6 +1,6 @@
-const config = require('./starter.config.json');
-const { groups } = require('./config/dependencies.json');
-const installed = require('./package.json').dependencies;
+const config = require('#project/starter.config.json');
+const { groups } = require('#project/config/dependencies.json');
+const installed = require('#project/package.json').dependencies;
 const active = new Set(['core', ...config.modules]);
 const enabled = new Set(
   Object.entries(groups)
