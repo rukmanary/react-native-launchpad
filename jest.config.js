@@ -7,7 +7,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   moduleNameMapper,
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@testing-library|test-renderer)/)',
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-navigation|@testing-library|test-renderer)/)',
   ],
   clearMocks: true,
 };

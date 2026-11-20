@@ -1,47 +1,72 @@
-import type { ReactNode } from 'react';
-import { Text, ScrollView } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Screen } from '@/shared/ui/Screen';
+import { createBottomTabNavigator, type BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { CompositeScreenProps } from '@react-navigation/native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { MainTabRoutes, RootStackRoutes } from '@/app/navigation/routes';
+import { HomeScreen } from '@/features/home';
+import { ComponentShowcaseScreen } from '@/features/component-showcase';
+import { ApiShowcaseScreen } from '@/features/api-showcase';
+import { ProfileScreen } from '@/features/profile';
 import { Icon } from '@/shared/ui/Icon';
-import { config } from '@/core/config/config';
+import { colors } from '@/shared/theme/theme';
 
-const Tab = createBottomTabNavigator<{ Dashboard: undefined; Modules: undefined }>();
+const Tab = createBottomTabNavigator<MainTabRoutes>();
 
-const Modules = () => {
+type HomeRouteProps = CompositeScreenProps<
+  BottomTabScreenProps<MainTabRoutes, 'Home'>,
+  NativeStackScreenProps<RootStackRoutes, 'Main'>
+>;
+
+const HomeRoute = ({ navigation }: HomeRouteProps) => (
+  <HomeScreen
+    onOpenForm={() => navigation.navigate('Form')}
+    onOpenCatalog={() => navigation.navigate('Products')}
+    onOpenStarterKit={() => navigation.navigate('StarterKit')}
+  />
+);
+
+export const AppTabs = () => {
   return (
-    <Screen bottomInset={false}>
-      <ScrollView contentContainerStyle={{ padding: 24, gap: 16 }}>
-        <Text accessibilityRole="header" style={{ fontSize: 24 }}>
-          Module catalog
-        </Text>
-        <Text>Enabled: {config.modules.join(', ')}</Text>
-        <Text>
-          Enable native capabilities with pnpm modules, then rebuild the app. Each module exposes
-          typed components and functions from its index.ts.
-        </Text>
-      </ScrollView>
-    </Screen>
-  );
-};
-
-export function AppTabs({ children }: { children: ReactNode }) {
-  return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerShown: false,
+        lazy: true,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.muted,
+      }}
+    >
       <Tab.Screen
-        name="Dashboard"
+        name="Home"
+        component={HomeRoute}
         options={{
+          tabBarButtonTestID: 'tab-home',
           tabBarIcon: ({ color, size }) => <Icon name="house" color={color} size={size} />,
         }}
-      >
-        {() => children}
-      </Tab.Screen>
+      />
       <Tab.Screen
-        name="Modules"
-        component={Modules}
+        name="Component"
+        component={ComponentShowcaseScreen}
         options={{
-          tabBarIcon: ({ color, size }) => <Icon name="layers" color={color} size={size} />,
+          tabBarButtonTestID: 'tab-component',
+          tabBarIcon: ({ color, size }) => <Icon name="layout-grid" color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="API"
+        component={ApiShowcaseScreen}
+        options={{
+          tabBarButtonTestID: 'tab-api',
+          tabBarIcon: ({ color, size }) => <Icon name="code-xml" color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarButtonTestID: 'tab-profile',
+          tabBarIcon: ({ color, size }) => <Icon name="user-round" color={color} size={size} />,
         }}
       />
     </Tab.Navigator>
   );
-}
+};

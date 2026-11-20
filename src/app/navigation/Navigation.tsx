@@ -1,51 +1,15 @@
 import { AppTabs } from '@/app/navigation/Tabs';
 import { navigationRef } from '@/app/navigation/ref';
+import type { RootStackRoutes } from '@/app/navigation/routes';
 import { NavigationContainer } from '@react-navigation/native';
-import {
-  createNativeStackNavigator,
-  type NativeStackScreenProps,
-} from '@react-navigation/native-stack';
-import { ScrollView, Text, StyleSheet } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BootSplash from 'react-native-bootsplash';
-import { Screen } from '@/shared/ui/Screen';
-import { Button } from '@/shared/ui/Button';
 import { FormExampleScreen } from '@/features/authentication';
 import { ProductListScreen } from '@/features/catalog';
 import { config } from '@/core/config/config';
-import { colors } from '@/shared/theme/theme';
 import { StarterKitScreen } from '@/app/navigation/StarterKitScreen';
 
-type Routes = { Home: undefined; Form: undefined; Products: undefined; StarterKit: undefined };
-
-const Stack = createNativeStackNavigator<Routes>();
-
-const Home = ({ navigation }: NativeStackScreenProps<Routes, 'Home'>) => {
-  const { t } = useTranslation();
-
-  return (
-    <Screen bottomInset={false}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text accessibilityRole="header" style={styles.title} testID="home-title">
-          {t('welcome')}
-        </Text>
-        <Text style={styles.description}>{t('description')}</Text>
-        <Button label={t('form')} onPress={() => navigation.navigate('Form')} />
-        <Button label={t('catalog')} onPress={() => navigation.navigate('Products')} />
-        <Button
-          label="UI starter kit"
-          variant="secondary"
-          onPress={() => navigation.navigate('StarterKit')}
-        />
-        <Text>Active modules: {config.modules.join(', ')}</Text>
-        <Text>
-          Configure the API URL before opening the API example. Native modules are selected with
-          pnpm modules.
-        </Text>
-      </ScrollView>
-    </Screen>
-  );
-};
+const Stack = createNativeStackNavigator<RootStackRoutes>();
 
 export function Navigation() {
   return (
@@ -53,20 +17,16 @@ export function Navigation() {
       ref={navigationRef}
       linking={{
         prefixes: [config.scheme + '://'],
-        config: { screens: { Home: '', Form: 'form', Products: 'products' } },
+        config: {
+          screens: { Main: { screens: { Home: '' } }, Form: 'form', Products: 'products' },
+        },
       }}
       onReady={() => {
         void BootSplash.hide({ fade: true }).catch(() => undefined);
       }}
     >
       <Stack.Navigator>
-        <Stack.Screen name="Home" options={{ title: config.displayName }}>
-          {(props) => (
-            <AppTabs>
-              <Home {...props} />
-            </AppTabs>
-          )}
-        </Stack.Screen>
+        <Stack.Screen name="Main" component={AppTabs} options={{ title: config.displayName }} />
         <Stack.Screen
           name="Form"
           component={FormExampleScreen}
@@ -82,9 +42,3 @@ export function Navigation() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  content: { padding: 24, gap: 20 },
-  title: { fontSize: 32, fontWeight: '700', color: colors.text },
-  description: { fontSize: 17, color: colors.muted },
-});

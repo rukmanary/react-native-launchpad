@@ -19,6 +19,8 @@ If you generated the app with `--skip-install`, run `pnpm install --no-frozen-lo
 
 `pnpm android` and `pnpm ios` default to `dev`. Add `qa` or `production` to select another flavor, for example `pnpm android qa`. Production uses the base app ID from [starter.config.json](../starter.config.json), while dev and QA append `.dev` and `.qa`. The same config stores public service values for each flavor.
 
+The app opens on Home. The Component, API, and Profile placeholders mount on their first visit. Home links to the starter examples.
+
 ## Check and format code
 
 | Command             | What it does                                                                                     |

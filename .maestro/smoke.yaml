@@ -6,6 +6,22 @@ appId: ${APP_ID}
     visible:
       id: 'home-title'
     timeout: 60000
+- tapOn:
+    id: 'tab-component'
+- assertVisible:
+    id: 'component-title'
+- tapOn:
+    id: 'tab-api'
+- assertVisible:
+    id: 'api-title'
+- tapOn:
+    id: 'tab-profile'
+- assertVisible:
+    id: 'profile-title'
+- tapOn:
+    id: 'tab-home'
+- assertVisible:
+    id: 'home-title'
 - tapOn: 'Contoh formulir'
 - tapOn:
     id: 'email'

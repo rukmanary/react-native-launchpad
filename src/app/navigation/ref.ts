@@ -1,3 +1,4 @@
-import { createNavigationContainerRef, type ParamListBase } from '@react-navigation/native';
+import { createNavigationContainerRef } from '@react-navigation/native';
+import type { RootStackRoutes } from '@/app/navigation/routes';
 
-export const navigationRef = createNavigationContainerRef<ParamListBase>();
+export const navigationRef = createNavigationContainerRef<RootStackRoutes>();

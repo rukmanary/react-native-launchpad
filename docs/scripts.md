@@ -160,7 +160,7 @@ pnpm e2e qa android
 
 [setup-maestro.mjs](../scripts/setup-maestro.mjs) downloads the CLI version in `config/toolchain.json` to `.tools/maestro`; it needs network access, `unzip`, and suitable Java. Normally run once per machine/project or CLI version change.
 
-[e2e.mjs](../scripts/e2e.mjs) uses the local CLI, falling back to global `maestro`, and runs `.maestro/` flows. **The app must already be built and installed and an emulator/device available**. Debug builds also need Metro; release does not. The smoke flow clears target app data, opens home, and fills a form; use a test app/device. It does not cover every native module or backend. Syntax: `pnpm e2e [flavor] [platform] [Maestro options]`; default is dev Android.
+[e2e.mjs](../scripts/e2e.mjs) uses the local CLI, falling back to global `maestro`, and runs `.maestro/` flows. **The app must already be built and installed and an emulator/device available**. Debug builds also need Metro; release does not. The smoke flow clears target app data, visits all four tabs, and fills a form. Use a test app or device. It does not cover every native module or backend. Syntax: `pnpm e2e [flavor] [platform] [Maestro options]`; default is dev Android.
 
 ## Dependency inspection and template maintenance
 
