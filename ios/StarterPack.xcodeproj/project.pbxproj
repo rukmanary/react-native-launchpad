@@ -123,7 +123,9 @@
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
+				/* starter:module firebase */
 				A21600000000000000000201 /* Copy flavor Firebase config */,
+				/* starter:end-module */
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
@@ -183,6 +185,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		/* starter:module firebase */
 		A21600000000000000000201 /* Copy flavor Firebase config */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -195,6 +198,7 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$SRCROOT/configure-firebase.sh\"\n";
 		};
+		/* starter:end-module */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

@@ -77,8 +77,9 @@ Release builds are unsigned by default. `-PtestSigning` uses the debug key for A
 
 - Production uses the base native IDs. Dev and QA append suffixes and have separate service settings. See `docs/flavors.md` for schemes, service registrations, and build commands.
 - `pnpm create-app --help`, `pnpm list:modules`, and `pnpm list:states` show capability and state choices. `pnpm list:apis` shows API technologies. `--modules all` includes every capability. `--state` and `--api` select the corresponding providers.
-- `pnpm create-app` creates a new folder outside the template and preserves the source repository. `--git` initializes an empty local repository in the target.
-- After `--skip-install`, run `pnpm install --no-frozen-lockfile` once in the target to reconcile the pruned dependencies. Use frozen installs afterward.
+- `pnpm create-app` defaults to a sibling folder named after the app slug. `--target` selects another new folder outside the template. `--git` initializes an empty local repository in the target.
+- Generated apps start with a blank README and keep app tooling, `docs/app-scripts.md`, the selected module configuration and patches, and source license notices. The Firebase registration guide is included with that module. Maintainer docs, CI, and generator maintenance tools stay in this repository.
+- After `--skip-install`, run `pnpm install --no-frozen-lockfile` once in the target to create its lockfile. Use frozen installs afterward.
 - `pnpm modules` **replaces the active list**. Include every module that should stay active. Install dependencies and restore any previously pruned source before configuring the list, then run Pods or rebuild as needed.
 - The generator's `--state zustand` selects the Zustand preset. Switch existing apps between state managers through a separate migration.
 - The configurator rewrites `src/generated`, `OptionalPackages.kt`, and `starter:*` manifest and plist blocks. Edit their inputs or owning script for changes that must persist.
@@ -87,7 +88,7 @@ Release builds are unsigned by default. `-PtestSigning` uses the debug key for A
 
 ## Patches and native compatibility
 
-Version-specific patches fix legacy namespaces, BuildConfig, ProGuard, Notifications, and Recoil on React 19. pnpm applies them through `patchedDependencies` in `pnpm-workspace.yaml`. `allowUnusedPatches` supports generated projects that omit optional libraries.
+Version-specific patches fix legacy namespaces, BuildConfig, ProGuard, Notifications, and Recoil on React 19. pnpm applies them through `patchedDependencies` in `pnpm-workspace.yaml`. Generated projects keep patch entries and files for their selected dependencies.
 
 `scripts/prepare-native-patches.py` reads installed packages, reconstructs patch inputs in a temporary directory, and writes patches and metadata. Store durable fixes in patches and review patch definitions and lockfile together when upgrading.
 

@@ -93,12 +93,12 @@ A namespace identifies Android library code/resources. BuildConfig is a generate
 
 ### What template users should do
 
-- Keep `patches/`, `patchedDependencies`, and the lockfile with project source.
+- Keep any generated `patches/`, the matching `patchedDependencies`, and the lockfile with project source.
 - Use `pnpm install` as appropriate; patches apply automatically.
 - Do not remove a patch solely because debug builds pass; test release and runtime too.
 - Do not make a dependency fix only in `node_modules`, where it cannot be reproduced from project source.
 
-`allowUnusedPatches: true` is needed because a generated app may select core alone. Optional library patch metadata remains even when those packages are pruned. Unused patch messages are expected in that case; investigate failures applying patches to installed packages.
+The generator keeps patch files and `patchedDependencies` entries for the selected packages. If none need a patch, the generated app has no `patches/` directory or `patchedDependencies` block.
 
 ### Maintaining or upgrading the template
 

@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { copyTree } from './lib/files.mjs';
 import { applyPresets } from './lib/apply-presets.mjs';
-import { apis, describeModules, selectModules, states } from './lib/starter-options.mjs';
+import { selectModules } from './lib/module-selection.mjs';
+import { apis, describeModules, states } from './lib/starter-options.mjs';
 import flavors from '../config/flavors.json' with { type: 'json' };
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -30,14 +31,14 @@ const options = {
 const help = `Create a React Native app with production, dev, and QA flavors.
 
 Usage:
-  pnpm create-app --name AcmeApp --android-id com.example.acme --target ../acme-app [options]
+  pnpm create-app --name AcmeApp --android-id com.example.acme [options]
 
 Required:
   --name <PascalCase>      React Native name and Xcode target name
   --android-id <id>        Production application ID, e.g. com.example.acme
-  --target <folder>        Path to a new folder outside the template
 
 Options:
+  --target <folder>        Path to a new folder. Defaults to a sibling of the template named after the slug
   --slug <kebab-case>      Package name and base URL scheme. Defaults to a slug derived from --name
   --display-name <text>    Launcher name. Defaults to --name
   --ios-id <id>            Production bundle ID. Defaults to --android-id
@@ -46,7 +47,7 @@ Options:
   --api <rest|graphql>    Select the API technology. Defaults to rest
   --git                   Initialize a Git repository in the new app
   --dry-run               Show the plan without writing files
-  --skip-install          Skip dependency installation in the new app
+  --skip-install          Leave dependency installation and lockfile creation for later
   --list-modules          List available modules
   --list-states           List state manager options
   --list-apis             List API options
@@ -71,7 +72,7 @@ export function validateIdentity(input) {
 export async function createApp(input) {
   validateIdentity(input);
   const source = path.resolve(input.source ?? root);
-  const target = path.resolve(input.target);
+  const target = path.resolve(input.target ?? path.join(path.dirname(source), input.slug));
   if (
     target === source ||
     target.startsWith(source + path.sep) ||
@@ -113,10 +114,55 @@ export async function createApp(input) {
     credentials: 'excluded',
   };
   if (input.dryRun) return plan;
-  const { configureModules } = await import('./configure-modules.mjs');
+  const [
+    { configureModules },
+    { pruneNativeModules },
+    {
+      configureProjectScripts,
+      projectFileFilter,
+      readProjectWorkspace,
+      writeProjectJson,
+      writeProjectNotices,
+      writeProjectWorkspace,
+    },
+  ] = await Promise.all([
+    import('./configure-modules.mjs'),
+    import('./lib/prune-native-modules.mjs'),
+    import('./lib/project-files.mjs'),
+  ]);
   const staging = target + '.creating-' + process.pid;
   await mkdir(staging, { recursive: false });
   try {
+    const pkg = JSON.parse(await readFile(path.join(source, 'package.json'), 'utf8'));
+    const selectedPackages = new Set([
+      ...modules.flatMap((name) => catalog.groups[name]),
+      ...(catalog.states?.[state] ?? []),
+      ...(catalog.apis?.[api] ?? []),
+    ]);
+    for (const dependency of [catalog.groups, catalog.states, catalog.apis].flatMap((group) =>
+      Object.values(group ?? {}).flat(),
+    )) {
+      if (!selectedPackages.has(dependency)) delete pkg.dependencies[dependency];
+    }
+    if (state !== 'redux') delete pkg.devDependencies?.['@rozenite/redux-devtools-plugin'];
+    if (api !== 'rest') delete pkg.devDependencies?.['@rozenite/tanstack-query-plugin'];
+    if (!modules.includes('offline')) {
+      delete pkg.devDependencies?.['@babel/plugin-proposal-decorators'];
+      delete pkg.devDependencies?.['@babel/plugin-transform-class-properties'];
+    }
+    delete pkg.devDependencies?.yaml;
+    pkg.name = input.slug;
+    pkg.version = '0.1.0';
+    delete pkg.repository;
+    configureProjectScripts(pkg, modules);
+    const { workspace, patches } = await readProjectWorkspace(source, pkg.dependencies, modules);
+    const shouldCopy = projectFileFilter({
+      source,
+      modules,
+      state,
+      patches,
+      skipInstall: input.skipInstall,
+    });
     const transformPath = (value) =>
       staging +
       path.sep +
@@ -128,6 +174,7 @@ export async function createApp(input) {
           path.join(...input.androidId.split('.')),
         );
     const transformText = (text, file) => {
+      if (file === path.join(staging, 'pnpm-lock.yaml')) return text;
       const values = new Map([
         ['org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)', input.iosId],
         [
@@ -156,7 +203,10 @@ export async function createApp(input) {
       }
       return result;
     };
-    await copyTree(source, staging, transformPath, transformText);
+    await copyTree(source, staging, { shouldCopy, transformPath, transformText });
+    await writeFile(path.join(staging, 'README.md'), '');
+    await writeProjectWorkspace(staging, workspace);
+    await writeProjectNotices(source, staging, patches);
     const next = {
       ...original,
       name: input.name,
@@ -170,59 +220,33 @@ export async function createApp(input) {
       api,
       flavorServices: { dev: {}, qa: {} },
       services: {
-        ...original.services,
         apiBaseUrl: 'https://example.invalid',
-        graphqlUrl: 'https://example.invalid/graphql',
-        firebase: false,
-        sentryDsn: '',
-        googleWebClientId: '',
-        googleIosClientId: '',
-        mapsAndroidKey: '',
-        mapsIosKey: '',
+        ...(api === 'graphql' ? { graphqlUrl: 'https://example.invalid/graphql' } : {}),
+        ...(modules.includes('firebase') ? { firebase: false } : {}),
+        ...(modules.includes('sentry') ? { sentryDsn: '' } : {}),
+        ...(modules.includes('google') ? { googleWebClientId: '', googleIosClientId: '' } : {}),
+        ...(modules.includes('location') ? { mapsAndroidKey: '', mapsIosKey: '' } : {}),
       },
     };
-    await writeFile(
-      path.join(staging, 'starter.config.json'),
-      JSON.stringify(next, null, 2) + '\n',
-    );
-    await writeFile(
-      path.join(staging, 'app.json'),
-      JSON.stringify({ name: input.name, displayName: input.displayName }, null, 2) + '\n',
-    );
+    await writeProjectJson(staging, 'starter.config.json', next);
+    await writeProjectJson(staging, 'app.json', {
+      name: input.name,
+      displayName: input.displayName,
+    });
     // Artifact budgets belong to the new app's chosen ABI/module profile.
     const budgetPath = path.join(staging, 'config/size-budget.json');
     try {
       const budget = JSON.parse(await readFile(budgetPath, 'utf8'));
       budget.artifacts = {};
-      await writeFile(budgetPath, JSON.stringify(budget, null, 2) + '\n');
+      await writeProjectJson(staging, 'config/size-budget.json', budget);
     } catch (error) {
       if (error.code !== 'ENOENT') throw error;
     }
-    const pkgPath = path.join(staging, 'package.json');
-    const pkg = JSON.parse(await readFile(pkgPath, 'utf8'));
-    pkg.name = input.slug;
-    pkg.version = '0.1.0';
-    delete pkg.repository;
-    const statePackages = catalog.states ?? {};
-    const apiPackages = catalog.apis ?? {};
-    const chosen = new Set([
-      ...modules.flatMap((name) => catalog.groups[name]),
-      ...(statePackages[state] ?? []),
-      ...(apiPackages[api] ?? []),
-    ]);
-    for (const dependency of [
-      ...Object.values(catalog.groups).flat(),
-      ...Object.values(statePackages).flat(),
-      ...Object.values(apiPackages).flat(),
-    ])
-      if (!chosen.has(dependency)) delete pkg.dependencies[dependency];
-    if (state !== 'redux') delete pkg.devDependencies?.['@rozenite/redux-devtools-plugin'];
-    if (api !== 'rest') delete pkg.devDependencies?.['@rozenite/tanstack-query-plugin'];
-    await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
-    for (const name of Object.keys(catalog.groups))
-      if (name !== 'core' && !modules.includes(name))
-        await rm(path.join(staging, 'src/modules', name), { recursive: true, force: true });
+    await writeProjectJson(staging, 'package.json', pkg);
+    const groups = Object.fromEntries(modules.map((name) => [name, catalog.groups[name]]));
+    await writeProjectJson(staging, 'config/dependencies.json', { groups });
     await applyPresets(staging, state, api, catalog);
+    await pruneNativeModules(staging, next.name, modules);
     await configureModules(staging, modules, { writeConfig: false });
     await rename(staging, target);
   } catch (error) {
@@ -261,8 +285,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       for (const [name, description] of Object.entries(values['list-states'] ? states : apis))
         console.log(`${name}: ${description}`);
     } else {
-      if (!values.name || !values.target || !values['android-id'])
-        throw new Error('Required: --name AppName --target ../app --android-id com.company.app');
+      if (!values.name || !values['android-id'])
+        throw new Error('Required: --name AppName --android-id com.company.app');
       const slug = values.slug ?? values.name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
       const plan = await createApp({
         name: values.name,

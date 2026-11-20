@@ -63,7 +63,7 @@ See generator options with `pnpm create-app --help`, the catalog with `pnpm list
 pnpm create-app --name AcmeApp --slug acme-app \
   --display-name "Acme App" \
   --android-id com.example.acme --ios-id com.example.acme \
-  --target ../acme-app --modules core,ui --state zustand --git --dry-run
+  --modules core,ui --state zustand --git --dry-run
 ```
 
 `--dry-run` only prints the plan. If it is correct, run the same command without that flag:
@@ -72,16 +72,24 @@ pnpm create-app --name AcmeApp --slug acme-app \
 pnpm create-app --name AcmeApp --slug acme-app \
   --display-name "Acme App" \
   --android-id com.example.acme --ios-id com.example.acme \
-  --target ../acme-app --modules core,ui --state zustand --git
+  --modules core,ui --state zustand --git
 cd ../acme-app
 ```
 
-- The target is created outside the template repository and must not already exist.
+- By default, the target is created next to the template using the app slug. Pass `--target` to choose a different path outside the template. The target must be new and its parent must exist.
 - App name, package name, bundle ID, URL scheme, and Android package paths are updated. The scheme uses the slug, for example `acme-app://`.
-- Unselected module source and dependencies are pruned; core is always included.
+- The app includes `core` and the modules, state manager, and API technology you select.
 - Git history, installed dependencies, build output, recognized caches, and recognized credential files are not copied. See `scripts/lib/files.mjs` for the rules; this does not scan for every possible sensitive file.
 - Public service configuration is reset, the API becomes a placeholder, and the APK size baseline is reset.
-- pnpm reconciles the lockfile with selected dependencies. `--git` only runs `git init`; it does not create a commit, remote, or GitHub push.
+- pnpm reconciles the lockfile with selected dependencies. `--git` initializes a local repository with empty history.
+
+### What the generated app contains
+
+The generated `README.md` starts empty. Add the product's setup and usage instructions there. The generator keeps the React Native source, Android and iOS projects, tests for the selected app code, and app tools for builds, linting, formatting, branding, Maestro, and fastlane. It includes the [application scripts guide](app-scripts.md) and adds the [Firebase registration guide](app-firebase.md) when Firebase is selected.
+
+The starter `AGENTS.md`, maintainer documentation, `.github/` workflows, generator scripts and tests, dependency audit, and patch maintenance tools stay in the template. The product can choose its own `LICENSE`. `THIRD_PARTY_NOTICES.txt` lists the licenses for copied sources and patches. `licenses/Apache-2.0.txt` accompanies the Gradle Wrapper and the Android text-input drawable from the Android Open Source Project.
+
+The module catalog, service settings, permission and build configuration, package manifest, and pnpm patches reflect the selection. A generated app with no patched packages has no `patches/` directory. If a capability is added later, bring its adapter, dependencies, patches, and relevant native configuration from a compatible version of the template. See [selecting and adding modules](workflow.md#selecting-and-adding-modules).
 
 With `--skip-install`, perform the first install in the generated folder:
 
@@ -89,7 +97,7 @@ With `--skip-install`, perform the first install in the generated folder:
 pnpm install --no-frozen-lockfile
 ```
 
-The pruned dependency list differs from the template lockfile. Save the resulting lockfile after a successful first install; subsequent installs and CI use `pnpm install --frozen-lockfile`. If generator installation fails after creating the folder, enter it and retry installation; there is no need to recreate or delete the project.
+With `--skip-install`, the first install creates the lockfile from the selected dependencies. Save that lockfile and use `pnpm install --frozen-lockfile` for subsequent installs and CI. If generator installation fails after creating the folder, enter the app folder and retry installation.
 
 ## 5. Open the app
 

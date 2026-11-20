@@ -234,7 +234,7 @@ Android text input drawable (rn_edit_text_material.xml):
 Copyright (C) 2014 The Android Open Source Project.
 See licenses/Apache-2.0.txt.
 
-Recoil 0.7.7 (upstream excerpts in patches/)
+recoil@0.7.7 (upstream excerpts in patches/)
 -------------------------------------------
 
 MIT License

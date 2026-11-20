@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { format, resolveConfig } from 'prettier';
 import flavors from '../config/flavors.json' with { type: 'json' };
-import { selectModules } from './lib/starter-options.mjs';
+import { selectModules } from './lib/module-selection.mjs';
 export async function configureModules(root, selected, { writeConfig = true } = {}) {
   const configPath = path.join(root, 'starter.config.json');
   const config = JSON.parse(await readFile(configPath, 'utf8'));
@@ -20,7 +20,11 @@ export async function configureModules(root, selected, { writeConfig = true } = 
   if (missing.length) throw new Error('Install selected dependencies first: ' + missing.join(', '));
   if (writeConfig) {
     config.modules = modules;
-    await writeFile(configPath, JSON.stringify(config, null, 2) + '\n');
+    const formatted = await format(JSON.stringify(config), {
+      ...(await resolveConfig(configPath)),
+      filepath: configPath,
+    });
+    await writeFile(configPath, formatted);
   }
   const has = (name) => modules.includes(name);
   const permissions = [
@@ -109,7 +113,8 @@ export async function configureModules(root, selected, { writeConfig = true } = 
   await writeFile(
     path.join(root, 'src/generated/bootstrap.ts'),
     await format(
-      "import {config} from '../core/config/config';\nexport function initializeModules(){\n void config;\n" +
+      (init.length ? "import {config} from '../core/config/config';\n" : '') +
+        'export function initializeModules(){\n' +
         init.join('\n') +
         '\n}\n',
       formatting,
@@ -158,9 +163,9 @@ export async function configureModules(root, selected, { writeConfig = true } = 
       STARTER_FLAVOR: name,
       STARTER_APP_DISPLAY_NAME: config.displayName + flavor.label,
       STARTER_URL_SCHEME: scheme,
-      STARTER_GOOGLE_SCHEME: googleScheme,
-      STARTER_MAPS_KEY: services?.mapsIosKey ?? '',
-      STARTER_FIREBASE_ENABLED: has('firebase') ? 'YES' : 'NO',
+      ...(has('google') ? { STARTER_GOOGLE_SCHEME: googleScheme } : {}),
+      ...(has('location') ? { STARTER_MAPS_KEY: services?.mapsIosKey ?? '' } : {}),
+      ...(has('firebase') ? { STARTER_FIREBASE_ENABLED: 'YES' } : {}),
     };
     const settings = Object.entries(xcconfig).map(([key, value]) => {
       if (/[\r\n]/.test(value)) throw new Error('Invalid iOS build setting: ' + key);

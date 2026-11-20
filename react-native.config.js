@@ -13,10 +13,13 @@ const dependencies = Object.fromEntries(
     .filter((name) => installed[name] && !enabled.has(name))
     .map((name) => [name, { platforms: { android: null, ios: null } }]),
 );
+// starter:module graphics
 if (installed['@react-native-community/blur'])
   dependencies['@react-native-community/blur'] = {
     platforms: { android: null, ...(active.has('graphics') ? {} : { ios: null }) },
   };
+// starter:end-module
+// starter:module notifications
 // PackageList(Application) has no legacy reactNativeHost on modern RN.
 if (installed['react-native-notifications'] && active.has('notifications'))
   dependencies['react-native-notifications'] = {
@@ -26,4 +29,5 @@ if (installed['react-native-notifications'] && active.has('notifications'))
       },
     },
   };
+// starter:end-module
 module.exports = { dependencies };

@@ -20,7 +20,7 @@ See the [UI starter kit](docs/ui-kit.md), [state and API presets](docs/state-and
 
 ## Template and generated app
 
-The template repository keeps the full dependency and adapter catalog. Only `core` is active by default for native autolinking. The generator creates a separate app folder with the source and dependencies for your selected modules. Use that folder for product development and keep the template for future apps.
+The template repository keeps the full dependency and adapter catalog. Only `core` is active by default for native autolinking. The generator creates a separate app with a blank `README.md`, app tooling, and the source, dependencies, native configuration, and patches for your selections. See the [generated project contents](docs/getting-started.md#what-the-generated-app-contains).
 
 ## Create an app
 
@@ -43,12 +43,12 @@ pnpm install --frozen-lockfile
 pnpm create-app --name AcmeApp --slug acme-app \
   --display-name "Acme App" \
   --android-id com.example.acme --ios-id com.example.acme \
-  --target ../acme-app --modules core,ui --state zustand --git
+  --modules core,ui --state zustand --git
 
 cd ../acme-app
 ```
 
-This creates Acme App in a new folder, installs dependencies, sets the native identity, and initializes Git with an empty history. Choose a target path that does not exist. Add `--dry-run` to preview the plan or `--skip-install` to defer dependency installation. Redux Toolkit and REST are the defaults. Use `--state mobx --api graphql` to choose MobX and Apollo.
+This creates `../acme-app` next to the starter, installs dependencies, sets the native identity, and initializes Git with an empty history. By default, the folder takes its name from the app slug. Use `--target` to choose another new folder outside the starter, `--dry-run` to preview the plan, or `--skip-install` to defer dependency installation. Redux Toolkit and REST are the defaults. Use `--state mobx --api graphql` to choose MobX and Apollo.
 
 ## Run Android
 

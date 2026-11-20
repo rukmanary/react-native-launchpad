@@ -15,7 +15,8 @@ jobs:
       - run: pnpm format:check
       - run: pnpm create-app --name SmokeApp --android-id com.example.smoke --target ../smoke-app --skip-install
       - run: pnpm --dir ../smoke-app install --no-frozen-lockfile
-      - run: pnpm --dir ../smoke-app typecheck
+      - run: pnpm --dir ../smoke-app verify
+      - run: pnpm --dir ../smoke-app format:check
   android:
     runs-on: ubuntu-latest
     steps:

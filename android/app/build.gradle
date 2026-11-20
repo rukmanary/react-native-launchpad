@@ -4,13 +4,16 @@ apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 def starter = new JsonSlurper().parse(file("../../starter.config.json"))
 def flavors = new JsonSlurper().parse(file("../../config/flavors.json"))
-def enabled = starter.modules
-if (enabled.contains("firebase")) {
+// starter:module firebase
+if (starter.modules.contains("firebase")) {
     apply plugin: "com.google.gms.google-services"
     apply plugin: "com.google.firebase.crashlytics"
     apply plugin: "com.google.firebase.firebase-perf"
 }
-if (enabled.contains("sentry") && project.hasProperty("uploadSentry")) apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
+// starter:end-module
+// starter:module sentry
+if (starter.modules.contains("sentry") && project.hasProperty("uploadSentry")) apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
+// starter:end-module
 react {
     debuggableVariants = flavors.keySet().collect { "${it}Debug".toString() }
     autolinkLibrariesWithApp()
@@ -34,20 +37,22 @@ android {
             create(name) {
                 dimension "deployment"
                 if (flavor.suffix) applicationIdSuffix flavor.suffix
-                def services = name == "production" ? starter.services : (starter.flavorServices?.get(name) ?: [:])
                 resValue "string", "app_name", starter.displayName + flavor.label
-                manifestPlaceholders = [
-                    starterScheme: starter.scheme + flavor.suffix,
-                    mapsApiKey: services.mapsAndroidKey ?: ""
-                ]
+                manifestPlaceholders = [starterScheme: starter.scheme + flavor.suffix]
+                // starter:module location
+                def services = name == "production" ? starter.services : (starter.flavorServices?.get(name) ?: [:])
+                manifestPlaceholders.mapsApiKey = services.mapsAndroidKey ?: ""
+                // starter:end-module
             }
         }
     }
+    // starter:module graphics
     sourceSets {
         main {
-            if(enabled.contains("graphics")) java.srcDirs += ["src/graphics/java"]
+            if (starter.modules.contains("graphics")) java.srcDirs += ["src/graphics/java"]
         }
     }
+    // starter:end-module
     buildTypes {
         debug { manifestPlaceholders.usesCleartextTraffic = "true" }
         release {
@@ -70,6 +75,8 @@ android {
 dependencies {
     implementation("com.facebook.react:react-android")
     implementation("com.facebook.react:hermes-android")
-    if(enabled.contains("graphics")) implementation("com.github.Dimezis:BlurView:version-4.0.0")
+    // starter:module graphics
+    if (starter.modules.contains("graphics")) implementation("com.github.Dimezis:BlurView:version-4.0.0")
+    // starter:end-module
 }
 

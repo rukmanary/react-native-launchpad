@@ -22,7 +22,7 @@ Use the generator to change the name and IDs. Editing `starter.config.json` alon
 
 ## Native dependency selection
 
-Autolinking disables native packages belonging to unselected modules. The template repository retains the catalog source; the generator prunes the dependencies and source of unselected modules. React Native Nitro Image follows camera; Community Blur Android is disabled because the Android implementation uses Dimezis.
+Autolinking disables native packages belonging to unselected modules in the template. Generated apps keep the native setup for their selected modules. React Native Nitro Image follows camera. Graphics uses Dimezis BlurView on Android and Community Blur on iOS. The Android JitPack repository is included for graphics and media, which uses [uCrop](https://github.com/Yalantis/uCrop).
 
 `pnpm modules` writes the starter's permission and URL scheme blocks. Application-owned permission declarations must remain outside generated blocks.
 

@@ -8,23 +8,40 @@ modules = starter['modules']
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 permissions = []
+# starter:module camera
 permissions += ['Camera', 'Microphone'] if modules.include?('camera')
+# starter:end-module
+# starter:module media
 permissions += ['PhotoLibrary', 'PhotoLibraryAddOnly', 'Camera'] if modules.include?('media')
+# starter:end-module
+# starter:module location
 permissions += ['LocationWhenInUse'] if modules.include?('location')
+# starter:end-module
+# starter:module biometrics
 permissions += ['FaceID'] if modules.include?('biometrics')
-permissions += ['Notifications'] if modules.include?('notifications') || modules.include?('firebase')
+# starter:end-module
+# starter:module notifications
+permissions += ['Notifications'] if modules.include?('notifications')
+# starter:end-module
+# starter:module firebase
+permissions += ['Notifications'] if modules.include?('firebase')
+# starter:end-module
 setup_permissions(permissions.uniq)
 project 'StarterPack.xcodeproj', {
   'Debug' => :debug, 'Release' => :release,
   'DebugDev' => :debug, 'ReleaseDev' => :release,
   'DebugQA' => :debug, 'ReleaseQA' => :release,
 }
+# starter:module firebase
 if modules.include?('firebase')
   use_frameworks! :linkage => :static
   $RNFirebaseAsStaticFramework = true
 end
+# starter:end-module
 target 'StarterPack' do
+  # starter:module location
   pod 'react-native-maps/Google', :path => '../node_modules/react-native-maps' if modules.include?('location')
+  # starter:end-module
   config = use_native_modules!
   use_react_native!(:path => config[:reactNativePath], :app_path => "#{Pod::Config.instance.installation_root}/..")
   post_install do |installer|

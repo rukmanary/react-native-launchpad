@@ -3,12 +3,16 @@ import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import UIKit
 import RNBootSplash
+// starter:module google
 #if canImport(GoogleSignIn)
 import GoogleSignIn
 #endif
+// starter:end-module
+// starter:module location
 #if canImport(GoogleMaps)
 import GoogleMaps
 #endif
+// starter:end-module
 
 class SceneDelegate: RCTDefaultReactNativeFactoryDelegate, UIWindowSceneDelegate {
   var window: UIWindow?
@@ -23,9 +27,11 @@ class SceneDelegate: RCTDefaultReactNativeFactoryDelegate, UIWindowSceneDelegate
       return
     }
 
+    // starter:module location
     #if canImport(GoogleMaps)
     if let key = Bundle.main.object(forInfoDictionaryKey: "GoogleMapsApiKey") as? String, !key.isEmpty { GMSServices.provideAPIKey(key) }
     #endif
+    // starter:end-module
     dependencyProvider = RCTAppDependencyProvider()
     reactNativeFactory = RCTReactNativeFactory(delegate: self)
     window = UIWindow(windowScene: windowScene)
@@ -49,12 +55,16 @@ class SceneDelegate: RCTDefaultReactNativeFactoryDelegate, UIWindowSceneDelegate
   }
 
   func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+    // starter:module google
     #if canImport(GoogleSignIn)
     let unhandled = Set(URLContexts.filter { !GIDSignIn.sharedInstance.handle($0.url) })
-    RCTLinkingManager.scene(scene, openURLContexts: unhandled)
-    #else
-    RCTLinkingManager.scene(scene, openURLContexts: URLContexts)
+    if unhandled != URLContexts {
+      RCTLinkingManager.scene(scene, openURLContexts: unhandled)
+      return
+    }
     #endif
+    // starter:end-module
+    RCTLinkingManager.scene(scene, openURLContexts: URLContexts)
   }
 
   func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {

@@ -1,6 +1,8 @@
 import { readFile, access } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
+// starter:module firebase
 import flavors from '../config/flavors.json' with { type: 'json' };
+// starter:end-module
 const config = JSON.parse(await readFile(new URL('../starter.config.json', import.meta.url)));
 let failures = 0;
 const check = (label, ok, detail = '') => {
@@ -37,6 +39,7 @@ for (const file of ['node_modules', 'android/gradle/wrapper/gradle-wrapper.jar']
 }
 if (config.services.apiBaseUrl.includes('.invalid'))
   console.log('SETUP API base URL is a placeholder; the form demo still works.');
+// starter:module firebase
 if (config.modules.includes('firebase'))
   for (const file of Object.keys(flavors).flatMap((name) => [
     'android/app/src/' + name + '/google-services.json',
@@ -51,10 +54,15 @@ if (config.modules.includes('firebase'))
       check(file, false, 'Add app-specific Firebase registration file');
     }
   }
+// starter:end-module
+// starter:module google
 if (config.modules.includes('google'))
   check('Google client ID', Boolean(config.services.googleWebClientId));
+// starter:end-module
+// starter:module location
 if (config.modules.includes('location'))
   check('Maps keys', Boolean(config.services.mapsAndroidKey && config.services.mapsIosKey));
+// starter:end-module
 console.log(
   'Device-only checks: camera, biometrics, push, keyboard, TalkBack/VoiceOver and 16 KB native libraries.',
 );

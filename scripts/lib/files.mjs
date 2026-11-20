@@ -62,7 +62,7 @@ export const textExtensions = new Set([
   '.bat',
   '.txt',
 ]);
-export async function copyTree(source, target, transformPath, transformText) {
+export async function copyTree(source, target, { shouldCopy, transformPath, transformText }) {
   for (const entry of await readdir(source, { withFileTypes: true })) {
     if (isExcluded(entry.name)) continue;
     if (
@@ -71,12 +71,13 @@ export async function copyTree(source, target, transformPath, transformText) {
     )
       continue;
     const from = path.join(source, entry.name);
+    if (!shouldCopy(from)) continue;
     const to = transformPath(path.join(target, entry.name));
     if ((await lstat(from)).isSymbolicLink())
       throw new Error('Refusing symbolic link: ' + entry.name);
     if (entry.isDirectory()) {
       await mkdir(to, { recursive: true });
-      await copyTree(from, to, transformPath, transformText);
+      await copyTree(from, to, { shouldCopy, transformPath, transformText });
     } else {
       await mkdir(path.dirname(to), { recursive: true });
       if (

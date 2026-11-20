@@ -4,6 +4,8 @@
 
 Run commands from the application/template root containing `package.json`. Choose the commands relevant to your task; do not run the entire page sequentially. `pnpm <script>` generally abbreviates `pnpm run <script>`, but use `pnpm run doctor` because pnpm has its own `doctor` command.
 
+Generated projects include the [application scripts guide](app-scripts.md) for the commands they can run locally. Projects with the Firebase module also include the [Firebase registration guide](app-firebase.md).
+
 ## Daily development
 
 | Command           | Purpose and effect                                                                               |
@@ -24,8 +26,8 @@ Keep Metro running while using a development build that fetches JavaScript from 
 | `pnpm format`       | Writes Prettier formatting to source, scripts, tests, config, docs, CI, Maestro, and root project configs. |
 | `pnpm format:check` | Checks formatting over the same files covered by `pnpm format`.                                            |
 | `pnpm test`         | Runs Jest/RNTL TypeScript tests in `tests`; tooling may create cache.                                      |
-| `pnpm test:scripts` | Runs Node generator tests in `tests/scripts/*.test.mjs`, creating and cleaning temporary fixtures.         |
-| `pnpm verify`       | Runs typecheck → lint → test → test:scripts, stopping at the first failure.                                |
+| `pnpm test:scripts` | In the template, runs Node generator tests in `tests/scripts/*.test.mjs` using temporary fixtures.         |
+| `pnpm verify`       | Runs typecheck → lint → test, then `test:scripts` in the template. Stops at the first failure.             |
 
 Before committing, run `pnpm verify` and `pnpm format:check`. Verify excludes formatting, native builds, Maestro, APK size, and device tests. Check docs separately with `pnpm exec prettier --check README.md docs`.
 
@@ -39,13 +41,13 @@ Run [create-app.mjs](../scripts/create-app.mjs) from the template to create a ne
 
 ```sh
 pnpm create-app --name ShopApp --android-id com.example.shop \
-  --target ../shop-app --modules core,ui,media --git --dry-run
+  --modules core,ui,media --git --dry-run
 ```
 
 | Argument                                  | Meaning and constraints                                                                           |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `--name ShopApp`                          | Required internal/native name; starts with an uppercase letter and contains only letters/numbers. |
-| `--target ../shop-app`                    | Required new target outside the template; parent must exist.                                      |
+| `--target ../shop-app`                    | Optional path to a new folder outside the template. Defaults to a sibling named after the slug.   |
 | `--android-id com.example.shop`           | Required Android application ID, at least three lowercase segments as validated by the script.    |
 | `--ios-id com.example.shop`               | iOS bundle ID; defaults to Android ID; underscores rejected.                                      |
 | `--slug shop-app`                         | npm package name and URL scheme; defaults from name, lowercase with hyphens.                      |
@@ -54,10 +56,12 @@ pnpm create-app --name ShopApp --android-id com.example.shop \
 | `--state redux, zustand, mobx, or recoil` | Selects the shared state provider. Defaults to Redux Toolkit.                                     |
 | `--api rest or graphql`                   | Selects the API provider and catalog integration. Defaults to REST.                               |
 | `--dry-run`                               | Prints the plan without creating a folder, installing, or initializing Git.                       |
-| `--skip-install`                          | Defers installation; run `pnpm install --no-frozen-lockfile` in the target afterward.             |
+| `--skip-install`                          | Defers installation and lockfile creation. Run `pnpm install --no-frozen-lockfile` afterward.     |
 | `--git`                                   | Initializes empty local Git; does not create a commit, remote, or push.                           |
 
-`--target` sets the folder and `--slug` the package name; they may differ. The generator changes identity, prunes modules, resets services and size baseline, and excludes recognized Git history, caches, and credentials. It installs by default. If install fails after folder creation, repair it there. See [getting started](getting-started.md).
+The target parent must already exist. Explicit relative targets are resolved from the working directory. `--slug` sets the package name and the default folder name. The generator changes identity, prunes modules, resets services and size baseline, and excludes recognized Git history, caches, and credentials. It installs by default. If install fails after folder creation, repair it there. See [getting started](getting-started.md).
+
+Generator commands, dependency audit tools, and the template CI workflows stay in the starter. See [generated project contents](getting-started.md#what-the-generated-app-contains) for the files and module configuration included in an app.
 
 All three flavors are available. Android and iOS IDs define production IDs; dev and QA add suffixes. See [flavors](flavors.md).
 

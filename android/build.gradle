@@ -15,12 +15,16 @@ buildscript {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        // starter:module firebase
         classpath("com.google.gms:google-services:4.4.4")
         classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.6")
         classpath("com.google.firebase:perf-plugin:2.0.1")
+        // starter:end-module
     }
 }
 
 apply plugin: "com.facebook.react.rootproject"
 
+// starter:module graphics,media
 allprojects { repositories { maven { url "https://jitpack.io" } } }
+// starter:end-module

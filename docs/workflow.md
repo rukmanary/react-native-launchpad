@@ -37,7 +37,7 @@ See [native setup](native-setup.md) for service registration, permissions, and s
 
 ## Selecting and adding modules
 
-When creating an app, select capabilities with `--modules core,ui,media` and choose state and API separately with `--state` and `--api`. [State and API presets](state-and-api.md). Core is always included. The template contains the full catalog, but the generator prunes source and dependencies for unselected modules.
+When creating an app, select capabilities with `--modules core,ui,media` and choose state and API separately with `--state` and `--api`. The generated catalog includes core and the selected capabilities. [State and API presets](state-and-api.md).
 
 In an existing project, `pnpm modules` **replaces the entire selection**. For example, to retain UI and enable media:
 
@@ -49,7 +49,7 @@ Running without arguments returns to core. State and API presets remain selected
 
 To add a module that was not included in a generated app:
 
-1. Compare the module and its dependencies with a compatible template catalog. Bring the required module source and dependencies into the app, including relevant patches and supporting configuration; review changes for compatibility with the app's versions. Do not blindly overwrite product changes.
+1. Compare the module and its dependencies with a compatible template catalog. Merge the relevant entry into `config/dependencies.json`, add the adapter and dependencies, and bring in any corresponding pnpm patches and native configuration. Review the template's `starter:module` blocks for the capability and merge the relevant code into your app.
 2. Install dependencies with pnpm, then run `pnpm modules` with the **entire** list to retain. For iOS, run `bundle install` if Ruby tools are not ready, then `pnpm ios:pods` after native dependencies change.
 3. Complete the module's service configuration, permissions, and native setup. Rebuild and test on targeted platforms/devices. See [module usage](modules.md) for APIs and requirements.
 
@@ -59,15 +59,15 @@ To add a module that was not included in a generated app:
 
 ## Common problems
 
-| Symptom                                                    | What to check                                                                                                                                              |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm doctor` gives unexpected results                     | Use `pnpm run doctor`; pnpm has its own `doctor` command. Read each check, including `SETUP`.                                                              |
-| First install after `--skip-install` fails on the lockfile | Run `pnpm install --no-frozen-lockfile` in the generated folder to reconcile it, then use frozen lockfile for subsequent installs.                         |
-| Module or package import is missing                        | Ensure module source and dependencies are present, then select the entire desired module list. `pnpm modules` does not restore source or install packages. |
-| Native module missing or native changes not visible        | Ensure the module is active and dependencies installed; on iOS run Pods after native changes, then rebuild and reinstall.                                  |
-| `bundle` or `pod` fails                                    | Check Ruby 3.3+, Bundler, and Xcode, then run `bundle install` before `pnpm ios:pods`. See [dependencies and patches](dependencies-and-patches.md).        |
-| Example API fails                                          | The default `apiBaseUrl` is a placeholder; configure the backend and adapt the request/response contract.                                                  |
-| Push, login, maps, or telemetry fails                      | Check active modules, service configuration, and app native registration; test services and permissions on a device. See [native setup](native-setup.md).  |
+| Symptom                                              | What to check                                                                                                                                              |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm doctor` gives unexpected results               | Use `pnpm run doctor`; pnpm has its own `doctor` command. Read each check, including `SETUP`.                                                              |
+| First install after `--skip-install` has no lockfile | Run `pnpm install --no-frozen-lockfile` in the generated folder to create it. Use frozen lockfile for subsequent installs.                                 |
+| Module or package import is missing                  | Ensure module source and dependencies are present, then select the entire desired module list. `pnpm modules` does not restore source or install packages. |
+| Native module missing or native changes not visible  | Ensure the module is active and dependencies installed; on iOS run Pods after native changes, then rebuild and reinstall.                                  |
+| `bundle` or `pod` fails                              | Check Ruby 3.3+, Bundler, and Xcode, then run `bundle install` before `pnpm ios:pods`. See [dependencies and patches](dependencies-and-patches.md).        |
+| Example API fails                                    | The default `apiBaseUrl` is a placeholder; configure the backend and adapt the request/response contract.                                                  |
+| Push, login, maps, or telemetry fails                | Check active modules, service configuration, and app native registration; test services and permissions on a device. See [native setup](native-setup.md).  |
 
 ## Release readiness
 

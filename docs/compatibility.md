@@ -23,7 +23,7 @@ For an upgrade, refresh metadata, check peer ranges, select compatible versions,
 
 ## Android patches
 
-Version-specific patches fix older Android namespaces, Date Picker and Notifications ProGuard settings, and WatermelonDB and Notifications BuildConfig generation under AGP 9. pnpm applies them through `patchedDependencies`. `allowUnusedPatches` lets generated core apps omit optional packages. `prepare-native-patches.py` regenerates patches in a temporary directory and leaves the package store untouched. Validate builds before retiring a patch.
+Version-specific patches fix older Android namespaces, Date Picker and Notifications ProGuard settings, and WatermelonDB and Notifications BuildConfig generation under AGP 9. pnpm applies them through `patchedDependencies`. Generated apps keep only patches for selected packages. `prepare-native-patches.py` regenerates patches in a temporary directory and leaves the package store untouched. Validate builds before retiring a patch.
 
 Enable BuildConfig per library using [Android BuildFeatures](https://developer.android.com/reference/tools/gradle-api/8.4/com/android/build/api/dsl/BuildFeatures).
 

@@ -14,7 +14,6 @@ export async function applyPresets(root, state, api, catalog) {
       if (name !== state) await remove(`src/app/store/presets/${name}.tsx`);
     }
     if (state !== 'redux') await remove('src/app/store/store.ts');
-    if (state !== 'zustand') await remove('src/modules/zustand');
     if (state !== 'recoil') await remove('tests/ui/recoil.test.tsx');
   }
 
