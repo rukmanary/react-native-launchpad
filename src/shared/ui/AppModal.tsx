@@ -3,6 +3,7 @@ import { Modal, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { Screen } from './Screen';
+
 export function AppModal({
   open,
   onClose,

@@ -11,6 +11,7 @@ import {
 } from '@react-native-firebase/messaging';
 import { Platform } from 'react-native';
 import { requestNotifications, RESULTS } from 'react-native-permissions';
+
 export async function registerPush() {
   if (Platform.OS === 'android' && Number(Platform.Version) >= 33) {
     if ((await requestNotifications(['alert', 'sound', 'badge'])).status !== RESULTS.GRANTED)
@@ -49,6 +50,7 @@ export function observePush({
     onTokenRefresh(getMessaging(), onToken),
     onNotificationOpenedApp(getMessaging(), open),
   ];
+
   void getInitialNotification(getMessaging())
     .then((message) => {
       if (message) open(message);

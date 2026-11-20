@@ -1,5 +1,6 @@
 import DatePicker from 'react-native-date-picker';
 import { Calendar, type DateData } from 'react-native-calendars';
+
 export function DateInput({
   open,
   value,
@@ -25,6 +26,7 @@ export function DateInput({
     />
   );
 }
+
 export function CalendarInput({
   value,
   onChange,

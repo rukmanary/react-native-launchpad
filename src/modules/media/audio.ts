@@ -1,4 +1,5 @@
 import Sound from 'react-native-sound';
+
 export function createAudioPlayer(file: string, basePath = Sound.MAIN_BUNDLE) {
   let disposed = false;
   let sound: Sound;
@@ -9,6 +10,7 @@ export function createAudioPlayer(file: string, basePath = Sound.MAIN_BUNDLE) {
       else resolve();
     });
   });
+
   void ready.catch(() => undefined);
   return {
     ready,

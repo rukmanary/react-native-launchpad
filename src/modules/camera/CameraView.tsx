@@ -11,6 +11,7 @@ import {
 import { useIsFocused } from '@react-navigation/native';
 import { useAppActive } from '../../shared/hooks/useAppActive';
 import { Button } from '../../shared/ui/Button';
+
 export function CameraView({
   onCapture,
   onError,
@@ -26,6 +27,7 @@ export function CameraView({
   const insets = useSafeAreaInsets();
   const capturing = useRef(false);
   const [busy, setBusy] = useState(false);
+
   if (!permission.hasPermission)
     return (
       <Button

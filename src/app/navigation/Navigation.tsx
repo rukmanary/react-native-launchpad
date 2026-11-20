@@ -15,10 +15,14 @@ import { ProductListScreen } from '../../features/catalog';
 import { config } from '../../core/config/config';
 import { colors } from '../../shared/theme/theme';
 import { StarterKitScreen } from './StarterKitScreen';
+
 type Routes = { Home: undefined; Form: undefined; Products: undefined; StarterKit: undefined };
+
 const Stack = createNativeStackNavigator<Routes>();
+
 function Home({ navigation }: NativeStackScreenProps<Routes, 'Home'>) {
   const { t } = useTranslation();
+
   return (
     <Screen bottomInset={false}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -42,6 +46,7 @@ function Home({ navigation }: NativeStackScreenProps<Routes, 'Home'>) {
     </Screen>
   );
 }
+
 export function Navigation() {
   return (
     <NavigationContainer
@@ -77,6 +82,7 @@ export function Navigation() {
     </NavigationContainer>
   );
 }
+
 const styles = StyleSheet.create({
   content: { padding: 24, gap: 20 },
   title: { fontSize: 32, fontWeight: '700', color: colors.text },

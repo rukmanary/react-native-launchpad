@@ -7,6 +7,7 @@ import {
   RESULTS,
   type Permission,
 } from 'react-native-permissions';
+
 const permissions = {
   camera: Platform.select({ ios: PERMISSIONS.IOS.CAMERA, default: PERMISSIONS.ANDROID.CAMERA }),
   microphone: Platform.select({
@@ -22,9 +23,11 @@ const permissions = {
     default: PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
   }),
 } satisfies Record<string, Permission>;
+
 export async function ensurePermission(capability: keyof typeof permissions) {
   const permission = permissions[capability];
   let status = await check(permission);
+
   if (status === RESULTS.DENIED) status = await request(permission);
   return {
     status,
@@ -32,6 +35,7 @@ export async function ensurePermission(capability: keyof typeof permissions) {
     openSettings: () => openSettings('application'),
   };
 }
+
 export function observePermission(
   capability: keyof typeof permissions,
   onChange: (granted: boolean) => void,

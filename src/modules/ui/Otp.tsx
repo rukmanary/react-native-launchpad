@@ -1,6 +1,7 @@
 import { Text } from 'react-native';
 import { OtpInput } from 'react-native-otp-entry';
 import { CodeField, Cursor } from 'react-native-confirmation-code-field';
+
 export function OtpEntry({
   onComplete,
   length = 6,
@@ -20,6 +21,7 @@ export function OtpEntry({
     />
   );
 }
+
 export function ControlledOtp({
   value,
   onChange,

@@ -1,4 +1,5 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+
 const catalog = JSON.parse(await readFile(new URL('../config/dependencies.json', import.meta.url)));
 const pkgUrl = new URL('../package.json', import.meta.url);
 const pkg = JSON.parse(await readFile(pkgUrl));
@@ -8,6 +9,7 @@ const runtime = [catalog.groups, catalog.states, catalog.apis].flatMap((group) =
 const names = [...new Set(['react', ...runtime, ...catalog.dev])];
 const records = {};
 let cursor = 0;
+
 await Promise.all(
   Array.from({ length: 6 }, async () => {
     while (cursor < names.length) {
@@ -37,6 +39,7 @@ for (const name of catalog.dev) pkg.devDependencies[name] = records[name].versio
 delete pkg.devDependencies['@react-native/eslint-config'];
 delete pkg.devDependencies['@types/react-test-renderer'];
 delete pkg.devDependencies['react-test-renderer'];
+
 // Renderer must follow the selected RNTL peer contract.
 const renderer = records['@testing-library/react-native'].peerDependencies;
 for (const name of ['test-renderer', 'react-test-renderer']) {
@@ -48,6 +51,7 @@ for (const name of ['test-renderer', 'react-test-renderer']) {
       name === 'react-test-renderer' ? pkg.dependencies.react : metadata.version;
   }
 }
+
 pkg.scripts = {
   start: 'react-native start',
   android: 'react-native run-android',

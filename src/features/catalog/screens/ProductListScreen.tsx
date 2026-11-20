@@ -3,8 +3,10 @@ import { Text, View } from 'react-native';
 import { Screen } from '../../../shared/ui/Screen';
 import { AsyncState } from '../../../shared/ui/AsyncState';
 import { useProducts } from '../api/products';
+
 export function ProductListScreen() {
   const { products, loading, error, retry } = useProducts();
+
   return (
     <Screen>
       {loading || error ? (

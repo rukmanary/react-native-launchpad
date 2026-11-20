@@ -1,5 +1,6 @@
 import { Pressable, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { colors, radii } from '../theme/theme';
+
 export function Button({
   label,
   onPress,
@@ -40,6 +41,7 @@ export function Button({
     </Pressable>
   );
 }
+
 const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary,

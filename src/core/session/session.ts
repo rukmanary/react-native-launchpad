@@ -1,8 +1,11 @@
 import * as Keychain from 'react-native-keychain';
 import { z } from 'zod';
 import { config } from '../config/config';
+
 const tokensSchema = z.object({ accessToken: z.string().min(1), refreshToken: z.string().min(1) });
+
 export type Tokens = z.infer<typeof tokensSchema>;
+
 const service = config.slug + '.session';
 let generation = 0;
 let queue: Promise<unknown> = Promise.resolve();
@@ -11,6 +14,7 @@ const serial = <T>(action: () => Promise<T>): Promise<T> => {
   queue = next.catch(() => undefined);
   return next;
 };
+
 export const session = {
   version: () => generation,
   async read(): Promise<Tokens | null> {

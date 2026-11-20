@@ -3,15 +3,19 @@ import { useIsFocused } from '@react-navigation/native';
 import type { GeoPosition } from 'react-native-geolocation-service';
 import { useAppActive } from '../../shared/hooks/useAppActive';
 import { watchLocation } from './location';
+
 export function useLocation(enabled: boolean) {
   const active = useAppActive();
   const focused = useIsFocused();
   const [position, setPosition] = useState<GeoPosition | null>(null);
   const [error, setError] = useState<unknown>(null);
+
   useEffect(() => {
     if (!enabled || !active || !focused) return;
+
     let cancelled = false;
     let stop: (() => void) | undefined;
+
     void watchLocation(
       (value) => {
         if (!cancelled) setPosition(value);

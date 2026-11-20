@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { Carousel } from 'react-native-reanimated-carousel';
 import PagerView from 'react-native-pager-view';
+
 export function AppCarousel<T>({
   items,
   renderItem,
@@ -12,6 +13,7 @@ export function AppCarousel<T>({
   height?: number;
 }) {
   const { width } = useWindowDimensions();
+
   return (
     <Carousel
       style={{ width, height }}
@@ -21,6 +23,7 @@ export function AppCarousel<T>({
     />
   );
 }
+
 export function AppPager({
   pages,
   onPage,

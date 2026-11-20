@@ -1,12 +1,14 @@
 import type { PropsWithChildren } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
+
 export function BlurTarget({
   children,
   style,
 }: PropsWithChildren<{ targetKey: string; style?: StyleProp<ViewStyle> }>) {
   return <View style={style}>{children}</View>;
 }
+
 export function BlurSurface({
   children,
   style,

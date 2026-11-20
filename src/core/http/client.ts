@@ -35,9 +35,13 @@ export function createHttpClient(deps: HttpDependencies) {
     async function attempt() {
       scope.throwIfCancelled();
       auth.ensureCurrentSession();
+
       const token = await auth.token();
+
       auth.ensureCurrentSession();
+
       const headers = prepareHeaders(options.headers, options.body, token);
+
       deps.beforeRequest?.({ url, headers });
 
       const started = Date.now();
@@ -67,6 +71,7 @@ export function createHttpClient(deps: HttpDependencies) {
       }
 
       const payload = await readResponse(response, scope);
+
       scope.throwIfCancelled();
       auth.ensureCurrentSession();
       return parseResponse(payload, options.schema);

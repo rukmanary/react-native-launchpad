@@ -2,6 +2,7 @@ import { useId, type ComponentProps } from 'react';
 import { TextInput, Text, View, StyleSheet, type TextInputProps } from 'react-native';
 import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
 import { colors } from '../theme/theme';
+
 export function TextField({
   label,
   error,
@@ -12,6 +13,7 @@ export function TextField({
   ref?: ComponentProps<typeof TextInput>['ref'];
 }) {
   const id = useId();
+
   return (
     <View style={styles.group}>
       <Text nativeID={id} style={styles.label}>
@@ -33,6 +35,7 @@ export function TextField({
     </View>
   );
 }
+
 export function FormField<T extends FieldValues>({
   control,
   name,
@@ -57,6 +60,7 @@ export function FormField<T extends FieldValues>({
     />
   );
 }
+
 const styles = StyleSheet.create({
   group: { gap: 8 },
   label: { color: colors.text, fontSize: 16, fontWeight: '600' },

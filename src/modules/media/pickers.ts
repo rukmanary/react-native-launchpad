@@ -12,15 +12,19 @@ import {
 } from '@react-native-documents/picker';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { ensurePermission } from '../../core/permissions/permissions';
+
 function result(response: ImagePickerResponse) {
   if (response.didCancel) return null;
   if (response.errorCode) throw new Error(response.errorMessage ?? response.errorCode);
+
   const asset = response.assets?.[0];
+
   if (!asset?.uri) throw new Error('Picker returned no file');
   if ((asset.fileSize ?? 0) > 10 * 1024 * 1024)
     throw new Error('Image exceeds the 10 MB upload limit');
   return asset;
 }
+
 export async function chooseImage() {
   return result(
     await launchImageLibrary({
@@ -33,6 +37,7 @@ export async function chooseImage() {
     }),
   );
 }
+
 export async function takeImage() {
   if (!(await ensurePermission('camera')).granted) throw new Error('Camera permission denied');
   return result(
@@ -45,6 +50,7 @@ export async function takeImage() {
     }),
   );
 }
+
 export async function chooseDocument() {
   try {
     const [file] = await pick({ type: [types.allFiles], allowMultiSelection: false });
@@ -54,15 +60,18 @@ export async function chooseDocument() {
     throw error;
   }
 }
+
 export async function cacheDocument(uri: string, fileName: string) {
   const safe = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
   const [result] = await keepLocalCopy({
     destination: 'cachesDirectory',
     files: [{ uri, fileName: safe }],
   });
+
   if (!result || result.status !== 'success') throw new Error('Could not copy selected document');
   return result.localUri;
 }
+
 export async function cropImage(path: string) {
   try {
     return await ImageCropPicker.openCropper({
@@ -84,4 +93,5 @@ export async function cropImage(path: string) {
     throw error;
   }
 }
+
 export const clearCropCache = () => ImageCropPicker.clean();

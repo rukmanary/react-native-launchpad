@@ -2,6 +2,7 @@ import { QueryClient, focusManager, onlineManager } from '@tanstack/react-query'
 import NetInfo from '@react-native-community/netinfo';
 import { AppState } from 'react-native';
 import { ApiError } from '../../core/http/client';
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -14,6 +15,7 @@ export const queryClient = new QueryClient({
     mutations: { retry: false },
   },
 });
+
 export function connectQueryLifecycle() {
   const net = NetInfo.addEventListener((state) =>
     onlineManager.setOnline(state.isConnected === true && state.isInternetReachable !== false),
@@ -21,6 +23,7 @@ export function connectQueryLifecycle() {
   const app = AppState.addEventListener('change', (state) =>
     focusManager.setFocused(state === 'active'),
   );
+
   return () => {
     net();
     app.remove();

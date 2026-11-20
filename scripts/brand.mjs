@@ -2,9 +2,11 @@ import sharp from 'sharp';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+
 const input = process.argv[2];
 if (!input || !/\.(svg|png|jpe?g)$/i.test(input))
   throw new Error('Usage: pnpm brand path/to/logo.svg');
+
 const config = JSON.parse(await readFile(new URL('../starter.config.json', import.meta.url)));
 for (const [density, size] of Object.entries({
   mdpi: 48,
@@ -22,7 +24,9 @@ for (const [density, size] of Object.entries({
       .png()
       .toFile(path.join(dir, name + '.png'));
 }
+
 const iconset = 'ios/' + config.name + '/Images.xcassets/AppIcon.appiconset';
+
 await mkdir(iconset, { recursive: true });
 await sharp(input)
   .resize(1024, 1024, { fit: 'contain', background: '#2358C5' })

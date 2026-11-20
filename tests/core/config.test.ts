@@ -13,20 +13,25 @@ const settings = {
 
 test('selects services and identity from the installed native application ID', () => {
   const production = resolveAppConfig(settings, 'com.example.mobile', 'android');
+
   expect(production).toMatchObject({
     flavor: 'production',
     scheme: 'example-app',
     displayName: 'Example',
     services: { apiBaseUrl: 'https://production.example.com', firebase: true },
   });
+
   const dev = resolveAppConfig(settings, 'com.example.mobile.dev', 'android');
+
   expect(dev).toMatchObject({
     flavor: 'dev',
     scheme: 'example-app.dev',
     displayName: 'Example Dev',
     services: { apiBaseUrl: 'https://dev.example.com', firebase: false },
   });
+
   const qa = resolveAppConfig(settings, 'com.example.other.qa', 'ios');
+
   expect(qa).toMatchObject({
     flavor: 'qa',
     scheme: 'example-app.qa',

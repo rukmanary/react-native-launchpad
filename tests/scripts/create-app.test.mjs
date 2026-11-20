@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { createApp, validateIdentity } from '../../scripts/create-app.mjs';
 import { selectModules } from '../../scripts/lib/module-selection.mjs';
+
 const identity = {
   name: 'ExampleApp',
   slug: 'example-app',
@@ -12,18 +13,22 @@ const identity = {
   androidId: 'com.example.app',
   iosId: 'com.example.ios',
 };
+
 test('invalid IDs fail before any mutation', () => {
   assert.throws(() => validateIdentity({ ...identity, androidId: '../../outside' }));
   assert.throws(() => validateIdentity({ ...identity, name: '../Bad' }));
   assert.throws(() => validateIdentity({ ...identity, iosId: 'com.example.invalid_id' }));
 });
+
 test('all includes every capability and keeps state presets separate', () => {
   const catalog = { groups: { core: [], ui: [], media: [], zustand: [] } };
+
   assert.deepEqual(selectModules(catalog, 'all'), ['core', 'ui', 'media']);
   assert.deepEqual(selectModules(catalog, 'ui, media, ui'), ['core', 'ui', 'media']);
   assert.throws(() => selectModules(catalog, 'all,ui'), /Unknown module/);
   assert.throws(() => selectModules(catalog, 'zustand'), /--state zustand/);
 });
+
 test('generation isolates source, resets IDs, omits history and handles dry-run', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'rn-template-test-'));
   const source = path.join(root, 'source');
@@ -35,6 +40,7 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
   const fixtureAndroidId = androidParts.join('.');
   const fixtureIosId = [...androidParts, 'ios'].join('.');
   const target = path.join(root, identity.slug);
+
   try {
     const fixture = {
       'starter.config.json': JSON.stringify({
@@ -99,15 +105,20 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       '.maestro/smoke.yaml':
         'appId: ' + fixtureAndroidId + '\n---\n- assertVisible: "' + fixtureLabel + '"',
     };
+
     for (const [name, content] of Object.entries(fixture)) {
       await mkdir(path.dirname(path.join(source, name)), { recursive: true });
       await writeFile(path.join(source, name), content);
     }
+
     const args = { ...identity, source, skipInstall: true };
     const dryRun = await createApp({ ...args, dryRun: true });
+
     assert.equal(dryRun.target, target);
+
     const customTarget = path.join(root, 'custom-output');
     const customPlan = await createApp({ ...args, target: customTarget, dryRun: true });
+
     assert.equal(customPlan.target, customTarget);
     await assert.rejects(access(customTarget));
     assert.deepEqual(dryRun.variants.qa, {
@@ -118,7 +129,9 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
     });
     await assert.rejects(access(target));
     await createApp(args);
+
     const config = JSON.parse(await readFile(path.join(target, 'starter.config.json'), 'utf8'));
+
     assert.equal(config.name, 'ExampleApp');
     assert.equal(config.iosId, 'com.example.ios');
     assert.deepEqual(config.flavorServices, { dev: {}, qa: {} });
@@ -185,7 +198,9 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       await assert.rejects(access(path.join(target, localFile)));
     }
     await assert.rejects(access(path.join(target, 'src/modules/media')));
+
     const pkg = JSON.parse(await readFile(path.join(target, 'package.json'), 'utf8'));
+
     assert.deepEqual(pkg.dependencies, { react: '1.0.0' });
     assert.equal(pkg.scripts['create-app'], undefined);
     assert.equal(pkg.scripts['ios:services'], undefined);

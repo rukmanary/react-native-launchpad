@@ -1,12 +1,16 @@
 import { spawnSync } from 'node:child_process';
+
 const apk = process.argv[2];
 if (!apk) throw new Error('Usage: node scripts/check-native-alignment.mjs app.apk');
+
 const list = spawnSync('unzip', ['-Z1', apk], { encoding: 'utf8' });
 if (list.status !== 0) throw new Error('Cannot list APK');
+
 const files = list.stdout
   .split('\n')
   .filter((name) => /^lib\/(arm64-v8a|x86_64)\/[^/]+\.so$/.test(name));
 if (!files.length) throw new Error('No 64-bit native libraries found');
+
 let failures = 0;
 for (const file of files) {
   const result = spawnSync('unzip', ['-p', apk, file], { maxBuffer: 256 * 1024 * 1024 });

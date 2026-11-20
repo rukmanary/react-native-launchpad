@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/react-native';
 import { config } from '../../core/config/config';
+
 const secret = /authorization|cookie|password|token|secret|email|phone/i;
+
 export function redact(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(redact);
   if (value && typeof value === 'object')
@@ -12,6 +14,7 @@ export function redact(value: unknown): unknown {
     );
   return value;
 }
+
 export function initializeTelemetry() {
   if (!config.services.sentryDsn) return;
   Sentry.init({
@@ -36,5 +39,7 @@ export function initializeTelemetry() {
     }),
   });
 }
+
 export const captureFailure = (error: unknown) => Sentry.captureException(error);
+
 export const TracedApp = Sentry.wrap;

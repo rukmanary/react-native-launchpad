@@ -7,7 +7,9 @@ import {
   BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 export { BottomSheetModalProvider as SheetProvider };
+
 export function Sheet({
   open,
   onClose,
@@ -15,10 +17,12 @@ export function Sheet({
 }: PropsWithChildren<{ open: boolean; onClose: () => void }>) {
   const ref = useRef<BottomSheetModal>(null);
   const insets = useSafeAreaInsets();
+
   useEffect(() => {
     if (open) ref.current?.present();
     else ref.current?.dismiss();
   }, [open]);
+
   return (
     <BottomSheetModal
       ref={ref}
@@ -39,6 +43,7 @@ export function Sheet({
     </BottomSheetModal>
   );
 }
+
 export function SheetTextField(props: ComponentProps<typeof BottomSheetTextInput>) {
   return (
     <BottomSheetTextInput

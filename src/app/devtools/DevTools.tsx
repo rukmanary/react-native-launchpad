@@ -8,14 +8,17 @@ import { clearApiCache } from '../providers/ApiProvider';
 import { useApiDevTools } from './useApiDevTools';
 import { navigationRef } from '../navigation/ref';
 import { preferences } from '../../core/storage/preferences';
+
 const storages = [
   createMMKVStorageAdapter({
     storages: { preferences },
     blacklist: /token|secret|password|credential|session/i,
   }),
 ];
+
 export function DevTools() {
   const [recordNetwork, setRecordNetwork] = useState(false);
+
   useNetworkActivityDevTools({
     inspectors: { http: recordNetwork, websocket: recordNetwork, sse: recordNetwork },
   });

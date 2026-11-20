@@ -3,9 +3,12 @@ import { View, StyleSheet, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 import { colors } from '../theme/theme';
+
 type Props = PropsWithChildren<{ topInset?: boolean; bottomInset?: boolean; style?: ViewStyle }>;
+
 export function Screen({ children, topInset = false, bottomInset = true, style }: Props) {
   const inset = useSafeAreaInsets();
+
   return (
     <View
       style={[
@@ -23,8 +26,10 @@ export function Screen({ children, topInset = false, bottomInset = true, style }
     </View>
   );
 }
+
 export function FormScreen({ children }: PropsWithChildren) {
   const inset = useSafeAreaInsets();
+
   return (
     <KeyboardAwareScrollView
       bottomOffset={16}
@@ -42,8 +47,10 @@ export function FormScreen({ children }: PropsWithChildren) {
     </KeyboardAwareScrollView>
   );
 }
+
 export function ScreenFooter({ children }: PropsWithChildren) {
   const inset = useSafeAreaInsets();
+
   return (
     <KeyboardStickyView offset={{ closed: 0, opened: inset.bottom }}>
       <View
@@ -60,6 +67,7 @@ export function ScreenFooter({ children }: PropsWithChildren) {
     </KeyboardStickyView>
   );
 }
+
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
   content: { padding: 24, gap: 16, flexGrow: 1 },

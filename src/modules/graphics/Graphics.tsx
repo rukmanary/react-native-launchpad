@@ -4,9 +4,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Canvas, Circle, Group } from 'react-native-skia';
 import { CartesianChart, Line } from 'victory-native';
 import Svg, { Path } from 'react-native-svg';
+
 export function GradientSurface(props: ComponentProps<typeof LinearGradient>) {
   return <LinearGradient {...props} />;
 }
+
 export function StatusIllustration() {
   return (
     <Canvas style={{ height: 160, width: 160 }}>
@@ -17,6 +19,7 @@ export function StatusIllustration() {
     </Canvas>
   );
 }
+
 export function LineChart({ data }: { data: Array<{ x: number; y: number }> }) {
   return (
     <View accessibilityRole="image" accessibilityLabel="Trend chart" style={{ height: 240 }}>
@@ -26,6 +29,7 @@ export function LineChart({ data }: { data: Array<{ x: number; y: number }> }) {
     </View>
   );
 }
+
 export function CheckIllustration() {
   return (
     <Svg width={24} height={24} viewBox="0 0 24 24" accessibilityLabel="Complete">
@@ -33,6 +37,7 @@ export function CheckIllustration() {
     </Svg>
   );
 }
+
 export function GraphicContainer({ children }: PropsWithChildren) {
   return <View style={{ overflow: 'hidden', borderRadius: 16 }}>{children}</View>;
 }

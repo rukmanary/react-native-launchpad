@@ -14,6 +14,7 @@ const services = z.object({
   mapsAndroidKey: z.string().default(''),
   mapsIosKey: z.string().default(''),
 });
+
 const schema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1),
@@ -34,6 +35,7 @@ export function resolveAppConfig(input: unknown, applicationId: string, platform
   const flavor = (Object.keys(flavors) as (keyof typeof flavors)[]).find(
     (key) => baseId + flavors[key].suffix === applicationId,
   );
+
   if (!flavor) throw new Error('Native application ID does not match starter.config.json');
   return {
     ...base,
@@ -45,4 +47,5 @@ export function resolveAppConfig(input: unknown, applicationId: string, platform
 }
 
 export const config = resolveAppConfig(raw, getBundleId(), Platform.OS);
+
 export const hasModule = (name: string) => config.modules.includes(name);

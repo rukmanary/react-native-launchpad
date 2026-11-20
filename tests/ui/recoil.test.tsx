@@ -6,12 +6,14 @@ import { StateProvider, useAppLanguage } from '../../src/app/store/presets/recoi
 jest.mock('../../src/core/storage/preferences', () => ({
   preferences: { getString: jest.fn(), set: jest.fn() },
 }));
+
 jest.mock('../../src/app/providers/i18n', () => ({
   i18n: { language: 'id', changeLanguage: jest.fn() },
 }));
 
 function LanguageControl() {
   const { language, setLanguage } = useAppLanguage();
+
   return (
     <>
       <Text>{language}</Text>

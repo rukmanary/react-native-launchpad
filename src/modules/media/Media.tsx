@@ -5,11 +5,13 @@ import FastImage from 'react-native-fast-image';
 import { Blurhash } from 'react-native-blurhash';
 import Video from 'react-native-video';
 import { useAppActive } from '../../shared/hooks/useAppActive';
+
 function ImageContent({
   blurhash,
   ...props
 }: ComponentProps<typeof FastImage> & { blurhash?: string }) {
   const [loaded, setLoaded] = useState(false);
+
   return (
     <View style={props.style}>
       {blurhash && !loaded ? (
@@ -26,9 +28,11 @@ function ImageContent({
     </View>
   );
 }
+
 export function VideoPlayer(props: ComponentProps<typeof Video>) {
   const focused = useIsFocused();
   const active = useAppActive();
+
   return (
     <Video
       {...props}

@@ -1,5 +1,6 @@
 import { readdir, lstat, readFile, writeFile, mkdir, copyFile } from 'node:fs/promises';
 import path from 'node:path';
+
 export const excluded = new Set([
   'node_modules',
   '.tools',
@@ -26,6 +27,7 @@ export const excluded = new Set([
   'google-services.json',
   'GoogleService-Info.plist',
 ]);
+
 export function isExcluded(name) {
   return (
     excluded.has(name) ||
@@ -36,6 +38,7 @@ export function isExcluded(name) {
     )
   );
 }
+
 export const textExtensions = new Set([
   '.ts',
   '.tsx',
@@ -62,6 +65,7 @@ export const textExtensions = new Set([
   '.bat',
   '.txt',
 ]);
+
 export async function copyTree(source, target, { shouldCopy, transformPath, transformText }) {
   for (const entry of await readdir(source, { withFileTypes: true })) {
     if (isExcluded(entry.name)) continue;

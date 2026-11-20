@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { format, resolveConfig } from 'prettier';
 import flavors from '../config/flavors.json' with { type: 'json' };
 import { selectModules } from './lib/module-selection.mjs';
+
 export async function configureModules(root, selected, { writeConfig = true } = {}) {
   const configPath = path.join(root, 'starter.config.json');
   const config = JSON.parse(await readFile(configPath, 'utf8'));
@@ -17,6 +18,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
   const missing = modules
     .flatMap((name) => catalog.groups[name])
     .filter((name) => !installed[name]);
+
   if (missing.length) throw new Error('Install selected dependencies first: ' + missing.join(', '));
   if (writeConfig) {
     config.modules = modules;
@@ -26,6 +28,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
     });
     await writeFile(configPath, formatted);
   }
+
   const has = (name) => modules.includes(name);
   const permissions = [
     'INTERNET',
@@ -35,6 +38,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
   ];
   const manifest = path.join(root, 'android/app/src/main/AndroidManifest.xml');
   let xml = await readFile(manifest, 'utf8');
+
   xml = xml.replace(/\s*<!-- starter:permissions -->[\s\S]*?<!-- starter:end-permissions -->/, '');
   xml = xml.replace(/\s*<uses-permission android:name="android.permission.INTERNET" \/>/, '');
   xml = xml.replace(
@@ -57,8 +61,10 @@ export async function configureModules(root, selected, { writeConfig = true } = 
       '<!-- starter:maps --><meta-data android:name="com.google.android.geo.API_KEY" android:value="${mapsApiKey}"/><!-- starter:end-maps --></application>',
     );
   await writeFile(manifest, xml);
+
   const plist = path.join(root, 'ios', config.name, 'Info.plist');
   let info = await readFile(plist, 'utf8');
+
   info = info.replace(/<key>NSLocationWhenInUseUsageDescription<\/key>\s*<string><\/string>/, '');
   info = info.replace(
     /(<key>CFBundleDisplayName<\/key>\s*<string>)[^<]*(<\/string>)/,
@@ -68,6 +74,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
     /\s*<!-- starter:permissions -->[\s\S]*?<!-- starter:end-permissions -->/,
     '',
   );
+
   const entries = {
     ...(has('camera') || has('media')
       ? {
@@ -88,6 +95,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
       ? { NSFaceIDUsageDescription: 'Unlock using your enrolled biometrics.' }
       : {}),
   };
+
   const block =
     '<!-- starter:permissions -->\n' +
     Object.entries(entries)
@@ -96,6 +104,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
     '\n<!-- starter:end-permissions -->\n';
   info = info.replace(/<\/dict>\s*<\/plist>/, block + '</dict>\n</plist>');
   await writeFile(plist, info);
+
   const init = [];
   if (has('firebase'))
     init.push(
@@ -106,6 +115,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
       "if (config.services.sentryDsn) { require('../modules/sentry/telemetry').initializeTelemetry(); }",
     );
   await mkdir(path.join(root, 'src/generated'), { recursive: true });
+
   const formatting = {
     ...(await resolveConfig(path.join(root, 'src/generated/bootstrap.ts'))),
     parser: 'typescript',
@@ -120,6 +130,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
       formatting,
     ),
   );
+
   const exports = modules
     .filter((name) => name !== 'core' && name !== 'zustand')
     .map((name) => 'export * as ' + name + " from '../modules/" + name + "';");
@@ -127,6 +138,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
     path.join(root, 'src/generated/modules.ts'),
     await format(exports.join('\n') + '\n', formatting),
   );
+
   const source = path.join(root, 'android/app/src/main/java', ...config.androidId.split('.'));
   await access(source);
   const nativePackages =
@@ -135,12 +147,16 @@ export async function configureModules(root, selected, { writeConfig = true } = 
     '\nimport com.facebook.react.ReactPackage\nobject OptionalPackages { fun create(): List<ReactPackage> = ' +
     (has('graphics') ? 'listOf(' + config.androidId + '.blur.BlurPackage())' : 'emptyList()') +
     ' }\n';
+
   await writeFile(path.join(source, 'OptionalPackages.kt'), nativePackages);
+
   let generatedInfo = await readFile(plist, 'utf8');
+
   generatedInfo = generatedInfo.replace(
     /\s*<!-- starter:services -->[\s\S]*?<!-- starter:end-services -->/,
     '',
   );
+
   const schemes = ['$(STARTER_URL_SCHEME)', ...(has('google') ? ['$(STARTER_GOOGLE_SCHEME)'] : [])];
   const serviceBlock =
     '<!-- starter:services -->\n<key>CFBundleURLTypes</key><array><dict><key>CFBundleURLSchemes</key><array>' +
@@ -151,9 +167,12 @@ export async function configureModules(root, selected, { writeConfig = true } = 
       ? '<key>UIBackgroundModes</key><array><string>remote-notification</string></array>'
       : '') +
     '<!-- starter:end-services -->\n';
+
   generatedInfo = generatedInfo.replace(/<\/dict>\s*<\/plist>/, serviceBlock + '</dict>\n</plist>');
   await writeFile(plist, generatedInfo);
+
   const settingsDir = path.join(root, 'ios/Config');
+
   await mkdir(settingsDir, { recursive: true });
   for (const [name, flavor] of Object.entries(flavors)) {
     const services = name === 'production' ? config.services : config.flavorServices?.[name];
@@ -171,6 +190,7 @@ export async function configureModules(root, selected, { writeConfig = true } = 
       if (/[\r\n]/.test(value)) throw new Error('Invalid iOS build setting: ' + key);
       return `${key} = ${value.replaceAll('//', '/$(STARTER_SLASH)')}`.trimEnd();
     });
+
     await writeFile(
       path.join(settingsDir, name + '.xcconfig'),
       '// Generated by pnpm modules from starter.config.json.\nSTARTER_SLASH = /\n' +
@@ -184,6 +204,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   try {
     const root = fileURLToPath(new URL('..', import.meta.url));
     const selected = (process.argv[2] ?? 'core').split(',');
+
     console.log('Enabled modules:', (await configureModules(root, selected)).join(', '));
     console.log('Rebuild native apps; run pnpm ios:pods after changing modules.');
   } catch (error) {

@@ -1,4 +1,5 @@
 import path from 'node:path';
+
 export const architecture = {
   rules: {
     boundaries: {
@@ -15,13 +16,16 @@ export const architecture = {
           ImportDeclaration(node) {
             const name = node.source.value;
             if (typeof name !== 'string' || !name.startsWith('.')) return;
+
             const file = context.filename ?? context.getFilename();
             const source = file.split(path.sep + 'src' + path.sep)[1];
             if (!source) return;
+
             const target = path
               .resolve(path.dirname(file), name)
               .split(path.sep + 'src' + path.sep)[1];
             if (!target) return;
+
             const from = source.split(path.sep),
               to = target.split(path.sep);
             const infrastructure = ['core', 'shared', 'modules'];

@@ -55,6 +55,7 @@ Options:
 
 Dev and QA add .dev and .qa to the production IDs.
 See also: pnpm list:modules, pnpm list:states, pnpm list:apis.`;
+
 export function validateIdentity(input) {
   if (!/^[A-Z][A-Za-z0-9]*$/.test(input.name))
     throw new Error('name must start uppercase and contain only letters/numbers');
@@ -69,10 +70,13 @@ export function validateIdentity(input) {
     throw new Error('displayName contains unsupported XML characters');
   return input;
 }
+
 export async function createApp(input) {
   validateIdentity(input);
+
   const source = path.resolve(input.source ?? root);
   const target = path.resolve(input.target ?? path.join(path.dirname(source), input.slug));
+
   if (
     target === source ||
     target.startsWith(source + path.sep) ||
@@ -85,12 +89,15 @@ export async function createApp(input) {
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
   }
+
   const original = JSON.parse(await readFile(path.join(source, 'starter.config.json'), 'utf8'));
   const catalog = JSON.parse(await readFile(path.join(source, 'config/dependencies.json'), 'utf8'));
   const state = input.state ?? 'redux';
   const api = input.api ?? 'rest';
+
   if (!Object.hasOwn(states, state)) throw new Error('Unknown state preset. Run pnpm list:states.');
   if (!Object.hasOwn(apis, api)) throw new Error('Unknown API preset. Run pnpm list:apis.');
+
   const modules = selectModules(catalog, input.modules ?? 'core');
   const plan = {
     ...input,
@@ -130,7 +137,9 @@ export async function createApp(input) {
     import('./lib/prune-native-modules.mjs'),
     import('./lib/project-files.mjs'),
   ]);
+
   const staging = target + '.creating-' + process.pid;
+
   await mkdir(staging, { recursive: false });
   try {
     const pkg = JSON.parse(await readFile(path.join(source, 'package.json'), 'utf8'));
@@ -155,6 +164,7 @@ export async function createApp(input) {
     pkg.version = '0.1.0';
     delete pkg.repository;
     configureProjectScripts(pkg, modules);
+
     const { workspace, patches } = await readProjectWorkspace(source, pkg.dependencies, modules);
     const shouldCopy = projectFileFilter({
       source,
@@ -191,6 +201,7 @@ export async function createApp(input) {
       const tokens = [...values.keys()].sort((a, b) => b.length - a.length);
       let result = '';
       let cursor = 0;
+
       while (cursor < text.length) {
         const token = tokens.find((value) => text.startsWith(value, cursor));
         if (token) {
@@ -203,10 +214,12 @@ export async function createApp(input) {
       }
       return result;
     };
+
     await copyTree(source, staging, { shouldCopy, transformPath, transformText });
     await writeFile(path.join(staging, 'README.md'), '');
     await writeProjectWorkspace(staging, workspace);
     await writeProjectNotices(source, staging, patches);
+
     const next = {
       ...original,
       name: input.name,

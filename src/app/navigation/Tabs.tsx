@@ -4,7 +4,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Screen } from '../../shared/ui/Screen';
 import { Icon } from '../../shared/ui/Icon';
 import { config } from '../../core/config/config';
+
 const Tab = createBottomTabNavigator<{ Dashboard: undefined; Modules: undefined }>();
+
 function Modules() {
   return (
     <Screen bottomInset={false}>
@@ -21,6 +23,7 @@ function Modules() {
     </Screen>
   );
 }
+
 export function AppTabs({ children }: { children: ReactNode }) {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>

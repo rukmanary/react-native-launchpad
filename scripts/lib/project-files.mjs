@@ -66,6 +66,7 @@ const moduleFiles = {
 export function projectFileFilter({ source, modules, state, patches, skipInstall }) {
   const adapters = new Set(modules.filter((name) => name !== 'core'));
   if (state === 'zustand') adapters.add('zustand');
+
   const excluded = new Set([
     'config/dependency-audit.json',
     'tests/scripts',
@@ -76,6 +77,7 @@ export function projectFileFilter({ source, modules, state, patches, skipInstall
   ]);
   if (!modules.some((name) => name === 'graphics' || name === 'notifications'))
     excluded.add('react-native.config.js');
+
   const patchFiles = new Set(Object.values(patches));
   return (file) => {
     const relative = path.relative(source, file).split(path.sep).join('/');
@@ -166,6 +168,7 @@ export async function writeProjectNotices(source, root, patches) {
     const match = /^([^\s]+) \(upstream excerpts in patches\/\)\n/.exec(section);
     return !match || Object.hasOwn(patches, match[1]);
   });
+
   if (license)
     selected.splice(1, 0, 'Starter template source\n-----------------------\n\n' + license.trim());
   if (license || notices)

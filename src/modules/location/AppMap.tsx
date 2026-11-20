@@ -1,6 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 import MapView, { Marker, type MapViewProps } from 'react-native-maps';
 import { useAppActive } from '../../shared/hooks/useAppActive';
+
 export function AppMap({
   markers = [],
   ...props
@@ -9,6 +10,7 @@ export function AppMap({
 }) {
   const focused = useIsFocused();
   const active = useAppActive();
+
   return (
     <MapView {...props} showsUserLocation={Boolean(props.showsUserLocation && focused && active)}>
       {markers.map((marker) => (

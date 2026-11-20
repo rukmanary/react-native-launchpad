@@ -21,9 +21,9 @@ test('sends a GraphQL query with the session token and caches the response', asy
     { version: () => 0, read: async () => ({ accessToken: 'test-token' }) }, // pii-allow
     transport,
   );
-
   const first = await client.query({ query: products });
   const cached = await client.query({ query: products });
+
   expect(first.data).toEqual({ products: [{ id: 'one' }] });
   expect(cached.data).toEqual(first.data);
   expect(transport).toHaveBeenCalledTimes(1);
@@ -69,10 +69,10 @@ test('rejects a response from a session that changed while the query was in flig
       });
     },
   );
-
   const rejected = expect(client.query({ query: products })).rejects.toMatchObject({
     kind: 'aborted',
   });
+
   await started;
   version++;
   finish(new Response(JSON.stringify({ data: { products: [{ id: 'stale' }] } })));

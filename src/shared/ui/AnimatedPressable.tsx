@@ -6,6 +6,7 @@ import Animated, {
   withTiming,
   ReduceMotion,
 } from 'react-native-reanimated';
+
 export function AnimatedPressable({
   children,
   label,
@@ -13,6 +14,7 @@ export function AnimatedPressable({
 }: PropsWithChildren<{ label: string; onPress: () => void }>) {
   const scale = useSharedValue(1);
   const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+
   return (
     <Pressable
       accessibilityRole="button"

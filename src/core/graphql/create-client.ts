@@ -22,6 +22,7 @@ export function createGraphQLClient(endpoint: string, session: GraphQLSession, f
     defer(async () => {
       const version = session.version();
       const token = (await session.read())?.accessToken;
+
       ensureSession(version);
 
       if (token) {

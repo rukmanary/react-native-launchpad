@@ -17,6 +17,7 @@ const textColors = { normal: colors.text, muted: colors.muted, danger: colors.da
 
 export function AppText({ variant = 'body', tone = 'normal', style, ...props }: AppTextProps) {
   const header = variant === 'title' || variant === 'heading';
+
   return (
     <Text
       accessibilityRole={header ? 'header' : undefined}

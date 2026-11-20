@@ -6,8 +6,11 @@ import { z } from 'zod';
 import { FormScreen } from '../../../shared/ui/Screen';
 import { FormField } from '../../../shared/ui/TextField';
 import { Button } from '../../../shared/ui/Button';
+
 const schema = z.object({ email: z.email(), password: z.string().min(8) });
+
 type Form = z.infer<typeof schema>;
+
 export function FormExampleScreen() {
   const [submitted, setSubmitted] = useState(false);
   const {
@@ -15,6 +18,7 @@ export function FormExampleScreen() {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<Form>({ resolver: zodResolver(schema), defaultValues: { email: '', password: '' } });
+
   return (
     <FormScreen>
       <Text>Form validation example. This form does not authenticate with a server.</Text>

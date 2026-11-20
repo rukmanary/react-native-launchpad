@@ -20,7 +20,9 @@ export function createRequestAuth(deps: AuthDependencies) {
 
     async function token() {
       if (!requiresAuth) return null;
+
       const value = await scope.wait(() => deps.token?.() ?? null);
+
       ensureCurrentSession();
       return value;
     }
@@ -33,6 +35,7 @@ export function createRequestAuth(deps: AuthDependencies) {
       if (previousToken && currentToken && previousToken !== currentToken) return true;
 
       let pending = refreshes.get(version);
+
       if (!pending) {
         // Requests from the same session share a refresh, even if one caller cancels.
         pending = Promise.resolve()

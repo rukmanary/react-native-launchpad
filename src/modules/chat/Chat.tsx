@@ -1,4 +1,5 @@
 import { GiftedChat, type IMessage } from 'react-native-gifted-chat';
+
 export function Chat({
   messages,
   onSend,

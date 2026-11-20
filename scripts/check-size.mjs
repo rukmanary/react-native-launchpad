@@ -1,11 +1,14 @@
 import { stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+
 const artifact = process.argv[2];
 if (!artifact) throw new Error('Usage: pnpm size:check path/to/app.apk [--record]');
+
 const limits = JSON.parse(await readFile(new URL('../config/size-budget.json', import.meta.url)));
 const bytes = (await stat(artifact)).size;
 const name = path.basename(artifact);
 const previous = limits.artifacts[name];
+
 console.log(
   JSON.stringify({
     artifact: name,

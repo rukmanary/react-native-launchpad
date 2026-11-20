@@ -1,6 +1,7 @@
 import { useWindowDimensions, Linking } from 'react-native';
 import WebView, { type WebViewProps } from 'react-native-webview';
 import RenderHTML from 'react-native-render-html';
+
 export function isAllowedUrl(value: string, origins: readonly string[]) {
   try {
     const url = new URL(value);
@@ -9,6 +10,7 @@ export function isAllowedUrl(value: string, origins: readonly string[]) {
     return false;
   }
 }
+
 export function AppWebView({
   url,
   allowedOrigins,
@@ -34,6 +36,7 @@ export function AppWebView({
     />
   );
 }
+
 export function HtmlContent({
   html,
   allowedOrigins,
@@ -44,6 +47,7 @@ export function HtmlContent({
   onLinkError?: (error: unknown) => void;
 }) {
   const { width } = useWindowDimensions();
+
   return (
     <RenderHTML
       contentWidth={width - 48}

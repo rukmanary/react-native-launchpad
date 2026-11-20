@@ -9,6 +9,7 @@ import { I18nextProvider } from 'react-i18next';
 import { ApiProvider } from './providers/ApiProvider';
 import { i18n } from './providers/i18n';
 import { Navigation } from './navigation/Navigation';
+
 class ErrorBoundary extends Component<PropsWithChildren, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
@@ -26,7 +27,9 @@ class ErrorBoundary extends Component<PropsWithChildren, { failed: boolean }> {
     );
   }
 }
+
 const DevTools = __DEV__ ? require('./devtools/DevTools').DevTools : () => null;
+
 export function App() {
   return (
     <ErrorBoundary>
