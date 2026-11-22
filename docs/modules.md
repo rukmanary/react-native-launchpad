@@ -8,9 +8,9 @@ Select the full active module list with `pnpm modules core,<name>,...`, rebuild 
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | core          | api, session, preferences, Screen, FormScreen, Button, FormField, Icon, AnimatedPressable                                                                                        | HTTP and auth, secure credentials, state, forms, native stack and tab navigation, FlashList, localization, dates |
 | graphics      | GradientSurface, StatusIllustration, LineChart, CheckIllustration, BlurTarget, BlurSurface                                                                                       | Skia 2 for Victory, Dimezis on Android, Community Blur on iOS                                                    |
-| ui            | SheetProvider, Sheet, SheetTextField, DateInput, CalendarInput, OtpEntry, ControlledOtp, AppCarousel, AppPager, TourProvider, TourStep, StartTour                                | Wrap screens in the required sheet or tour provider and choose one OTP component                                 |
-| media         | chooseImage, takeImage, chooseDocument, cacheDocument, cropImage, clearCropCache, AppImage, VideoPlayer, createAudioPlayer, downloadToCache, shareFile, getDeviceSummary         | Pickers return null on cancellation. Video follows focus and lifecycle. Dispose of audio after use               |
-| camera        | CameraView                                                                                                                                                                       | VisionCamera 5 photo output is passed to the capture callback                                                    |
+| ui            | Sheet, SheetTextField, DateInput, CalendarInput, OtpEntry, ControlledOtp, PinInput, AppCarousel, AppPager, TourProvider, TourStep, StartTour                                     | Wrap tours in TourProvider and choose one OTP component                                                          |
+| media         | AppImage, VideoPlayer, AudioPlayer, DocumentPicker, ImagePicker, ImageCropPicker, createAudioPlayer, downloadToCache, shareFile, getDeviceSummary                                | Players follow navigation focus and app lifecycle. Dispose players created with createAudioPlayer.               |
+| camera        | CameraView, QrScanner, BarcodeScanner                                                                                                                                            | VisionCamera 5 photo output is passed to the capture callback. Scanners require camera permission.               |
 | location      | currentLocation, watchLocation, useLocation, AppMap                                                                                                                              | Location watch requires an enabled, focused screen in the foreground. Maps requires provider keys as appropriate |
 | biometrics    | checkBiometrics, unlockWithBiometrics, createSigningKey, signServerChallenge, deleteSigningKey                                                                                   | The backend must verify signed challenges. Local unlock and server login are separate flows                      |
 | offline       | createDatabase, Note, addNote, observeNotes, deleteNote, syncDatabase                                                                                                            | Sample notes table and schema version 1. The backend defines pull, push, and conflict behavior                   |
@@ -67,12 +67,25 @@ if (file) {
 
 ## Sheet
 
+`Sheet` presents above navigation in a full-screen modal and keeps controls inside the safe area. It uses the app's `KeyboardProvider` to move above the Android keyboard. Use `SheetTextField` for keyboard input and set `open` to false in `onClose`.
+
 ```tsx
-<SheetProvider>
-  <Sheet open={open} onClose={() => setOpen(false)}>
-    <SheetTextField accessibilityLabel="Name" placeholder="Name" />
-  </Sheet>
-</SheetProvider>
+<Sheet open={open} onClose={() => setOpen(false)}>
+  <SheetTextField accessibilityLabel="Name" placeholder="Name" />
+</Sheet>
+```
+
+## Audio player
+
+`AudioPlayer` accepts a single `file` or a `tracks` queue with optional artist and artwork. Render it inside a navigation screen so playback pauses on blur. Use `createAudioPlayer` for direct playback control and dispose it when its owner unmounts.
+
+```tsx
+<AudioPlayer
+  tracks={[
+    { file: 'intro.m4a', title: 'Intro', artwork: introCover },
+    { file: 'field-notes.m4a', title: 'Field Notes', artwork: fieldNotesCover },
+  ]}
+/>
 ```
 
 ## Android blur

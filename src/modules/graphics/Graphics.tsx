@@ -1,43 +1,85 @@
 import type { ComponentProps, PropsWithChildren } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View, type ViewProps } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Canvas, Circle, Group } from 'react-native-skia';
 import { CartesianChart, Line } from 'victory-native';
 import Svg, { Path } from 'react-native-svg';
+import { AppText } from '@/shared/ui/AppText';
+import { useTheme } from '@/shared/theme/theme';
 
-export function GradientSurface(props: ComponentProps<typeof LinearGradient>) {
-  return <LinearGradient {...props} />;
-}
+type GradientProps = Omit<ComponentProps<typeof LinearGradient>, 'colors'> & {
+  colors?: ComponentProps<typeof LinearGradient>['colors'];
+};
 
-export function StatusIllustration() {
+export const GradientSurface = ({ colors: gradient, ...props }: GradientProps) => {
+  const { colors } = useTheme();
+
+  return <LinearGradient {...props} colors={gradient ?? [colors.primary, colors.primaryMuted]} />;
+};
+
+export const StatusIllustration = () => {
+  const { colors } = useTheme();
+
   return (
-    <Canvas style={{ height: 160, width: 160 }}>
+    <Canvas style={styles.illustration}>
       <Group>
-        <Circle cx={80} cy={80} r={64} color="#2358C5" />
-        <Circle cx={104} cy={56} r={24} color="#97BCFF" />
+        <Circle cx={80} cy={80} r={64} color={colors.primary} />
+        <Circle cx={104} cy={56} r={24} color={colors.primaryMuted} />
       </Group>
     </Canvas>
   );
-}
+};
 
-export function LineChart({ data }: { data: Array<{ x: number; y: number }> }) {
+export const LineChart = ({
+  data,
+  accessibilityLabel = 'Trend chart',
+}: {
+  data: Array<{ x: number; y: number }>;
+  accessibilityLabel?: string;
+}) => {
+  const { colors } = useTheme();
+
+  if (data.length < 2) return <AppText tone="muted">At least two points are required</AppText>;
+
   return (
-    <View accessibilityRole="image" accessibilityLabel="Trend chart" style={{ height: 240 }}>
+    <View
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={accessibilityLabel}
+      style={styles.chart}
+    >
       <CartesianChart data={data} xKey="x" yKeys={['y']}>
-        {({ points }) => <Line points={points.y} color="#2358C5" strokeWidth={3} />}
+        {({ points }) => <Line points={points.y} color={colors.primary} strokeWidth={3} />}
       </CartesianChart>
     </View>
   );
-}
+};
 
-export function CheckIllustration() {
+export const CheckIllustration = () => {
+  const { colors } = useTheme();
+
   return (
     <Svg width={24} height={24} viewBox="0 0 24 24" accessibilityLabel="Complete">
-      <Path d="M5 12l4 4L19 6" stroke="#2358C5" strokeWidth={2} fill="none" />
+      <Path d="M5 12l4 4L19 6" stroke={colors.success} strokeWidth={2} fill="none" />
     </Svg>
   );
-}
+};
 
-export function GraphicContainer({ children }: PropsWithChildren) {
-  return <View style={{ overflow: 'hidden', borderRadius: 16 }}>{children}</View>;
-}
+export const GraphicContainer = ({ children, style, ...props }: PropsWithChildren<ViewProps>) => {
+  const { colors, radii } = useTheme();
+
+  return (
+    <View
+      {...props}
+      style={[styles.clipped, { borderRadius: radii.lg, backgroundColor: colors.surface }, style]}
+    >
+      {children}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  chart: { height: 240 },
+  clipped: { overflow: 'hidden' },
+  illustration: { height: 160, width: 160 },
+});

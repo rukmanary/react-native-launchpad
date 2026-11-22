@@ -6,13 +6,25 @@
   "androidId": "com.starterpack",
   "iosId": "com.starterpack",
   "scheme": "starterpack",
-  "modules": ["core"],
+  "modules": [
+    "core",
+    "graphics",
+    "offline",
+    "biometrics",
+    "camera",
+    "media",
+    "location",
+    "notifications",
+    "firebase",
+    "content",
+    "ui",
+    "chat",
+    "google",
+    "sentry"
+  ],
   "state": "redux",
   "api": "rest",
-  "flavorServices": {
-    "dev": {},
-    "qa": {}
-  },
+  "flavorServices": { "dev": {}, "qa": {} },
   "services": {
     "apiBaseUrl": "https://example.invalid",
     "graphqlUrl": "https://example.invalid/graphql",

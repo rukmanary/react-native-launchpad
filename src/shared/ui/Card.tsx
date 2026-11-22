@@ -1,17 +1,23 @@
 import { StyleSheet, View, type ViewProps } from 'react-native';
-import { colors, radii, spacing } from '@/shared/theme/theme';
+import { useTheme } from '@/shared/theme/theme';
 
-export function Card({ style, ...props }: ViewProps) {
-  return <View {...props} style={[styles.card, style]} />;
-}
+export const Card = ({ style, ...props }: ViewProps) => {
+  const { colors, radii, spacing } = useTheme();
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.lg,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: spacing.md,
-    gap: spacing.sm,
-  },
-});
+  return (
+    <View
+      {...props}
+      style={[
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          borderRadius: radii.lg,
+          borderWidth: StyleSheet.hairlineWidth,
+          padding: spacing.md,
+          gap: spacing.sm,
+        },
+        style,
+      ]}
+    />
+  );
+};

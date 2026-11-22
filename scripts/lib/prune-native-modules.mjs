@@ -9,6 +9,7 @@ export async function pruneNativeModules(root, appName, modules) {
   const files = [
     'android/build.gradle',
     'android/app/build.gradle',
+    'android/app/proguard-rules.pro',
     'babel.config.js',
     'ios/Podfile',
     `ios/${appName}.xcodeproj/project.pbxproj`,

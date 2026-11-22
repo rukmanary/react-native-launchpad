@@ -1,6 +1,22 @@
 pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
 plugins { id("com.facebook.react.settings") }
-extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+
+def projectRoot = layout.rootDirectory.dir("../")
+extensions.configure(com.facebook.react.ReactSettingsExtension) { reactSettings ->
+    reactSettings.autolinkLibrariesFromCommand(
+        ["node", "node_modules/react-native/cli.js", "config"],
+        projectRoot.asFile,
+        projectRoot.files(
+            "package.json",
+            "pnpm-lock.yaml",
+            "pnpm-workspace.yaml",
+            "react-native.config.js",
+            "starter.config.json",
+            "config/dependencies.json"
+        )
+    )
+}
+
 rootProject.name = 'StarterPack'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')

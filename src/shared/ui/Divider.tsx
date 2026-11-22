@@ -1,10 +1,14 @@
-import { StyleSheet, View } from 'react-native';
-import { colors } from '@/shared/theme/theme';
+import { StyleSheet, View, type ViewProps } from 'react-native';
+import { useTheme } from '@/shared/theme/theme';
 
-export function Divider() {
-  return <View accessible={false} style={styles.line} />;
-}
+export const Divider = ({ style, ...props }: ViewProps) => {
+  const { colors } = useTheme();
 
-const styles = StyleSheet.create({
-  line: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border },
-});
+  return (
+    <View
+      {...props}
+      accessible={false}
+      style={[{ height: StyleSheet.hairlineWidth, backgroundColor: colors.border }, style]}
+    />
+  );
+};

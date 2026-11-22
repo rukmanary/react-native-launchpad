@@ -1,7 +1,9 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
+import { useTheme } from '@/shared/theme/theme';
+import { AppText } from '@/shared/ui/AppText';
 import { Button } from '@/shared/ui/Button';
 
-export function AsyncState({
+export const AsyncState = ({
   loading,
   error,
   empty,
@@ -11,19 +13,21 @@ export function AsyncState({
   error?: Error | null;
   empty?: boolean;
   onRetry?: () => void;
-}) {
+}) => {
+  const { colors, spacing } = useTheme();
+
   return (
-    <View accessibilityLiveRegion="polite" style={{ padding: 24, gap: 16 }}>
+    <View accessibilityLiveRegion="polite" style={{ padding: spacing.lg, gap: spacing.md }}>
       {loading ? (
-        <ActivityIndicator accessibilityLabel="Loading" />
+        <ActivityIndicator accessibilityLabel="Loading" color={colors.primary} />
       ) : error ? (
         <>
-          <Text>Data could not be loaded.</Text>
+          <AppText tone="muted">Data could not be loaded.</AppText>
           {onRetry ? <Button label="Try again" onPress={onRetry} /> : null}
         </>
       ) : empty ? (
-        <Text>No items yet.</Text>
+        <AppText tone="muted">No items yet.</AppText>
       ) : null}
     </View>
   );
-}
+};

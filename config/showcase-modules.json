@@ -1,0 +1,47 @@
+{
+  "ui": {
+    "title": "Advanced controls",
+    "components": [
+      "Bottom Sheet",
+      "Calendar",
+      "Date Picker",
+      "OTP and PIN Input",
+      "Carousel",
+      "Pager View",
+      "Copilot Tour"
+    ],
+    "exportName": "UiShowcaseScreen"
+  },
+  "media": {
+    "title": "Media and documents",
+    "components": [
+      "Image with BlurHash",
+      "Document Picker",
+      "Audio Player",
+      "Video Player",
+      "Image Picker",
+      "Image Crop Picker"
+    ],
+    "exportName": "MediaShowcaseScreen"
+  },
+  "content": {
+    "title": "Web content",
+    "components": ["WebView", "HTML Content"],
+    "exportName": "ContentShowcaseScreen"
+  },
+  "graphics": {
+    "title": "Graphics",
+    "components": ["Graphic View", "SVG", "Skia", "Gradient", "Chart"],
+    "exportName": "GraphicsShowcaseScreen"
+  },
+  "camera": {
+    "title": "Camera and scanners",
+    "components": ["Camera Capture", "QR Scanner", "Barcode Scanner"],
+    "exportName": "CameraShowcaseScreen"
+  },
+  "location": {
+    "title": "Maps",
+    "components": ["Map View", "User Location"],
+    "exportName": "LocationShowcaseScreen"
+  }
+}

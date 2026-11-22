@@ -3,11 +3,12 @@ import type { CompositeScreenProps } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { MainTabRoutes, RootStackRoutes } from '@/app/navigation/routes';
 import { HomeScreen } from '@/features/home';
-import { ComponentShowcaseScreen } from '@/features/component-showcase';
+import { ComponentShowcaseNavigator } from '@/app/navigation/ComponentShowcaseNavigator';
 import { ApiShowcaseScreen } from '@/features/api-showcase';
 import { ProfileScreen } from '@/features/profile';
 import { Icon } from '@/shared/ui/Icon';
-import { colors } from '@/shared/theme/theme';
+import { useTheme } from '@/shared/theme/theme';
+import { ScreenInsetsProvider } from '@/shared/ui/Screen';
 
 const Tab = createBottomTabNavigator<MainTabRoutes>();
 
@@ -25,6 +26,8 @@ const HomeRoute = ({ navigation }: HomeRouteProps) => (
 );
 
 export const AppTabs = () => {
+  const { colors } = useTheme();
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -33,7 +36,11 @@ export const AppTabs = () => {
         lazy: true,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.muted,
+        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
       }}
+      screenLayout={({ children }) => (
+        <ScreenInsetsProvider bottomHandled>{children}</ScreenInsetsProvider>
+      )}
     >
       <Tab.Screen
         name="Home"
@@ -45,7 +52,7 @@ export const AppTabs = () => {
       />
       <Tab.Screen
         name="Component"
-        component={ComponentShowcaseScreen}
+        component={ComponentShowcaseNavigator}
         options={{
           tabBarButtonTestID: 'tab-component',
           tabBarIcon: ({ color, size }) => <Icon name="layout-grid" color={color} size={size} />,

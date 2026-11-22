@@ -1,0 +1,246 @@
+diff --git a/dist/index.js b/dist/index.js
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -427,7 +427,6 @@
+ // src/contexts/CopilotProvider.tsx
+ var import_mitt = __toESM(require("mitt"));
+ var import_react8 = __toESM(require("react"));
+-var import_react_native7 = require("react-native");
+ 
+ // src/components/CopilotModal.tsx
+ var import_react5 = __toESM(require("react"));
+@@ -893,7 +892,7 @@
+   const copilotEvents = (0, import_react8.useRef)((0, import_mitt.default)()).current;
+   const modal = (0, import_react8.useRef)(null);
+   const [visible, setVisibility] = useStateWithAwait(false);
+-  const [scrollView, setScrollView] = (0, import_react8.useState)(null);
++  const scrollView = (0, import_react8.useRef)(null);
+   const {
+     currentStep,
+     currentStepNumber,
+@@ -926,38 +925,33 @@
+     [verticalOffset]
+   );
+   const setCurrentStep = (0, import_react8.useCallback)(
+-    (step, move = true) => __async(void 0, null, function* () {
+-      var _a2;
++    (step) => __async(void 0, null, function* () {
+       setCurrentStepState(step);
+       copilotEvents.emit("stepChange", step);
+-      if (scrollView != null) {
+-        const nodeHandle = (0, import_react_native7.findNodeHandle)(scrollView);
+-        if (nodeHandle) {
+-          (_a2 = step == null ? void 0 : step.wrapperRef.current) == null ? void 0 : _a2.measureLayout(
+-            nodeHandle,
++      const scroll = scrollView.current;
++      const content = scroll?.getInnerViewRef?.();
++      const target = step?.wrapperRef.current;
++      if (target && content) {
++        yield new Promise((resolve) => {
++          target.measureLayout(
++            content,
+             (_x, y, _w, h) => {
+-              const yOffset = y > 0 ? y - h / 2 : 0;
+-              scrollView.scrollTo({ y: yOffset, animated: false });
+-            }
++              scroll.scrollTo({ y: Math.max(0, y - h / 2), animated: false });
++              // Let the native scroll settle before measuring the overlay.
++              requestAnimationFrame(() => requestAnimationFrame(resolve));
++            },
++            resolve
+           );
+-        }
+-      }
+-      setTimeout(
+-        () => {
+-          if (move && step) {
+-            void moveModalToStep(step);
+-          }
+-        },
+-        scrollView != null ? 100 : 0
+-      );
++        });
++      }
++      if (step) {
++        yield moveModalToStep(step);
++      }
+     }),
+-    [copilotEvents, moveModalToStep, scrollView, setCurrentStepState]
++    [copilotEvents, moveModalToStep, setCurrentStepState]
+   );
+   const start = (0, import_react8.useCallback)(
+     (fromStep, suppliedScrollView = null) => __async(void 0, null, function* () {
+-      if (scrollView == null) {
+-        setScrollView(suppliedScrollView);
+-      }
+       const currentStep2 = fromStep ? steps[fromStep] : getFirstStep();
+       if (startTries.current > MAX_START_TRIES) {
+         startTries.current = 0;
+@@ -966,12 +960,12 @@
+       if (currentStep2 == null) {
+         startTries.current += 1;
+         requestAnimationFrame(() => {
+-          void start(fromStep);
++          void start(fromStep, suppliedScrollView);
+         });
+       } else {
++        scrollView.current = suppliedScrollView;
+         copilotEvents.emit("start");
+         yield setCurrentStep(currentStep2);
+-        yield moveModalToStep(currentStep2);
+         yield setVisibility(true);
+         startTries.current = 0;
+       }
+@@ -979,14 +973,13 @@
+     [
+       copilotEvents,
+       getFirstStep,
+-      moveModalToStep,
+-      scrollView,
+       setCurrentStep,
+       setVisibility,
+       steps
+     ]
+   );
+   const stop = (0, import_react8.useCallback)(() => __async(void 0, null, function* () {
++    scrollView.current = null;
+     yield setVisibility(false);
+     copilotEvents.emit("stop");
+   }), [copilotEvents, setVisibility]);
+diff --git a/dist/index.mjs b/dist/index.mjs
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -414,10 +414,8 @@
+   useCallback as useCallback5,
+   useContext,
+   useMemo as useMemo2,
+-  useRef as useRef5,
+-  useState as useState6
++  useRef as useRef5
+ } from "react";
+-import { findNodeHandle } from "react-native";
+ 
+ // src/components/CopilotModal.tsx
+ import React5, {
+@@ -901,7 +899,7 @@
+   const copilotEvents = useRef5(mitt()).current;
+   const modal = useRef5(null);
+   const [visible, setVisibility] = useStateWithAwait(false);
+-  const [scrollView, setScrollView] = useState6(null);
++  const scrollView = useRef5(null);
+   const {
+     currentStep,
+     currentStepNumber,
+@@ -934,38 +932,33 @@
+     [verticalOffset]
+   );
+   const setCurrentStep = useCallback5(
+-    (step, move = true) => __async(void 0, null, function* () {
+-      var _a2;
++    (step) => __async(void 0, null, function* () {
+       setCurrentStepState(step);
+       copilotEvents.emit("stepChange", step);
+-      if (scrollView != null) {
+-        const nodeHandle = findNodeHandle(scrollView);
+-        if (nodeHandle) {
+-          (_a2 = step == null ? void 0 : step.wrapperRef.current) == null ? void 0 : _a2.measureLayout(
+-            nodeHandle,
++      const scroll = scrollView.current;
++      const content = scroll?.getInnerViewRef?.();
++      const target = step?.wrapperRef.current;
++      if (target && content) {
++        yield new Promise((resolve) => {
++          target.measureLayout(
++            content,
+             (_x, y, _w, h) => {
+-              const yOffset = y > 0 ? y - h / 2 : 0;
+-              scrollView.scrollTo({ y: yOffset, animated: false });
+-            }
++              scroll.scrollTo({ y: Math.max(0, y - h / 2), animated: false });
++              // Let the native scroll settle before measuring the overlay.
++              requestAnimationFrame(() => requestAnimationFrame(resolve));
++            },
++            resolve
+           );
+-        }
+-      }
+-      setTimeout(
+-        () => {
+-          if (move && step) {
+-            void moveModalToStep(step);
+-          }
+-        },
+-        scrollView != null ? 100 : 0
+-      );
++        });
++      }
++      if (step) {
++        yield moveModalToStep(step);
++      }
+     }),
+-    [copilotEvents, moveModalToStep, scrollView, setCurrentStepState]
++    [copilotEvents, moveModalToStep, setCurrentStepState]
+   );
+   const start = useCallback5(
+     (fromStep, suppliedScrollView = null) => __async(void 0, null, function* () {
+-      if (scrollView == null) {
+-        setScrollView(suppliedScrollView);
+-      }
+       const currentStep2 = fromStep ? steps[fromStep] : getFirstStep();
+       if (startTries.current > MAX_START_TRIES) {
+         startTries.current = 0;
+@@ -974,12 +967,12 @@
+       if (currentStep2 == null) {
+         startTries.current += 1;
+         requestAnimationFrame(() => {
+-          void start(fromStep);
++          void start(fromStep, suppliedScrollView);
+         });
+       } else {
++        scrollView.current = suppliedScrollView;
+         copilotEvents.emit("start");
+         yield setCurrentStep(currentStep2);
+-        yield moveModalToStep(currentStep2);
+         yield setVisibility(true);
+         startTries.current = 0;
+       }
+@@ -987,14 +980,13 @@
+     [
+       copilotEvents,
+       getFirstStep,
+-      moveModalToStep,
+-      scrollView,
+       setCurrentStep,
+       setVisibility,
+       steps
+     ]
+   );
+   const stop = useCallback5(() => __async(void 0, null, function* () {
++    scrollView.current = null;
+     yield setVisibility(false);
+     copilotEvents.emit("stop");
+   }), [copilotEvents, setVisibility]);
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -64,7 +64,7 @@
+     registerStep: (step: Step) => void;
+     unregisterStep: (stepName: string) => void;
+     currentStep: Step | undefined;
+-    start: (fromStep?: string, suppliedScrollView?: ScrollView | null) => Promise<void>;
++    start: (fromStep?: string, suppliedScrollView?: Pick<React$1.ComponentRef<typeof ScrollView>, "getInnerViewRef" | "scrollTo"> | null) => Promise<void>;
+     stop: () => Promise<void>;
+     goToNext: () => Promise<void>;
+     goToNth: (n: number) => Promise<void>;
+diff --git a/dist/index.d.mts b/dist/index.d.mts
+--- a/dist/index.d.mts
++++ b/dist/index.d.mts
+@@ -64,7 +64,7 @@
+     registerStep: (step: Step) => void;
+     unregisterStep: (stepName: string) => void;
+     currentStep: Step | undefined;
+-    start: (fromStep?: string, suppliedScrollView?: ScrollView | null) => Promise<void>;
++    start: (fromStep?: string, suppliedScrollView?: Pick<React$1.ComponentRef<typeof ScrollView>, "getInnerViewRef" | "scrollTo"> | null) => Promise<void>;
+     stop: () => Promise<void>;
+     goToNext: () => Promise<void>;
+     goToNth: (n: number) => Promise<void>;

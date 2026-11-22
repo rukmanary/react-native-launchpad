@@ -18,12 +18,15 @@ packages = {
     "react-native-notifications": "lib/android/app/build.gradle",
 }
 token_file = "lib/android/app/src/main/java/com/wix/reactnativenotifications/fcm/FcmToken.java"  # pii-allow
+date_picker_manager = "ios/RNDatePickerManager.mm"
 (root / "patches").mkdir(exist_ok=True)
 entries = []
 for name, gradle_file in packages.items():
     package = root / "node_modules" / name
     version = json.loads((package / "package.json").read_text())["version"]
     paths = [gradle_file] + ([token_file] if name == "react-native-notifications" else [])
+    if name == "react-native-date-picker":
+        paths += ["package.json", date_picker_manager]
     originals = {file: (package / file).read_text() for file in paths}
     relative = "patches/" + name.replace("/", "__") + "@" + version + ".patch"
     destination = root / relative
@@ -50,6 +53,17 @@ for name, gradle_file in packages.items():
         namespace = re.search(r'package="([^"]+)"', manifest.read_text()).group(1)
         gradle = re.sub(r"android\s*\{", 'android {\n    namespace "' + namespace + '"', gradle, count=1)
     changed[gradle_file] = gradle
+    if name == "react-native-date-picker":
+        metadata = json.loads(originals["package.json"])
+        metadata["codegenConfig"]["ios"].pop("modulesProvider")
+        changed["package.json"] = json.dumps(metadata, ensure_ascii=False, indent=2) + "\n"
+        manager = originals[date_picker_manager].replace(
+            "#import <React/RCTUIManager.h>", "#import <React/RCTUIManager.h>\n#import <React/RCTUtils.h>"
+        )
+        changed[date_picker_manager] = manager.replace(
+            "[UIApplication sharedApplication].delegate.window.rootViewController;",
+            "RCTKeyWindow().rootViewController;\n        if (!rootViewController) {\n            onCancel(@[]);\n            return;\n        }",
+        )
     if name == "react-native-notifications":
         token = originals[token_file]
         token = token.replace("import com.facebook.react.ReactInstanceManager;", "import com.facebook.react.ReactHost;")
@@ -68,7 +82,8 @@ for name, gradle_file in packages.items():
     for file in paths:
         if originals[file] != changed[file]:
             chunks.append("diff --git a/" + file + " b/" + file + "\n")
-            chunks.extend(difflib.unified_diff(originals[file].splitlines(True), changed[file].splitlines(True), fromfile="a/" + file, tofile="b/" + file))
+            context = 1 if file == date_picker_manager else 3
+            chunks.extend(difflib.unified_diff(originals[file].splitlines(True), changed[file].splitlines(True), fromfile="a/" + file, tofile="b/" + file, n=context))
     if not chunks:
         raise RuntimeError("No patch needed; review upgrade: " + name)
     destination.write_text("".join(chunks))

@@ -80,6 +80,9 @@ pnpm applies patches through `patchedDependencies` in `pnpm-workspace.yaml`. Nor
 | Package/version                          | Fix                                                                                                                                |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | `@nozbe/watermelondb@0.28.0`             | Enable `BuildConfig` generation used by Android code                                                                               |
+| `@gorhom/bottom-sheet@5.2.14`            | Use web-only Reanimated dependency arrays and clean up the window dimensions listener in the Metro source                          |
+| `react-native-reanimated-carousel@5.2.2` | Snap one page from the gesture's starting position after a short drag or flick                                                     |
+| `react-native-copilot@3.3.3`             | Measure tour targets against the native scroll content and place the overlay after the scroll settles                              |
 | `react-native-linear-gradient@2.8.3`     | Add Android namespace                                                                                                              |
 | `react-native-biometrics@3.0.1`          | Add Android namespace                                                                                                              |
 | `react-native-blurhash@2.1.3`            | Add Android namespace                                                                                                              |

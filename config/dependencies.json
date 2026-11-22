@@ -35,7 +35,11 @@
     ],
     "offline": ["@nozbe/watermelondb"],
     "biometrics": ["react-native-biometrics"],
-    "camera": ["react-native-vision-camera", "react-native-nitro-image"],
+    "camera": [
+      "react-native-vision-camera",
+      "react-native-vision-camera-barcode-scanner",
+      "react-native-nitro-image"
+    ],
     "media": [
       "react-native-image-picker",
       "@react-native-documents/picker",
@@ -62,6 +66,7 @@
     "content": ["react-native-webview", "react-native-render-html"],
     "ui": [
       "@gorhom/bottom-sheet",
+      "react-native-blurhash",
       "react-native-date-picker",
       "react-native-calendars",
       "react-native-otp-entry",

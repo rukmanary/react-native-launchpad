@@ -16,7 +16,7 @@ A bare React Native template with pnpm, TypeScript, feature-based architecture, 
 | Configure native builds, Firebase, Google Sign-In, and releases | [Native setup](docs/native-setup.md)                                        |
 | Review version choices and test results                         | [Compatibility](docs/compatibility.md) and [Validation](docs/validation.md) |
 
-See the [UI starter kit](docs/ui-kit.md), [state and API presets](docs/state-and-api.md), and [HTTP client walkthrough](docs/http-client.md).
+See the [Component Showcase](docs/component-showcase.md), [state and API presets](docs/state-and-api.md), and [HTTP client walkthrough](docs/http-client.md).
 
 ## Template and generated app
 

@@ -7,7 +7,12 @@ export default ts.config(
   js.configs.recommended,
   ...ts.configs.recommended,
   {
-    files: ['src/app/App.tsx', 'src/app/store/store.ts', 'src/generated/bootstrap.ts'],
+    files: [
+      'src/app/App.tsx',
+      'src/app/store/store.ts',
+      'src/features/component-showcase/model/showcase.ts',
+      'src/generated/{bootstrap,showcase}.ts',
+    ],
     rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
   {

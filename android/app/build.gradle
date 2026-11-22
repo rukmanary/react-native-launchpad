@@ -9,6 +9,31 @@ if (starter.modules.contains("firebase")) {
     apply plugin: "com.google.gms.google-services"
     apply plugin: "com.google.firebase.crashlytics"
     apply plugin: "com.google.firebase.firebase-perf"
+
+    androidComponents {
+        onVariants(selector().all(), { variant ->
+            def flavor = variant.flavorName
+            def services = flavor == "production" ? starter.services : starter.flavorServices?.get(flavor)
+            if (services?.firebase != true) {
+                tasks.named("process${variant.name.capitalize()}GoogleServices").configure { task ->
+                    task.missingGoogleServicesStrategy.set(
+                        com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy.WARN
+                    )
+                    task.doFirst { resources ->
+                        if (resources.googleServicesJsonFiles.get().any { it.isFile() }) return
+
+                        // The plugin returns early for missing files, leaving previous resources on disk.
+                        def outputs = [resources.outputDirectory.get().asFile, resources.gmpAppId.get().asFile]
+                        for (def output : outputs) {
+                            if (output.exists() && !(output.isDirectory() ? output.deleteDir() : output.delete())) {
+                                throw new GradleException("Could not remove stale Firebase output: ${output.name}")
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    }
 }
 // starter:end-module
 // starter:module sentry

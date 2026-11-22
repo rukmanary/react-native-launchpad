@@ -10,3 +10,32 @@ diff --git a/android/build.gradle b/android/build.gradle
          }
      }
  }
+diff --git a/package.json b/package.json
+--- a/package.json
++++ b/package.json
+@@ -70,9 +70,6 @@
+     "ios": {
+       "componentProvider": {
+         "RNDatePicker": "RNDatePicker"
+-      },
+-      "modulesProvider": {
+-        "RNDatePicker": "RNDatePickerManager"
+       }
+     }
+   }
+diff --git a/ios/RNDatePickerManager.mm b/ios/RNDatePickerManager.mm
+--- a/ios/RNDatePickerManager.mm
++++ b/ios/RNDatePickerManager.mm
+@@ -2,2 +2,3 @@
+ #import <React/RCTUIManager.h>
++#import <React/RCTUtils.h>
+ #import <React/RCTViewManager.h>
+@@ -96,3 +97,7 @@
+         bool iPad = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+-        UIViewController *rootViewController = [UIApplication sharedApplication].delegate.window.rootViewController;
++        UIViewController *rootViewController = RCTKeyWindow().rootViewController;
++        if (!rootViewController) {
++            onCancel(@[]);
++            return;
++        }
+         CGRect rootBounds = rootViewController.view.bounds;

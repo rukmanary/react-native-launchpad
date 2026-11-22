@@ -9,11 +9,12 @@ import {
   isErrorWithCode,
   errorCodes,
   keepLocalCopy,
+  type DocumentPickerOptionsBase,
 } from '@react-native-documents/picker';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { ensurePermission } from '@/core/permissions/permissions';
 
-function result(response: ImagePickerResponse) {
+const result = (response: ImagePickerResponse) => {
   if (response.didCancel) return null;
   if (response.errorCode) throw new Error(response.errorMessage ?? response.errorCode);
 
@@ -23,9 +24,9 @@ function result(response: ImagePickerResponse) {
   if ((asset.fileSize ?? 0) > 10 * 1024 * 1024)
     throw new Error('Image exceeds the 10 MB upload limit');
   return asset;
-}
+};
 
-export async function chooseImage() {
+export const chooseImage = async () => {
   return result(
     await launchImageLibrary({
       mediaType: 'photo',
@@ -36,9 +37,9 @@ export async function chooseImage() {
       includeBase64: false,
     }),
   );
-}
+};
 
-export async function takeImage() {
+export const takeImage = async () => {
   if (!(await ensurePermission('camera')).granted) throw new Error('Camera permission denied');
   return result(
     await launchCamera({
@@ -49,20 +50,22 @@ export async function takeImage() {
       saveToPhotos: false,
     }),
   );
-}
+};
 
-export async function chooseDocument() {
+export const chooseDocument = async (
+  type: DocumentPickerOptionsBase['type'] = [types.allFiles],
+) => {
   try {
-    const [file] = await pick({ type: [types.allFiles], allowMultiSelection: false });
+    const [file] = await pick({ type, allowMultiSelection: false });
     return file ?? null;
   } catch (error) {
     if (isErrorWithCode(error) && error.code === errorCodes.OPERATION_CANCELED) return null;
     throw error;
   }
-}
+};
 
-export async function cacheDocument(uri: string, fileName: string) {
-  const safe = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+export const cacheDocument = async (uri: string, fileName: string) => {
+  const safe = fileName.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/^\.+/, '') || 'document';
   const [result] = await keepLocalCopy({
     destination: 'cachesDirectory',
     files: [{ uri, fileName: safe }],
@@ -70,9 +73,9 @@ export async function cacheDocument(uri: string, fileName: string) {
 
   if (!result || result.status !== 'success') throw new Error('Could not copy selected document');
   return result.localUri;
-}
+};
 
-export async function cropImage(path: string) {
+export const cropImage = async (path: string) => {
   try {
     return await ImageCropPicker.openCropper({
       path,
@@ -92,6 +95,6 @@ export async function cropImage(path: string) {
       return null;
     throw error;
   }
-}
+};
 
 export const clearCropCache = () => ImageCropPicker.clean();

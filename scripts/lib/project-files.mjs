@@ -49,7 +49,11 @@ const projectScripts = new Set([
   'scripts/setup-maestro.mjs',
 ]);
 
-const projectDocs = new Set(['docs/app-scripts.md', 'docs/app-firebase.md']);
+const projectDocs = new Set([
+  'docs/app-scripts.md',
+  'docs/app-firebase.md',
+  'docs/component-showcase.md',
+]);
 
 const moduleFiles = {
   graphics: ['android/app/src/graphics'],
@@ -75,13 +79,12 @@ export function projectFileFilter({ source, modules, state, patches, skipInstall
       modules.includes(name) ? [] : files,
     ),
   ]);
-  if (!modules.some((name) => name === 'graphics' || name === 'notifications'))
-    excluded.add('react-native.config.js');
+  if (!modules.some((name) => name !== 'core')) excluded.add('react-native.config.js');
 
   const patchFiles = new Set(Object.values(patches));
   return (file) => {
     const relative = path.relative(source, file).split(path.sep).join('/');
-    const [directory, section, module] = relative.split('/');
+    const [directory, section, module, assetGroup] = relative.split('/');
     if (excluded.has(relative)) return false;
     if (!projectRoots.has(directory)) return false;
     if (directory === 'docs' && section) return projectDocs.has(relative);
@@ -91,6 +94,10 @@ export function projectFileFilter({ source, modules, state, patches, skipInstall
       return patchFiles.size > 0 && (!section || patchFiles.has(relative));
     if (directory === 'src' && section === 'modules')
       return module ? adapters.has(module) : adapters.size > 0;
+    if (directory === 'tests' && section === 'modules')
+      return module ? modules.includes(module) : modules.some((name) => name !== 'core');
+    if (directory === 'src' && section === 'assets' && module === 'showcase')
+      return assetGroup ? modules.includes(assetGroup) : modules.some((name) => name !== 'core');
     return true;
   };
 }

@@ -1,8 +1,8 @@
 # UI starter kit
 
-[Back to README](../README.md) · [Optional modules](modules.md)
+[Back to README](../README.md) · [Component Showcase](component-showcase.md) · [Optional modules](modules.md)
 
-Open **UI starter kit** on the dashboard to preview the shared components. The preview has a form, buttons, a modal, and a language control backed by the selected store. Components are exported from `src/shared/ui/index.ts`.
+Open the **Component** tab to explore the component catalog. The **UI starter kit** link on Home opens a smaller example that includes a language control backed by the selected store. Import shared components from `@/shared/ui`.
 
 | Need                    | Components                                                                              |
 | ----------------------- | --------------------------------------------------------------------------------------- |
@@ -10,7 +10,7 @@ Open **UI starter kit** on the dashboard to preview the shared components. The p
 | Typography and surfaces | `AppText`, `Card`, `Badge`, `Divider`                                                   |
 | Actions and feedback    | `Button` with primary and secondary variants, `AsyncState`, `Icon`, `AnimatedPressable` |
 | Inputs                  | `TextField` for a controlled input, `FormField` for React Hook Form                     |
-| Theme                   | Colors, spacing, and radii from `src/shared/theme/theme.ts`                             |
+| Theme                   | `ThemedText`, `ThemedView`, and `useTheme()` with light defaults                        |
 
 ```tsx
 <Card>
@@ -24,7 +24,7 @@ Choose `--modules ui` for bottom sheets, date and calendar fields, OTP input, ca
 
 ## Package coverage
 
-An inventory of the 78 direct runtime dependencies found direct source references for 74. The remaining four support other integrations:
+Some runtime packages are used through other integrations:
 
 | Package                      | Used by                                       |
 | ---------------------------- | --------------------------------------------- |

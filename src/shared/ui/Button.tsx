@@ -1,23 +1,35 @@
-import { Pressable, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { colors, radii } from '@/shared/theme/theme';
+import {
+  Pressable,
+  ActivityIndicator,
+  StyleSheet,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
+import { useTheme } from '@/shared/theme/theme';
+import { ThemedText } from '@/shared/ui/AppText';
 
-export function Button({
+export const Button = ({
   label,
   onPress,
   loading = false,
   disabled = false,
   variant = 'primary',
+  style,
   testID,
 }: {
   label: string;
   onPress: () => void;
   loading?: boolean;
   disabled?: boolean;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'danger';
+  style?: StyleProp<ViewStyle>;
   testID?: string;
-}) {
+}) => {
+  const { colors, radii, spacing } = useTheme();
   const secondary = variant === 'secondary';
-  const textColor = secondary ? colors.primary : colors.surface;
+  const danger = variant === 'danger';
+  const textColor = secondary ? colors.primary : danger ? colors.dangerText : colors.primaryText;
+  const backgroundColor = secondary ? colors.surface : danger ? colors.danger : colors.primary;
 
   return (
     <Pressable
@@ -29,28 +41,32 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        secondary && styles.secondary,
-        { opacity: disabled ? 0.5 : pressed ? 0.8 : 1 },
+        {
+          backgroundColor,
+          borderRadius: radii.md,
+          paddingHorizontal: spacing.md,
+          paddingVertical: spacing.sm,
+          borderColor: colors.primary,
+          borderWidth: secondary ? 1 : 0,
+          opacity: disabled ? 0.5 : pressed ? 0.8 : 1,
+        },
+        style,
       ]}
     >
       {loading ? (
         <ActivityIndicator color={textColor} />
       ) : (
-        <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+        <ThemedText style={[styles.label, { color: textColor }]}>{label}</ThemedText>
       )}
     </Pressable>
   );
-}
+};
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: colors.primary,
-    borderRadius: radii.md,
     minHeight: 48,
-    padding: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  secondary: { backgroundColor: colors.surface, borderColor: colors.primary, borderWidth: 1 },
-  label: { fontWeight: '600', fontSize: 16 },
+  label: { fontWeight: '600', textAlign: 'center' },
 });

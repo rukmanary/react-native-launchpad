@@ -1,5 +1,5 @@
 import { StyleSheet, Text, type TextProps } from 'react-native';
-import { colors } from '@/shared/theme/theme';
+import { useTheme } from '@/shared/theme/theme';
 
 const typography = StyleSheet.create({
   title: { fontSize: 28, lineHeight: 34, fontWeight: '700' },
@@ -8,15 +8,26 @@ const typography = StyleSheet.create({
   caption: { fontSize: 14, lineHeight: 20 },
 });
 
-type AppTextProps = TextProps & {
+export type ThemedTextProps = TextProps & {
   variant?: keyof typeof typography;
-  tone?: 'normal' | 'muted' | 'danger';
+  tone?: 'normal' | 'muted' | 'danger' | 'primary' | 'onPrimary';
 };
 
-const textColors = { normal: colors.text, muted: colors.muted, danger: colors.danger };
-
-export function AppText({ variant = 'body', tone = 'normal', style, ...props }: AppTextProps) {
+export const ThemedText = ({
+  variant = 'body',
+  tone = 'normal',
+  style,
+  ...props
+}: ThemedTextProps) => {
+  const { colors } = useTheme();
   const header = variant === 'title' || variant === 'heading';
+  const textColors = {
+    normal: colors.text,
+    muted: colors.muted,
+    danger: colors.danger,
+    primary: colors.primary,
+    onPrimary: colors.primaryText,
+  };
 
   return (
     <Text
@@ -25,4 +36,6 @@ export function AppText({ variant = 'body', tone = 'normal', style, ...props }: 
       style={[typography[variant], { color: textColors[tone] }, style]}
     />
   );
-}
+};
+
+export const AppText = ThemedText;

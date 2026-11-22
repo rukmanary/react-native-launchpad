@@ -1,0 +1,94 @@
+diff --git a/src/components/ScrollViewGesture.tsx b/src/components/ScrollViewGesture.tsx
+--- a/src/components/ScrollViewGesture.tsx
++++ b/src/components/ScrollViewGesture.tsx
+@@ -113,6 +113,7 @@
+ 
+   const endWithSpring = React.useCallback(
+     (
++      startTranslation: number,
+       scrollEndTranslationValue: number,
+       scrollEndVelocityValue: number,
+       onFinished?: () => void
+@@ -139,36 +140,20 @@
+        * `page size` equals to `currentSize` variable.
+        */
+ 
+-      // Calculate target based on final pan position and velocity.
+-      const nextPage = -Math.round((origin + velocity * 2) / currentSize);
+-
+       if (snapMode === "page") {
+-        // we'll never go further than a single page away from the current page when paging
+-        // is enabled.
+-
+-        // distance with direction
+-        const offset = -(scrollEndTranslationValue >= 0 ? 1 : -1); // 1 or -1
+-        const computed = offset < 0 ? Math.ceil : Math.floor;
+-        const page = computed(-origin / currentSize);
+-
+-        const velocityDirection = -Math.sign(velocity);
+-        if (page === nextPage || velocityDirection !== offset) {
+-          // not going anywhere! Velocity was insufficient to overcome the distance to get to a
+-          // further page. Let's reset gently to the current page.
+-          finalTranslation = withSpring(withProcessTranslation(-page * currentSize), onFinished);
+-        } else if (loop) {
+-          const finalPage = page + offset;
+-          finalTranslation = withSpring(
+-            withProcessTranslation(-finalPage * currentSize),
+-            onFinished
+-          );
+-        } else {
+-          const finalPage = Math.min(maxPage - 1, Math.max(0, page + offset));
+-          finalTranslation = withSpring(
+-            withProcessTranslation(-finalPage * currentSize),
+-            onFinished
+-          );
+-        }
++        const startPage = Math.round(-startTranslation / currentSize);
++        const distance = Math.abs(scrollEndTranslationValue);
++        const direction = -Math.sign(scrollEndTranslationValue);
++        const distanceThreshold = Math.min(currentSize * 0.25, 56);
++        const isFlick =
++          distance >= 12 &&
++          Math.abs(velocity) >= 450 &&
++          Math.sign(velocity) === Math.sign(scrollEndTranslationValue);
++        const shouldAdvance = distance >= distanceThreshold || isFlick;
++        const nextPage = startPage + (shouldAdvance ? direction : 0);
++        const finalPage = loop ? nextPage : Math.min(maxPage - 1, Math.max(0, nextPage));
++
++        finalTranslation = withSpring(withProcessTranslation(-finalPage * currentSize), onFinished);
+       }
+ 
+       if (snapMode === "nearest") {
+@@ -344,7 +329,7 @@
+   );
+ 
+   const onGestureEnd = useCallback(
+-    (e: GestureStateChangeEvent<PanGestureHandlerEventPayload>, _success: boolean) => {
++    (e: GestureStateChangeEvent<PanGestureHandlerEventPayload>, success: boolean) => {
+       "worklet";
+       // Use resolvedSize.value (SharedValue) instead of size (React state)
+       // to avoid race condition where sizeReady is true but size is still 0
+@@ -375,7 +360,14 @@
+ 
+       scrollEndTranslation.value = panTranslation; // may update async: see https://docs.swmansion.com/react-native-reanimated/docs/core/useSharedValue#remarks
+ 
+-      endWithSpring(panTranslation, scrollEndVelocityValue, onScrollEnd);
++      const cancelledPageSwipe = snapMode === "page" && !success;
++
++      endWithSpring(
++        panOffset.value,
++        cancelledPageSwipe ? 0 : panTranslation,
++        cancelledPageSwipe ? 0 : scrollEndVelocityValue,
++        onScrollEnd
++      );
+ 
+       if (!loop) touching.value = false;
+ 
+@@ -390,6 +382,7 @@
+       scrollEndVelocity,
+       scrollEndTranslation,
+       endWithSpring,
++      snapMode,
+       onScrollEnd,
+       hasStartedMovement,
+       sizeReady,

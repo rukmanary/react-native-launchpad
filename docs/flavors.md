@@ -63,6 +63,6 @@ Enable the `firebase` module and register each app ID in Firebase. Set `firebase
 | Dev        | `android/app/src/dev/google-services.json`        | `ios/Firebase/dev/GoogleService-Info.plist`        |
 | QA         | `android/app/src/qa/google-services.json`         | `ios/Firebase/qa/GoogleService-Info.plist`         |
 
-The Google Services Gradle Plugin uses the Android source set. On iOS, a build phase checks the bundle ID and copies one plist for the active flavor. `pnpm ios:services qa` checks for the QA plist. Git ignores both registration filenames.
+The Google Services Gradle Plugin uses the Android source set. An Android flavor with `firebase` disabled can build with the module installed and its registration file absent. A flavor with `firebase: true` requires the registration file. On iOS, a build phase checks the bundle ID and copies one plist for the active flavor. `pnpm ios:services qa` checks for the QA plist. Git ignores both registration filenames.
 
 For Google Sign-In, set client IDs per flavor and register the matching Android app ID, signing fingerprint, and iOS bundle ID. Restrict Maps client keys to the corresponding application IDs. Verify APNs, provisioning, and service settings for each ID you use.

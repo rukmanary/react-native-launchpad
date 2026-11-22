@@ -7,11 +7,12 @@ import Animated, {
   ReduceMotion,
 } from 'react-native-reanimated';
 
-export function AnimatedPressable({
+export const AnimatedPressable = ({
   children,
   label,
   onPress,
-}: PropsWithChildren<{ label: string; onPress: () => void }>) {
+  disabled = false,
+}: PropsWithChildren<{ label: string; onPress: () => void; disabled?: boolean }>) => {
   const scale = useSharedValue(1);
   const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
@@ -19,6 +20,8 @@ export function AnimatedPressable({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityState={{ disabled }}
+      disabled={disabled}
       onPress={onPress}
       onPressIn={() => {
         scale.set(withTiming(0.97, { duration: 100, reduceMotion: ReduceMotion.System }));
@@ -30,4 +33,4 @@ export function AnimatedPressable({
       <Animated.View style={style}>{children}</Animated.View>
     </Pressable>
   );
-}
+};

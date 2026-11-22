@@ -1,27 +1,30 @@
 import type { PropsWithChildren } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
+import { useTheme } from '@/shared/theme/theme';
 
-export function BlurTarget({
+export const BlurTarget = ({
   children,
   style,
-}: PropsWithChildren<{ targetKey: string; style?: StyleProp<ViewStyle> }>) {
-  return <View style={style}>{children}</View>;
-}
+}: PropsWithChildren<{ targetKey: string; style?: StyleProp<ViewStyle> }>) => (
+  <View style={style}>{children}</View>
+);
 
-export function BlurSurface({
+export const BlurSurface = ({
   children,
   style,
   radius = 16,
-}: PropsWithChildren<{ targetKey: string; radius?: number; style?: StyleProp<ViewStyle> }>) {
+}: PropsWithChildren<{ targetKey: string; radius?: number; style?: StyleProp<ViewStyle> }>) => {
+  const { colors, mode } = useTheme();
+
   return (
     <BlurView
-      blurType="light"
+      blurType={mode}
       blurAmount={radius}
-      reducedTransparencyFallbackColor="#FFFFFF"
+      reducedTransparencyFallbackColor={colors.surface}
       style={style}
     >
       {children}
     </BlurView>
   );
-}
+};

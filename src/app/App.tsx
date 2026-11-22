@@ -1,7 +1,7 @@
 import { Component, type PropsWithChildren } from 'react';
 import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { StateProvider } from '@/app/store/StateProvider';
 import { I18nextProvider } from 'react-i18next';
@@ -9,6 +9,7 @@ import { I18nextProvider } from 'react-i18next';
 import { ApiProvider } from '@/app/providers/ApiProvider';
 import { i18n } from '@/app/providers/i18n';
 import { Navigation } from '@/app/navigation/Navigation';
+import { useTheme } from '@/shared/theme/theme';
 
 class ErrorBoundary extends Component<PropsWithChildren, { failed: boolean }> {
   state = { failed: false };
@@ -30,11 +31,13 @@ class ErrorBoundary extends Component<PropsWithChildren, { failed: boolean }> {
 
 const DevTools = __DEV__ ? require('@/app/devtools/DevTools').DevTools : () => null;
 
-export function App() {
+export const App = () => {
+  const { colors } = useTheme();
+
   return (
     <ErrorBoundary>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
           <KeyboardProvider>
             <StateProvider>
               <ApiProvider>
@@ -49,4 +52,4 @@ export function App() {
       </GestureHandlerRootView>
     </ErrorBoundary>
   );
-}
+};

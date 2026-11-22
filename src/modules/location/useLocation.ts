@@ -4,7 +4,7 @@ import type { GeoPosition } from 'react-native-geolocation-service';
 import { useAppActive } from '@/shared/hooks/useAppActive';
 import { watchLocation } from '@/modules/location/location';
 
-export function useLocation(enabled: boolean) {
+export const useLocation = (enabled: boolean) => {
   const active = useAppActive();
   const focused = useIsFocused();
   const [position, setPosition] = useState<GeoPosition | null>(null);
@@ -18,7 +18,10 @@ export function useLocation(enabled: boolean) {
 
     void watchLocation(
       (value) => {
-        if (!cancelled) setPosition(value);
+        if (!cancelled) {
+          setPosition(value);
+          setError(null);
+        }
       },
       (value) => {
         if (!cancelled) setError(value);
@@ -37,4 +40,4 @@ export function useLocation(enabled: boolean) {
     };
   }, [enabled, active, focused]);
   return { position, error };
-}
+};

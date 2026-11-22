@@ -1,64 +1,101 @@
-import type { PropsWithChildren } from 'react';
-import { View, StyleSheet, type ViewStyle } from 'react-native';
+import { createContext, useContext, useMemo, type PropsWithChildren } from 'react';
+import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
-import { colors } from '@/shared/theme/theme';
+import { useTheme } from '@/shared/theme/theme';
 
-type Props = PropsWithChildren<{ topInset?: boolean; bottomInset?: boolean; style?: ViewStyle }>;
+type Props = PropsWithChildren<{
+  topInset?: boolean;
+  bottomInset?: boolean;
+  style?: StyleProp<ViewStyle>;
+}>;
 
-export function Screen({ children, topInset = false, bottomInset = true, style }: Props) {
-  const inset = useSafeAreaInsets();
+const ScreenInsetsContext = createContext({ topHandled: false, bottomHandled: false });
+
+export const ScreenInsetsProvider = ({
+  children,
+  topHandled,
+  bottomHandled,
+}: PropsWithChildren<{ topHandled?: boolean; bottomHandled?: boolean }>) => {
+  const inherited = useContext(ScreenInsetsContext);
+  const top = topHandled ?? inherited.topHandled;
+  const bottom = bottomHandled ?? inherited.bottomHandled;
+  const value = useMemo(() => ({ topHandled: top, bottomHandled: bottom }), [top, bottom]);
+
+  return <ScreenInsetsContext.Provider value={value}>{children}</ScreenInsetsContext.Provider>;
+};
+
+export const useScreenInsets = (topInset?: boolean, bottomInset?: boolean) => {
+  const insets = useSafeAreaInsets();
+  const { topHandled, bottomHandled } = useContext(ScreenInsetsContext);
+
+  return {
+    top: (topInset ?? !topHandled) ? insets.top : 0,
+    bottom: (bottomInset ?? !bottomHandled) ? insets.bottom : 0,
+    left: insets.left,
+    right: insets.right,
+  };
+};
+
+export const Screen = ({ children, topInset, bottomInset, style }: Props) => {
+  const inset = useScreenInsets(topInset, bottomInset);
+  const { colors } = useTheme();
 
   return (
     <View
       style={[
         styles.root,
         {
-          paddingTop: topInset ? inset.top : 0,
-          paddingBottom: bottomInset ? inset.bottom : 0,
+          backgroundColor: colors.background,
+          paddingTop: inset.top,
+          paddingBottom: inset.bottom,
           paddingLeft: inset.left,
           paddingRight: inset.right,
         },
-        style,
       ]}
     >
-      {children}
+      <View style={[styles.root, style]}>{children}</View>
     </View>
   );
-}
+};
 
-export function FormScreen({ children }: PropsWithChildren) {
-  const inset = useSafeAreaInsets();
+export const FormScreen = ({ children }: PropsWithChildren) => {
+  const inset = useScreenInsets();
+  const { colors, spacing } = useTheme();
 
   return (
     <KeyboardAwareScrollView
-      bottomOffset={16}
+      bottomOffset={spacing.md}
+      style={{ backgroundColor: colors.background }}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={[
         styles.content,
         {
-          paddingBottom: inset.bottom + 24,
-          paddingLeft: inset.left + 24,
-          paddingRight: inset.right + 24,
+          gap: spacing.md,
+          paddingTop: inset.top + spacing.lg,
+          paddingBottom: inset.bottom + spacing.lg,
+          paddingLeft: inset.left + spacing.lg,
+          paddingRight: inset.right + spacing.lg,
         },
       ]}
     >
       {children}
     </KeyboardAwareScrollView>
   );
-}
+};
 
-export function ScreenFooter({ children }: PropsWithChildren) {
-  const inset = useSafeAreaInsets();
+export const ScreenFooter = ({ children }: PropsWithChildren) => {
+  const inset = useScreenInsets();
+  const { colors, spacing } = useTheme();
 
   return (
     <KeyboardStickyView offset={{ closed: 0, opened: inset.bottom }}>
       <View
         style={{
-          padding: 16,
-          paddingBottom: inset.bottom + 16,
-          paddingLeft: inset.left + 16,
-          paddingRight: inset.right + 16,
+          padding: spacing.md,
+          paddingBottom: inset.bottom + spacing.md,
+          paddingLeft: inset.left + spacing.md,
+          paddingRight: inset.right + spacing.md,
           backgroundColor: colors.surface,
         }}
       >
@@ -66,9 +103,9 @@ export function ScreenFooter({ children }: PropsWithChildren) {
       </View>
     </KeyboardStickyView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background },
-  content: { padding: 24, gap: 16, flexGrow: 1 },
+  root: { flex: 1 },
+  content: { flexGrow: 1 },
 });

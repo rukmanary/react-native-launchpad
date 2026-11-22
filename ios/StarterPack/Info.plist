@@ -72,9 +72,14 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 <!-- starter:permissions -->
-
+<key>NSCameraUsageDescription</key><string>Take photos for the selected feature.</string>
+<key>NSMicrophoneUsageDescription</key><string>Record audio with video.</string>
+<key>NSPhotoLibraryUsageDescription</key><string>Select a photo to share.</string>
+<key>NSPhotoLibraryAddUsageDescription</key><string>Save images you choose.</string>
+<key>NSLocationWhenInUseUsageDescription</key><string>Show your location while using this feature.</string>
+<key>NSFaceIDUsageDescription</key><string>Unlock using your enrolled biometrics.</string>
 <!-- starter:end-permissions -->
 <!-- starter:services -->
-<key>CFBundleURLTypes</key><array><dict><key>CFBundleURLSchemes</key><array><string>$(STARTER_URL_SCHEME)</string></array></dict></array><!-- starter:end-services -->
+<key>CFBundleURLTypes</key><array><dict><key>CFBundleURLSchemes</key><array><string>$(STARTER_URL_SCHEME)</string><string>$(STARTER_GOOGLE_SCHEME)</string></array></dict></array><key>GoogleMapsApiKey</key><string>$(STARTER_MAPS_KEY)</string><key>UIBackgroundModes</key><array><string>remote-notification</string></array><!-- starter:end-services -->
 </dict>
 </plist>

@@ -19,7 +19,9 @@ If you generated the app with `--skip-install`, run `pnpm install --no-frozen-lo
 
 `pnpm android` and `pnpm ios` default to `dev`. Add `qa` or `production` to select another flavor, for example `pnpm android qa`. Production uses the base app ID from [starter.config.json](../starter.config.json), while dev and QA append `.dev` and `.qa`. The same config stores public service values for each flavor.
 
-The app opens on Home. The Component, API, and Profile placeholders mount on their first visit. Home links to the starter examples.
+On Android 17, allow the **Nearby devices** prompt in debug builds so React Native can connect to Metro over the local network.
+
+The app opens on Home. The Component Showcase and the API and Profile placeholders mount on their first visit. Home links to the starter examples. See the [Component Showcase guide](component-showcase.md) for themes, components, and the optional native demos.
 
 ## Check and format code
 
@@ -34,7 +36,7 @@ The app opens on Home. The Component, API, and Profile placeholders mount on the
 
 ## Update native metadata
 
-`pnpm modules <comma-separated-list>` replaces the entire active module list. Pass every module you want to keep. `pnpm modules all` selects all groups in [config/dependencies.json](../config/dependencies.json), and running without arguments selects `core`.
+`pnpm modules <comma-separated-list>` replaces the entire active module list. Pass every module you want to keep. `pnpm modules all` selects all groups in [config/dependencies.json](../config/dependencies.json), and running without arguments selects `core`. Generated apps with optional modules keep the autolinking filter so you can disable and re-enable those modules. Android refreshes its autolinking cache on the next build when the module list changes.
 
 Run the command after changes to settings that affect native metadata, such as the iOS display name or URL schemes. It regenerates module exports and startup hooks, Android manifest entries, iOS plist entries, and flavor settings. Adding a capability absent from the project also requires its source, dependencies, native integration, and any matching patches. Install Pods on iOS and rebuild after native changes.
 

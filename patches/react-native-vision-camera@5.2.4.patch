@@ -1,0 +1,38 @@
+diff --git a/nitrogen/generated/android/kotlin/com/margelo/nitro/camera/views/HybridFrameRendererViewManager.kt b/nitrogen/generated/android/kotlin/com/margelo/nitro/camera/views/HybridFrameRendererViewManager.kt
+--- a/nitrogen/generated/android/kotlin/com/margelo/nitro/camera/views/HybridFrameRendererViewManager.kt
++++ b/nitrogen/generated/android/kotlin/com/margelo/nitro/camera/views/HybridFrameRendererViewManager.kt
+@@ -81,11 +81,5 @@
+-    @Suppress("USELESS_IS_CHECK")
+-    if (hybridView is RecyclableView) {
+-      // Recycle in it's implementation
+-      hybridView.prepareForRecycle()
+-
+-      // Maybe update the view if it changed
+-      return hybridView.view
+-    } else {
+-      return null
+-    }
++    val recyclable = RecyclableView::class.java
++    if (!recyclable.isInstance(hybridView)) return null
++    recyclable.cast(hybridView).prepareForRecycle()
++    return hybridView.view
+   }
+diff --git a/nitrogen/generated/android/kotlin/com/margelo/nitro/camera/views/HybridPreviewViewManager.kt b/nitrogen/generated/android/kotlin/com/margelo/nitro/camera/views/HybridPreviewViewManager.kt
+--- a/nitrogen/generated/android/kotlin/com/margelo/nitro/camera/views/HybridPreviewViewManager.kt
++++ b/nitrogen/generated/android/kotlin/com/margelo/nitro/camera/views/HybridPreviewViewManager.kt
+@@ -81,11 +81,5 @@
+-    @Suppress("USELESS_IS_CHECK")
+-    if (hybridView is RecyclableView) {
+-      // Recycle in it's implementation
+-      hybridView.prepareForRecycle()
+-
+-      // Maybe update the view if it changed
+-      return hybridView.view
+-    } else {
+-      return null
+-    }
++    val recyclable = RecyclableView::class.java
++    if (!recyclable.isInstance(hybridView)) return null
++    recyclable.cast(hybridView).prepareForRecycle()
++    return hybridView.view
+   }

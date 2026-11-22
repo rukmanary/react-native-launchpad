@@ -16,3 +16,5 @@ pnpm ios:services qa
 `pnpm ios:services` with no flavor checks all three iOS file paths. It checks that the expected files exist. The Xcode build phase checks the bundle ID and copies the selected file into the app bundle.
 
 To start the JavaScript Firebase integrations, set `firebase` to `true` under `services` for production or `flavorServices.<flavor>` for dev and QA. Rebuild the affected flavor after adding its registration files or changing native configuration.
+
+Android flavors with `firebase` disabled can build with the Firebase module installed and no registration file. When `firebase` is enabled for a flavor, Gradle requires its registration file.

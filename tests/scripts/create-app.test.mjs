@@ -55,7 +55,14 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
         services: {},
       }),
       'config/dependencies.json': JSON.stringify({
-        groups: { core: ['react'], media: ['fake-media'], firebase: [] },
+        groups: {
+          core: ['react'],
+          media: ['fake-media'],
+          firebase: [],
+          camera: [],
+          location: [],
+          ui: [],
+        },
       }),
       'config/size-budget.json': JSON.stringify({
         maxGrowthPercent: 10,
@@ -73,8 +80,16 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       'pnpm-workspace.yaml':
         'allowUnusedPatches: true\npatchedDependencies:\n  fake-media@1.0.0: patches/fake-media.patch\n',
       'patches/fake-media.patch': 'example patch',
+      'react-native.config.js':
+        'const dependencies = {}\n' +
+        '// starter:module graphics\ndependencies.graphics = {}\n// starter:end-module\n' +
+        'module.exports = { dependencies }\n',
       'android/build.gradle':
         '// starter:module media\nmedia config\n// starter:end-module\nbase config\n',
+      'android/app/proguard-rules.pro':
+        '# starter:module location\n-keep class androidx.work.impl.WorkDatabase_Impl { <init>(); }\n# starter:end-module\n' +
+        '# starter:module ui\n-keep public class net.time4j.android.spi.AndroidResourceLoader { public <init>(); }\n# starter:end-module\n' +
+        '# starter:module camera\n-keep class com.google.mlkit.** implements com.google.firebase.components.ComponentRegistrar { public <init>(); }\n# starter:end-module\n',
       'android/app/src/main/AndroidManifest.xml':
         '<manifest><application><activity></activity></application></manifest>',
       ['android/app/src/main/java/' + androidParts.join('/') + '/Main.kt']:
@@ -89,9 +104,13 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       'app-release.apk': 'local build artifact',
       'AuthKey_TEST.p8': 'placeholder signing key',
       'src/modules/media/index.ts': 'export {}',
+      'src/modules/camera/index.ts': 'export {}',
+      'src/assets/showcase/media/sample.txt': 'bundled sample',
+      'tests/modules/media/picker.test.ts': 'export {}',
       'docs/template.md': 'starter documentation',
       'docs/app-scripts.md': '# Application scripts\n',
       'docs/app-firebase.md': '# Firebase registration by flavor\n',
+      'docs/component-showcase.md': '# Component Showcase\n',
       'README.md': 'starter README',
       'AGENTS.md': 'starter instructions',
       LICENSE: 'original license notice',
@@ -137,7 +156,10 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
     assert.deepEqual(config.flavorServices, { dev: {}, qa: {} });
     assert.deepEqual(config.services, { apiBaseUrl: 'https://example.invalid' });
     assert.equal(await readFile(path.join(target, 'README.md'), 'utf8'), '');
-    assert.deepEqual(await readdir(path.join(target, 'docs')), ['app-scripts.md']);
+    assert.deepEqual((await readdir(path.join(target, 'docs'))).sort(), [
+      'app-scripts.md',
+      'component-showcase.md',
+    ]);
     assert.equal(
       await readFile(path.join(target, 'licenses/Apache-2.0.txt'), 'utf8'),
       'third-party license notice',
@@ -150,6 +172,7 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       await readFile(path.join(target, 'android/build.gradle'), 'utf8'),
       'base config\n',
     );
+    assert.equal(await readFile(path.join(target, 'android/app/proguard-rules.pro'), 'utf8'), '');
     assert.doesNotMatch(
       await readFile(path.join(target, 'pnpm-workspace.yaml'), 'utf8'),
       /patchedDependencies|allowUnusedPatches/,
@@ -162,6 +185,10 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
     assert.match(
       await readFile(path.join(target, 'ios/Config/qa.xcconfig'), 'utf8'),
       /STARTER_URL_SCHEME = example-app\.qa/,
+    );
+    assert.match(
+      await readFile(path.join(target, 'ios/Config/deployment-target.xcconfig'), 'utf8'),
+      /STARTER_IOS_DEPLOYMENT_TARGET = 15\.1/,
     );
     assert.match(
       await readFile(path.join(target, 'ios/ExampleApp.xcodeproj/project.pbxproj'), 'utf8'),
@@ -190,7 +217,10 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       'LICENSE',
       '.github',
       'tests/scripts',
+      'tests/modules/media',
+      'src/assets/showcase/media',
       'config/dependency-audit.json',
+      'react-native.config.js',
       'firebase.json',
       'patches',
       'pnpm-lock.yaml',
@@ -210,11 +240,35 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
       fixtureName,
     );
     await assert.rejects(createApp(args), /already exists/);
-    await createApp({ ...args, target: customTarget, modules: 'media,firebase' });
+    await createApp({
+      ...args,
+      target: customTarget,
+      modules: 'media,firebase,camera,location,ui',
+    });
     assert.deepEqual((await readdir(path.join(customTarget, 'docs'))).sort(), [
       'app-firebase.md',
       'app-scripts.md',
+      'component-showcase.md',
     ]);
+    await access(path.join(customTarget, 'src/assets/showcase/media/sample.txt'));
+    await access(path.join(customTarget, 'tests/modules/media/picker.test.ts'));
+    const autolinking = await readFile(path.join(customTarget, 'react-native.config.js'), 'utf8');
+    assert.match(autolinking, /module\.exports = \{ dependencies \}/);
+    assert.doesNotMatch(autolinking, /dependencies\.graphics/);
+    assert.match(
+      await readFile(path.join(customTarget, 'ios/Config/deployment-target.xcconfig'), 'utf8'),
+      /STARTER_IOS_DEPLOYMENT_TARGET = 15\.5/,
+    );
+    for (const flavor of ['production', 'dev', 'qa']) {
+      assert.match(
+        await readFile(path.join(customTarget, `ios/Config/${flavor}.xcconfig`), 'utf8'),
+        /#include "deployment-target\.xcconfig"/,
+      );
+    }
+    const rules = await readFile(path.join(customTarget, 'android/app/proguard-rules.pro'), 'utf8');
+    assert.match(rules, /-keep class androidx\.work\.impl\.WorkDatabase_Impl/);
+    assert.match(rules, /-keep public class net\.time4j\.android\.spi\.AndroidResourceLoader/);
+    assert.match(rules, /-keep class com\.google\.mlkit\.\*\* implements/);
     assert.match(
       await readFile(path.join(customTarget, 'src/generated/bootstrap.ts'), 'utf8'),
       /require\(['"]@\/modules\/firebase\/background['"]\)/,
@@ -222,6 +276,14 @@ test('generation isolates source, resets IDs, omits history and handles dry-run'
     assert.match(
       await readFile(path.join(customTarget, 'src/generated/modules.ts'), 'utf8'),
       /from ['"]@\/modules\/media['"]/,
+    );
+    assert.doesNotMatch(
+      await readFile(path.join(target, 'src/generated/showcase.ts'), 'utf8'),
+      /@\/modules\//,
+    );
+    assert.match(
+      await readFile(path.join(customTarget, 'src/generated/showcase.ts'), 'utf8'),
+      /require\(['"]@\/modules\/media\/showcase['"]\)\.MediaShowcaseScreen/,
     );
     assert.equal(
       await readFile(path.join(customTarget, 'patches/fake-media.patch'), 'utf8'),

@@ -43,12 +43,16 @@ if (config.services.apiBaseUrl.includes('.invalid'))
   console.log('SETUP API base URL is a placeholder; the form demo still works.');
 // starter:module firebase
 if (config.modules.includes('firebase'))
-  for (const file of Object.keys(flavors).flatMap((name) => [
-    'android/app/src/' + name + '/google-services.json',
-    ...(process.platform === 'darwin'
-      ? ['ios/Firebase/' + name + '/GoogleService-Info.plist']
-      : []),
-  ])) {
+  for (const file of Object.keys(flavors).flatMap((name) => {
+    const services = name === 'production' ? config.services : config.flavorServices?.[name];
+
+    return [
+      ...(services?.firebase === true ? ['android/app/src/' + name + '/google-services.json'] : []),
+      ...(process.platform === 'darwin'
+        ? ['ios/Firebase/' + name + '/GoogleService-Info.plist']
+        : []),
+    ];
+  })) {
     try {
       await access(new URL('../' + file, import.meta.url));
       check(file, true);
